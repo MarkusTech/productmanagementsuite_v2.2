@@ -328,8 +328,8 @@ model salesTransactionItems {
   salesTransactionID     Int      // Foreign key to salesTransaction
   itemID                 Int      // Foreign key to Items
   qty                    Int
-  price                  Decimal
-  total                  Decimal
+  price                  Float
+  total                  Float
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
 
@@ -345,8 +345,8 @@ model salesTransaction {
   locationID                 Int
   salesTransactionCustomerID Int
   qty                        Int
-  price                      Decimal
-  total                      Decimal  @default(0.0)
+  price                      Float
+  total                      Float
   paymentTypeID              Int
   transactionTypeID          Int
   transactionNumber          Int
@@ -354,7 +354,7 @@ model salesTransaction {
   status                     String
   totalItems                 Int
   totalQuantity              Int
-  totalPurchase              Decimal  @default(0.0)
+  totalPurchase              Float
   createdAt                  DateTime @default(now())
   updatedAt                  DateTime @updatedAt
 
