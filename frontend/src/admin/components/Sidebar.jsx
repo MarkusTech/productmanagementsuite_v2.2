@@ -22,12 +22,12 @@ const Sidebar = ({ isClosed }) => {
       link: "/sales",
       allowedRoles: [1, 2],
     },
-    {
-      title: "Reports",
-      icon: "bx bxs-report",
-      link: "/reports",
-      allowedRoles: [1, 2],
-    },
+    // {
+    //   title: "Reports",
+    //   icon: "bx bxs-report",
+    //   link: "/reports",
+    //   allowedRoles: [1, 2],
+    // },
     {
       title: "Items",
       icon: "bx bx-analyse",

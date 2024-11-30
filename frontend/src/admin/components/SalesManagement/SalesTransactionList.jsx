@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import Table from "../Table";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import TransactionTypeList from "./TransactionTypeList"; // Assuming it's in the same folder
+// import TransactionTypeList from "./TransactionTypeList";
 
 // Table headers for Sales Transaction
 const categoryTableHead = [
@@ -23,11 +23,11 @@ const categoryTableHead = [
 const renderHead = (item, index) => <th key={index}>{item}</th>;
 
 const SalesTransactionList = () => {
-  const [showTransactionTypeList, setShowTransactionTypeList] = useState(false);
+  // const [showTransactionTypeList, setShowTransactionTypeList] = useState(false);
 
-  const toggleTransactionTypeList = () => {
-    setShowTransactionTypeList((prev) => !prev);
-  };
+  // const toggleTransactionTypeList = () => {
+  //   setShowTransactionTypeList((prev) => !prev);
+  // };
 
   const dummyData = [
     {
@@ -123,36 +123,32 @@ const SalesTransactionList = () => {
     <div>
       <h3>SALES TRANSACTION LIST</h3>
       <div className="button-container">
-        <button className="create-form-btn" onClick={toggleTransactionTypeList}>
+        {/* <button className="create-form-btn" onClick={toggleTransactionTypeList}>
           Transaction Type
         </button>
-        <button className="create-form-btn">Payment Type</button>
+        <button className="create-form-btn">Payment Type</button> */}
         <button className="create-form-btn">+ Create Sales Transaction</button>
       </div>
 
-      {/* Conditionally render the TransactionTypeList or SalesTransactionList */}
-      {showTransactionTypeList ? (
-        <TransactionTypeList />
-      ) : (
-        <div className="table-container">
-          <div className="row">
-            <div className="col-12">
-              <div className="card">
-                <div className="card__body">
-                  <Table
-                    limit="10"
-                    headData={categoryTableHead}
-                    renderHead={renderHead}
-                    bodyData={dummyData}
-                    renderBody={renderBody}
-                    tableClass="table"
-                  />
-                </div>
+      <div className="table-container">
+        <div className="row">
+          <div className="col-12">
+            <div className="card">
+              <div className="card__body">
+                <Table
+                  limit="10"
+                  headData={categoryTableHead}
+                  renderHead={renderHead}
+                  bodyData={dummyData}
+                  renderBody={renderBody}
+                  tableClass="table"
+                />
               </div>
             </div>
           </div>
+          {/* {showTransactionTypeList && <TransactionTypeList />} */}
         </div>
-      )}
+      </div>
 
       <style jsx>{`
         .button-container {
