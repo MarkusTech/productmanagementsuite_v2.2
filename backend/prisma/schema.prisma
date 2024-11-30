@@ -62,6 +62,9 @@ model Locations {
 
   inventory      Inventory[]     @relation("InventoryLocations")
   purchaseOrders PurchaseOrder[] @relation("LocationOrders")
+  
+  // Define the opposite side of the relation
+  salesTransactions salesTransaction[] @relation("SalesTransactionsLocation")
 }
 
 model Suppliers {
@@ -302,41 +305,78 @@ model customerType {
   customers customers[]
 }
 
-model salesTransaction {
-  salesTransactionID Int @id @default(autoincrement())
-  locationID Int
-  customerID Int
+model salesTransactionCustomer {
+  salesTransactionCustomerID Int                     @id @default(autoincrement())
+  firstName                  String
+  middleName                 String
+  lastName                   String
+  contactNo                  String
+  address                    String
+  email                      String
+  customerTypeID             Int?
+  createdAt                  DateTime                @default(now())
+  updatedAt                  DateTime                @updatedAt
+  customerType               String
+
+  salesTransactions          salesTransaction[]      @relation
+}
+
+model salesTransactionItems {
+  salesTransactionItemID Int @id @default(autoincrement())
+  salesTransactionID Int
   itemID Int
   qty Int
   price Decimal
-  total Decimal @default(value: 0.0)
-  paymentTypeID Int
-  transactionTypeID Int
-  transactionNumber Int
-  transactionDate DateTime @default(now())
-  status String
-  totalItems Int
-  totalQuantity Int
-  totalPurchase Decimal @default(value: 0.0)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  total Decimal
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model salesTransaction {
+  salesTransactionID         Int                     @id @default(autoincrement())
+  locationID                 Int
+  salesTransactionCustomerID Int
+  qty                        Int
+  price                      Decimal
+  total                      Decimal                 @default(0.0)
+  paymentTypeID              Int
+  transactionTypeID          Int
+  transactionNumber          Int
+  transactionDate            DateTime                @default(now())
+  status                     String
+  totalItems                 Int
+  totalQuantity              Int
+  totalPurchase              Decimal                 @default(0.0)
+  createdAt                  DateTime                @default(now())
+  updatedAt                  DateTime                @updatedAt
+
+  location                   Locations               @relation("SalesTransactionsLocation", fields: [locationID], references: [locationID])
+  paymentType                paymentType             @relation("PaymentTypeSalesTransactions", fields: [paymentTypeID], references: [paymentTypeID])
+  transactionType            transactionType         @relation("TransactionTypeSalesTransactions", fields: [transactionTypeID], references: [transactionTypeID])
+  customer                   salesTransactionCustomer @relation(fields: [salesTransactionCustomerID], references: [salesTransactionCustomerID])
+
+  @@index([salesTransactionCustomerID])
 }
 
 model transactionType {
   transactionTypeID Int @id @default(autoincrement())
-  transactionName String
-  createdByID    Int
-  modifiedByID   Int?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  transactionName   String
+  createdByID       Int
+  modifiedByID      Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  salesTransactions salesTransaction[] @relation("TransactionTypeSalesTransactions")
 }
+
 
 model paymentType {
   paymentTypeID Int @id @default(autoincrement())
-  paymentName String
-  createdByID    Int
-  modifiedByID   Int?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-}
+  paymentName   String
+  createdByID   Int
+  modifiedByID  Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
+  salesTransactions salesTransaction[] @relation("PaymentTypeSalesTransactions")
+}
