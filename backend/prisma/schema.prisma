@@ -62,7 +62,7 @@ model Locations {
 
   inventory      Inventory[]     @relation("InventoryLocations")
   purchaseOrders PurchaseOrder[] @relation("LocationOrders")
-  
+
   // Define the opposite side of the relation
   salesTransactions salesTransaction[] @relation("SalesTransactionsLocation")
 }
@@ -263,7 +263,7 @@ model poSupplier {
 
 model companyProfile {
   companyID             Int      @id @default(autoincrement())
-  image_url       String?
+  image_url             String?
   companyName           String
   registrationNumber    String
   companyAddress        String?
@@ -278,18 +278,18 @@ model companyProfile {
 }
 
 model customers {
-  customerID    Int            @id @default(autoincrement())
-  firstName     String
-  middleName    String
-  lastName      String
-  contactNo     String
-  address       String
-  email         String
-  createdByID   Int
-  modifiedByID  Int?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  customerType  customerType?  @relation(fields: [customerTypeID], references: [customerTypeID])
+  customerID     Int           @id @default(autoincrement())
+  firstName      String
+  middleName     String
+  lastName       String
+  contactNo      String
+  address        String
+  email          String
+  createdByID    Int
+  modifiedByID   Int?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  customerType   customerType? @relation(fields: [customerTypeID], references: [customerTypeID])
   customerTypeID Int?
 }
 
@@ -306,7 +306,7 @@ model customerType {
 }
 
 model salesTransactionCustomer {
-  salesTransactionCustomerID Int                     @id @default(autoincrement())
+  salesTransactionCustomerID Int      @id @default(autoincrement())
   firstName                  String
   middleName                 String
   lastName                   String
@@ -314,52 +314,58 @@ model salesTransactionCustomer {
   address                    String
   email                      String
   customerTypeID             Int?
-  createdAt                  DateTime                @default(now())
-  updatedAt                  DateTime                @updatedAt
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
   customerType               String
 
-  salesTransactions          salesTransaction[]      @relation
+  salesTransactions salesTransaction[] @relation
 }
 
 model salesTransactionItems {
-  salesTransactionItemID Int @id @default(autoincrement())
-  salesTransactionID Int
-  itemID Int
-  qty Int
-  price Decimal
-  total Decimal
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  salesTransactionItemID Int      @id @default(autoincrement())
+  salesTransactionID     Int // Foreign key for salesTransaction
+  itemID                 Int
+  qty                    Int
+  price                  Decimal
+  total                  Decimal
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  transaction salesTransaction @relation(fields: [salesTransactionID], references: [salesTransactionID]) // Relation to salesTransaction
+
+  @@index([salesTransactionID]) // Index for faster lookups
 }
 
 model salesTransaction {
-  salesTransactionID         Int                     @id @default(autoincrement())
+  salesTransactionID         Int      @id @default(autoincrement())
   locationID                 Int
   salesTransactionCustomerID Int
   qty                        Int
   price                      Decimal
-  total                      Decimal                 @default(0.0)
+  total                      Decimal  @default(0.0)
   paymentTypeID              Int
   transactionTypeID          Int
   transactionNumber          Int
-  transactionDate            DateTime                @default(now())
+  transactionDate            DateTime @default(now())
   status                     String
   totalItems                 Int
   totalQuantity              Int
-  totalPurchase              Decimal                 @default(0.0)
-  createdAt                  DateTime                @default(now())
-  updatedAt                  DateTime                @updatedAt
+  totalPurchase              Decimal  @default(0.0)
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
 
-  location                   Locations               @relation("SalesTransactionsLocation", fields: [locationID], references: [locationID])
-  paymentType                paymentType             @relation("PaymentTypeSalesTransactions", fields: [paymentTypeID], references: [paymentTypeID])
-  transactionType            transactionType         @relation("TransactionTypeSalesTransactions", fields: [transactionTypeID], references: [transactionTypeID])
-  customer                   salesTransactionCustomer @relation(fields: [salesTransactionCustomerID], references: [salesTransactionCustomerID])
+  location        Locations                @relation("SalesTransactionsLocation", fields: [locationID], references: [locationID])
+  paymentType     paymentType              @relation("PaymentTypeSalesTransactions", fields: [paymentTypeID], references: [paymentTypeID])
+  transactionType transactionType          @relation("TransactionTypeSalesTransactions", fields: [transactionTypeID], references: [transactionTypeID])
+  customer        salesTransactionCustomer @relation(fields: [salesTransactionCustomerID], references: [salesTransactionCustomerID])
 
-  @@index([salesTransactionCustomerID])
+  items salesTransactionItems[] // One-to-many relationship with salesTransactionItems
+
+  @@index([salesTransactionCustomerID]) // Index for faster lookups
 }
 
 model transactionType {
-  transactionTypeID Int @id @default(autoincrement())
+  transactionTypeID Int      @id @default(autoincrement())
   transactionName   String
   createdByID       Int
   modifiedByID      Int?
@@ -369,9 +375,8 @@ model transactionType {
   salesTransactions salesTransaction[] @relation("TransactionTypeSalesTransactions")
 }
 
-
 model paymentType {
-  paymentTypeID Int @id @default(autoincrement())
+  paymentTypeID Int      @id @default(autoincrement())
   paymentName   String
   createdByID   Int
   modifiedByID  Int?
