@@ -27,7 +27,7 @@ const PaymentTypeCreateForm = ({ onPaymentTypeCreated, closeForm }) => {
     try {
       // Replace with your actual API endpoint
       const response = await axios.post(
-        "http://localhost:5000/api/v3/transaction/payment-types",
+        "/api/v3/transaction/payment-types",
         formData
       );
 
