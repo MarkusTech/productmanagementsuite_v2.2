@@ -98,8 +98,10 @@ model Items {
   inventory          Inventory[]         @relation("InventoryItems")
   receivingItems     poReceivingItem[]   @relation("ItemPoReceivingItems")
   purchaseOrderItems PurchaseOrderItem[] @relation("ItemPurchaseOrderItems")
+  itemImages         ItemImage[]         @relation("ItemItemImages")
 
-  itemImages ItemImage[] @relation("ItemItemImages")
+  // Relation to salesTransactionItems (Opposite relation field on salesTransactionItems)
+  salesTransactionItems salesTransactionItems[] @relation("SalesTransactionItems")
 }
 
 model ItemImage {
@@ -323,17 +325,19 @@ model salesTransactionCustomer {
 
 model salesTransactionItems {
   salesTransactionItemID Int      @id @default(autoincrement())
-  salesTransactionID     Int // Foreign key for salesTransaction
-  itemID                 Int
+  salesTransactionID     Int      // Foreign key to salesTransaction
+  itemID                 Int      // Foreign key to Items
   qty                    Int
   price                  Decimal
   total                  Decimal
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
 
-  transaction salesTransaction @relation(fields: [salesTransactionID], references: [salesTransactionID]) // Relation to salesTransaction
+  // Relations (Specify fields and references here)
+  salesTransaction salesTransaction @relation("SalesTransactionItems", fields: [salesTransactionID], references: [salesTransactionID], map: "salesTransactionItems_salesTransaction_fkey")
+  item             Items             @relation("SalesTransactionItems", fields: [itemID], references: [itemID], map: "salesTransactionItems_item_fkey")
 
-  @@index([salesTransactionID]) // Index for faster lookups
+  @@index([salesTransactionID, itemID])  // Composite index for faster lookups
 }
 
 model salesTransaction {
@@ -359,8 +363,9 @@ model salesTransaction {
   transactionType transactionType          @relation("TransactionTypeSalesTransactions", fields: [transactionTypeID], references: [transactionTypeID])
   customer        salesTransactionCustomer @relation(fields: [salesTransactionCustomerID], references: [salesTransactionCustomerID])
 
-  items salesTransactionItems[] // One-to-many relationship with salesTransactionItems
-
+  // Relation to salesTransactionItems (Opposite relation field on salesTransactionItems)
+  salesTransactionItems salesTransactionItems[] @relation("SalesTransactionItems")
+  
   @@index([salesTransactionCustomerID]) // Index for faster lookups
 }
 
