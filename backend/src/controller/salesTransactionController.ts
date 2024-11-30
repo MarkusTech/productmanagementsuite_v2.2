@@ -17,6 +17,14 @@ export class SalesTransactionController {
     } = req.body;
 
     try {
+      // Validate that items array is not empty
+      if (!items || items.length === 0) {
+        res.status(400).json({
+          success: false,
+          message: "Items cannot be empty",
+        });
+      }
+
       // Calculate totals for the transaction
       const totalPurchase: number = items.reduce(
         (total: number, item: { qty: number; price: number }) =>
@@ -47,7 +55,7 @@ export class SalesTransactionController {
           salesTransactionItems: {
             create: items.map(
               (item: { itemID: number; qty: number; price: number }) => ({
-                itemID: item.itemID,
+                itemID: item.itemID, // Ensure itemID exists in the database
                 qty: item.qty,
                 price: item.price,
                 total: item.qty * item.price, // Calculate total for each item

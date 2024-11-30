@@ -63,9 +63,11 @@ model Locations {
   inventory      Inventory[]     @relation("InventoryLocations")
   purchaseOrders PurchaseOrder[] @relation("LocationOrders")
 
-  // Define the opposite side of the relation
+  // Define the opposite side of the relation to SalesTransaction without fields and references
   salesTransactions salesTransaction[] @relation("SalesTransactionsLocation")
 }
+
+
 
 model Suppliers {
   supplierID   Int      @id @default(autoincrement())
