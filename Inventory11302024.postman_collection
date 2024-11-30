@@ -1,0 +1,1623 @@
+{
+	"info": {
+		"_postman_id": "1e25bda2-ba70-4cd4-a1b8-fe9c9466528c",
+		"name": "Inventory",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28945356"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Auth",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"wm.recopelacion@gmail.com\",\r\n  \"password\": \"W3nnm4rk09125@\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"Admin\",\r\n  \"middleName\": \"A\",\r\n  \"lastName\": \"Administrator\",\r\n  \"roleID\": \"1\",\r\n  \"username\": \"Administrator123\",\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"Password123!\",\r\n  \"phoneNumber\": \"1234567890\",\r\n  \"address\": \"123 Main Street, City, Country\",\r\n  \"birthday\": \"1990-01-01\",\r\n  \"createdByID\": \"1\",\r\n  \"modifiedByID\": \"1\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Item Inventory",
+			"item": [
+				{
+					"name": "Adjustment Reason",
+					"item": [
+						{
+							"name": "AdjustmentReason",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInVzZXJuYW1lIjoid2VubndvcmtzIiwicm9sZUlEIjoxLCJpYXQiOjE3Mjc3NTEzMTQsImV4cCI6MTcyNzc1NDkxNH0.YwnkWBH_Uq99d6_DgAwtnZqeZxrqMAc8FRXzHQGjDdI",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"reasonName\": \"Inventory Error\",\r\n  \"createdByID\": 1,\r\n  \"modifiedByID\": null\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1/adjustment-reason",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"adjustment-reason"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Adjustment Reason",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/adjustment-reason",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"adjustment-reason"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Adjustment Reason By ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/adjustment-reason/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"adjustment-reason",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Adjustment Type",
+					"item": [
+						{
+							"name": "Create Adjustment Type",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInVzZXJuYW1lIjoid2VubndvcmtzIiwicm9sZUlEIjoxLCJpYXQiOjE3Mjc3NDg4MTAsImV4cCI6MTcyNzc1MjQxMH0.Vd9FfzYdRCcceq6j4O7JL-HPrz_kobrwWtKLNUUrSpY",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"typeName\": \"Stock Adjustment\",\r\n  \"createdByID\": 1,\r\n  \"modifiedByID\": null\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1/adjustment-type",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"adjustment-type"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Adjustment Type",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/adjustment-type",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"adjustment-type"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Adjustment Type By ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/adjustment-type/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"adjustment-type",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Inventory Adjustment",
+					"item": [
+						{
+							"name": "Create Inventory Adjustment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInVzZXJuYW1lIjoid2VubndvcmtzIiwicm9sZUlEIjoxLCJpYXQiOjE3Mjc3NDg4MTAsImV4cCI6MTcyNzc1MjQxMH0.Vd9FfzYdRCcceq6j4O7JL-HPrz_kobrwWtKLNUUrSpY",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"inventoryID\": 1,\r\n  \"adjustmentTypeID\": 2,\r\n  \"adjustmentReasonID\": 3,\r\n  \"quantityAdjusted\": 10,\r\n  \"status\": \"Pending\",\r\n  \"createdByID\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1/inventory-adjustment",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"inventory-adjustment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Inventory Adjustment",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/inventory-adjustment",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"inventory-adjustment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Inventory Adjustment By ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/inventory-adjustment/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"inventory-adjustment",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Categories",
+					"item": [
+						{
+							"name": "Create Categories",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEyLCJ1c2VybmFtZSI6Indlbm53b3JrcyIsInJvbGVJRCI6MSwiaWF0IjoxNzI3NzgxNTY1LCJleHAiOjE3Mjc3ODUxNjV9.lk80hIh0B3hDPXxPSyyISFxRURNr0iwOx2IGHU4wxPQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"categoryCode\": \"CAT001\",\r\n  \"categoryName\": \"Electronics\",\r\n  \"description\": \"All electronic items\",\r\n  \"status\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1/categories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Categories",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/categories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Category BY ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/categories/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"categories",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Supplier",
+					"item": [
+						{
+							"name": "New Request",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInVzZXJuYW1lIjoid2VubndvcmtzIiwicm9sZUlEIjoxLCJpYXQiOjE3Mjc3NDg4MTAsImV4cCI6MTcyNzc1MjQxMH0.Vd9FfzYdRCcceq6j4O7JL-HPrz_kobrwWtKLNUUrSpY",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"supplierName\": \"ABC Suppliers\",\r\n  \"description\": \"Supplier of electronics\",\r\n  \"status\": true\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1/suppliers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"suppliers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Suppliers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/suppliers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"suppliers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Selected Supplier",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/suppliers/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"suppliers",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Items",
+					"item": [
+						{
+							"name": "Create Item",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInVzZXJuYW1lIjoid2VubndvcmtzIiwicm9sZUlEIjoxLCJpYXQiOjE3Mjc3NDg4MTAsImV4cCI6MTcyNzc1MjQxMH0.Vd9FfzYdRCcceq6j4O7JL-HPrz_kobrwWtKLNUUrSpY",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"itemCode\": \"ITEM001\",\r\n  \"categoryID\": 1,\r\n  \"barcode\": \"123456789\",\r\n  \"itemName\": \"Sample Item\",\r\n  \"description\": \"This is a sample item\",\r\n  \"grams\": 100,\r\n  \"uom\": \"kg\",\r\n  \"price\": 500.0,\r\n  \"cost\": 300.0,\r\n  \"image_url\": \"https://example.com/image.jpg\",\r\n  \"createdByID\": 1\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1/items",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All item",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/items",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Selected Itm",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/items/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"items",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Item With images",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/item-images/4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"item-images",
+										"4"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Location",
+					"item": [
+						{
+							"name": "Create Location",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInVzZXJuYW1lIjoid2VubndvcmtzIiwicm9sZUlEIjoxLCJpYXQiOjE3Mjc3NDg4MTAsImV4cCI6MTcyNzc1MjQxMH0.Vd9FfzYdRCcceq6j4O7JL-HPrz_kobrwWtKLNUUrSpY",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"locationName\": \"Warehouse 1\",\r\n  \"description\": \"Main warehouse\",\r\n  \"createdByID\": 1,\r\n  \"modifiedByID\": 1\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1/locations",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"locations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Locations",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/locations",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"locations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Selected Location",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/locations/4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"locations",
+										"4"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Inventory Type",
+					"item": [
+						{
+							"name": "Inventory Type",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInVzZXJuYW1lIjoid2VubndvcmtzIiwicm9sZUlEIjoxLCJpYXQiOjE3Mjc3NDg4MTAsImV4cCI6MTcyNzc1MjQxMH0.Vd9FfzYdRCcceq6j4O7JL-HPrz_kobrwWtKLNUUrSpY",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"typeName\": \"Finished Goods\",\r\n  \"description\": \"Inventory for finished products\",\r\n  \"createdByID\": 1\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1/inventory-type",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"inventory-type"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Inventory Type",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/inventory-type",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"inventory-type"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Selected Inventory Type",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/inventory-type/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"inventory-type",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Inventory",
+					"item": [
+						{
+							"name": "Create inventory",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInVzZXJuYW1lIjoid2VubndvcmtzIiwicm9sZUlEIjoxLCJpYXQiOjE3Mjc3NDg4MTAsImV4cCI6MTcyNzc1MjQxMH0.Vd9FfzYdRCcceq6j4O7JL-HPrz_kobrwWtKLNUUrSpY",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"locationID\": 1,\r\n  \"itemID\": 2,\r\n  \"quantity\": 100,\r\n  \"inventoryTypeID\": 1,\r\n  \"reOrderThreshold\": \"10\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1/inventory",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"inventory"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Inventory",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/inventory",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"inventory"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Selected Inventory",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/inventory/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"inventory",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:5000/api/v1/inventory-adjustment/9/approve/8",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/inventory-adjustment/6/approve/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"inventory-adjustment",
+										"6",
+										"approve",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "decline",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v1/inventory-adjustment/9/decline",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1",
+										"inventory-adjustment",
+										"9",
+										"decline"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Purchase Order",
+			"item": [
+				{
+					"name": "Purchase Order",
+					"item": [
+						{
+							"name": "Create Purchase Order",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEyLCJ1c2VybmFtZSI6Indlbm53b3JrcyIsInJvbGVJRCI6MSwiaWF0IjoxNzI3NzgyMjUxLCJleHAiOjE3Mjc3ODU4NTF9.ugBA5PE02B_oKljV7e44oPt_a0xamXbjCGn-kaefMSw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"poNumber\": 2,\r\n  \"supplierID\": 2,\r\n  \"orderDate\": \"2024-10-01T00:00:00Z\",\r\n  \"expectedDeliverDate\": \"2024-10-10T00:00:00Z\",\r\n  \"status\": \"Pending\",\r\n  \"locationID\": 1,\r\n  \"createdByID\": 1,\r\n  \"modifiedByID\": 1\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5001/api/v2/purchase-orders",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v2",
+										"purchase-orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Purchase Order",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v2/purchase-orders",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v2",
+										"purchase-orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Selected Purchase Order",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v2/purchase-orders/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v2",
+										"purchase-orders",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PurchaseOrder V2",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"supplierID\": 1,\r\n  \"orderDate\": \"2024-11-27T12:00:00Z\",\r\n  \"expectedDeliverDate\": \"2024-12-15T12:00:00Z\",\r\n  \"status\": \"Pending\",\r\n  \"locationID\": 1,\r\n  \"createdByID\": 1,\r\n  \"modifiedByID\": 2,\r\n  \"referenceNo\": \"REF12345\",\r\n  \"remarks\": \"Urgent order\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v2/po/purchase-orders",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v2",
+										"po",
+										"purchase-orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Purchase Order and Items",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"supplierID\": 1,\r\n  \"orderDate\": \"2024-11-27T00:00:00Z\",\r\n  \"expectedDeliverDate\": \"2024-12-15T00:00:00Z\",\r\n  \"status\": \"Pending\",\r\n  \"locationID\": 1,\r\n  \"createdByID\": 1,\r\n  \"modifiedByID\": null,\r\n  \"referenceNo\": \"PO-12345\",\r\n  \"remarks\": \"Urgent Order\",\r\n  \"purchaseOrderItems\": [\r\n    {\r\n      \"itemID\": 1,\r\n      \"orderQty\": 100\r\n    },\r\n    {\r\n      \"itemID\": 2,\r\n      \"orderQty\": 50\r\n    }\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v2/po/purchase-order-items",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v2",
+										"po",
+										"purchase-order-items"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Purchase Order Item",
+					"item": [
+						{
+							"name": "Create Purchase Order Item",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEyLCJ1c2VybmFtZSI6Indlbm53b3JrcyIsInJvbGVJRCI6MSwiaWF0IjoxNzI3NzgyMzA4LCJleHAiOjE3Mjc3ODU5MDh9.-m9wK9Ac1YDn3SGbJluRjSeBOqtG16FJF-Xup0CyTZI",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"poID\": 10004,\r\n  \"itemID\": 1,\r\n  \"uom\": \"pcs\",\r\n  \"unitCost\": 100.0,\r\n  \"orderQty\": 5\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v2/purchase-order-items",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v2",
+										"purchase-order-items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all Purchase Order Item",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v2/purchase-order-items",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v2",
+										"purchase-order-items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Selected Purchase Order Item",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v2/purchase-order-items/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v2",
+										"purchase-order-items",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PO Receiving Item",
+					"item": [
+						{
+							"name": "Create PO Receiving Item",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEyLCJ1c2VybmFtZSI6Indlbm53b3JrcyIsInJvbGVJRCI6MSwiaWF0IjoxNzI3NzgyMzA4LCJleHAiOjE3Mjc3ODU5MDh9.-m9wK9Ac1YDn3SGbJluRjSeBOqtG16FJF-Xup0CyTZI",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"itemID\": 1,\r\n  \"uom\": \"pcs\",\r\n  \"receivedQty\": 10,\r\n  \"unitCost\": 20.0\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5001/api/v2/po-receiving-items",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v2",
+										"po-receiving-items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Po Receiving Item",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5001/api/v2/po-receiving-items",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v2",
+										"po-receiving-items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Selected PO Receiving Item",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v2/po-receiving-items/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v2",
+										"po-receiving-items",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PO Receiving",
+					"item": [
+						{
+							"name": "Create PO Receiving",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEyLCJ1c2VybmFtZSI6Indlbm53b3JrcyIsInJvbGVJRCI6MSwiaWF0IjoxNzI3NzgyMzA4LCJleHAiOjE3Mjc3ODU5MDh9.-m9wK9Ac1YDn3SGbJluRjSeBOqtG16FJF-Xup0CyTZI",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"poID\": 1,\r\n  \"receivedDate\": \"2024-10-01T00:00:00.000Z\",\r\n  \"referenceNumber\": \"REF12345\",\r\n  \"totalCost\": 500.0,\r\n  \"totalQty\": 20,\r\n  \"status\": \"Received\",\r\n  \"receivedByID\": 1\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5001/api/v2/po-receiving",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v2",
+										"po-receiving"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Po Receiving",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5001/api/v2/po-receiving",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v2",
+										"po-receiving"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Selected PO Receiving",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v2/po-receiving/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v2",
+										"po-receiving",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Supplier",
+					"item": [
+						{
+							"name": "Create Supplier",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEyLCJ1c2VybmFtZSI6Indlbm53b3JrcyIsInJvbGVJRCI6MSwiaWF0IjoxNzI3NzgzNzE1LCJleHAiOjE3Mjc3ODczMTV9.jqT--lRVsmpY_j3WLIKiDyQl2DhK-dUuerlfbk14wv0",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"supplierName\": \"Supplier Name\",\r\n  \"contactDetails\": \"Contact Details\",\r\n  \"address\": \"Supplier Address\",\r\n  \"email\": \"supplier@example.com\",\r\n  \"createdByID\": 1,\r\n  \"modifiedByID\": 2\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v2/suppliers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v2",
+										"suppliers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Supplier",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v2/suppliers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v2",
+										"suppliers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Selected Supplier",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/v2/suppliers/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v2",
+										"suppliers",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Company Profile",
+			"item": [
+				{
+					"name": "Get Company Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v2/company-profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v2",
+								"company-profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customer",
+			"item": [
+				{
+					"name": "Post Customer",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"Jane\",\r\n  \"middleName\": \"Doe\",\r\n  \"lastName\": \"Smith\",\r\n  \"contactNo\": \"9876543210\",\r\n  \"address\": \"456 Oak Avenue\",\r\n  \"email\": \"jane.smith@example.com\",\r\n  \"createdByID\": 1,\r\n  \"customerTypeID\": 3\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v2/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v2",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Customer Types",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"TypeName\": \"VIP\",\r\n  \"description\": \"Premium customer type for high-value clients\",\r\n  \"createdByID\": 1,\r\n  \"modifiedByID\": 1\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v2/customer-types",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v2",
+								"customer-types"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInVzZXJuYW1lIjoid2VubndvcmtzIiwicm9sZUlEIjoxLCJpYXQiOjE3Mjc4NTYxOTgsImV4cCI6MTcyNzg1OTc5OH0.d3ZNiCUMbJqT0DLHHz1o5dHDWaixjHl2QJgiT5rCXPM",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

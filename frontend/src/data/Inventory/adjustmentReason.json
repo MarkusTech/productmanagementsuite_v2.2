@@ -1,0 +1,82 @@
+[
+  {
+    "adjustmentReasonID": 1,
+    "reasonName": "Reason 1",
+    "createdAt": "2024-10-01T10:52:36.062Z",
+    "updatedAt": "2024-10-01T10:52:36.062Z",
+    "createdByID": 1,
+    "modifiedByID": 1
+  },
+  {
+    "adjustmentReasonID": 2,
+    "reasonName": "Reason 2",
+    "createdAt": "2024-10-01T10:52:36.068Z",
+    "updatedAt": "2024-10-01T10:52:36.068Z",
+    "createdByID": 2,
+    "modifiedByID": 2
+  },
+  {
+    "adjustmentReasonID": 3,
+    "reasonName": "Reason 3",
+    "createdAt": "2024-10-01T10:52:36.075Z",
+    "updatedAt": "2024-10-01T10:52:36.075Z",
+    "createdByID": 3,
+    "modifiedByID": 3
+  },
+  {
+    "adjustmentReasonID": 4,
+    "reasonName": "Reason 4",
+    "createdAt": "2024-10-01T10:52:36.081Z",
+    "updatedAt": "2024-10-01T10:52:36.081Z",
+    "createdByID": 1,
+    "modifiedByID": 1
+  },
+  {
+    "adjustmentReasonID": 5,
+    "reasonName": "Reason 5",
+    "createdAt": "2024-10-01T10:52:36.087Z",
+    "updatedAt": "2024-10-01T10:52:36.087Z",
+    "createdByID": 2,
+    "modifiedByID": 2
+  },
+  {
+    "adjustmentReasonID": 6,
+    "reasonName": "Reason 6",
+    "createdAt": "2024-10-01T10:52:36.094Z",
+    "updatedAt": "2024-10-01T10:52:36.094Z",
+    "createdByID": 3,
+    "modifiedByID": 3
+  },
+  {
+    "adjustmentReasonID": 7,
+    "reasonName": "Reason 7",
+    "createdAt": "2024-10-01T10:52:36.101Z",
+    "updatedAt": "2024-10-01T10:52:36.101Z",
+    "createdByID": 1,
+    "modifiedByID": 1
+  },
+  {
+    "adjustmentReasonID": 8,
+    "reasonName": "Reason 8",
+    "createdAt": "2024-10-01T10:52:36.107Z",
+    "updatedAt": "2024-10-01T10:52:36.107Z",
+    "createdByID": 2,
+    "modifiedByID": 2
+  },
+  {
+    "adjustmentReasonID": 9,
+    "reasonName": "Reason 9",
+    "createdAt": "2024-10-01T10:52:36.117Z",
+    "updatedAt": "2024-10-01T10:52:36.117Z",
+    "createdByID": 3,
+    "modifiedByID": 3
+  },
+  {
+    "adjustmentReasonID": 10,
+    "reasonName": "Reason 10",
+    "createdAt": "2024-10-01T10:52:36.123Z",
+    "updatedAt": "2024-10-01T10:52:36.123Z",
+    "createdByID": 1,
+    "modifiedByID": 1
+  }
+]

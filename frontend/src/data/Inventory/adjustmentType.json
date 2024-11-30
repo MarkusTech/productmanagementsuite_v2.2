@@ -1,0 +1,82 @@
+[
+  {
+    "adjustmentTypeID": 1,
+    "typeName": "Adjustment Type 1",
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.984Z",
+    "updatedAt": "2024-10-01T10:52:35.984Z"
+  },
+  {
+    "adjustmentTypeID": 2,
+    "typeName": "Adjustment Type 2",
+    "createdByID": 2,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T10:52:35.994Z",
+    "updatedAt": "2024-10-01T10:52:35.994Z"
+  },
+  {
+    "adjustmentTypeID": 3,
+    "typeName": "Adjustment Type 3",
+    "createdByID": 3,
+    "modifiedByID": 3,
+    "createdAt": "2024-10-01T10:52:36.002Z",
+    "updatedAt": "2024-10-01T10:52:36.002Z"
+  },
+  {
+    "adjustmentTypeID": 4,
+    "typeName": "Adjustment Type 4",
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:36.009Z",
+    "updatedAt": "2024-10-01T10:52:36.009Z"
+  },
+  {
+    "adjustmentTypeID": 5,
+    "typeName": "Adjustment Type 5",
+    "createdByID": 2,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T10:52:36.016Z",
+    "updatedAt": "2024-10-01T10:52:36.016Z"
+  },
+  {
+    "adjustmentTypeID": 6,
+    "typeName": "Adjustment Type 6",
+    "createdByID": 3,
+    "modifiedByID": 3,
+    "createdAt": "2024-10-01T10:52:36.025Z",
+    "updatedAt": "2024-10-01T10:52:36.025Z"
+  },
+  {
+    "adjustmentTypeID": 7,
+    "typeName": "Adjustment Type 7",
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:36.033Z",
+    "updatedAt": "2024-10-01T10:52:36.033Z"
+  },
+  {
+    "adjustmentTypeID": 8,
+    "typeName": "Adjustment Type 8",
+    "createdByID": 2,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T10:52:36.039Z",
+    "updatedAt": "2024-10-01T10:52:36.039Z"
+  },
+  {
+    "adjustmentTypeID": 9,
+    "typeName": "Adjustment Type 9",
+    "createdByID": 3,
+    "modifiedByID": 3,
+    "createdAt": "2024-10-01T10:52:36.047Z",
+    "updatedAt": "2024-10-01T10:52:36.047Z"
+  },
+  {
+    "adjustmentTypeID": 10,
+    "typeName": "Adjustment Type 10",
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:36.053Z",
+    "updatedAt": "2024-10-01T10:52:36.053Z"
+  }
+]

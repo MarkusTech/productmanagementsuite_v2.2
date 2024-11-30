@@ -1,0 +1,15 @@
+[
+  {
+    "poID": 1,
+    "poNumber": 123456,
+    "supplierID": 1,
+    "orderDate": "2024-10-01T00:00:00.000Z",
+    "expectedDeliverDate": "2024-10-10T00:00:00.000Z",
+    "status": "Pending",
+    "locationID": 1,
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T11:31:24.042Z",
+    "updatedAt": "2024-10-01T11:31:24.042Z"
+  }
+]

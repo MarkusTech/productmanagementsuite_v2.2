@@ -1,0 +1,14 @@
+[
+  {
+    "supplierID": 1,
+    "supplierName": "Supplier Name",
+    "contactDetails": "Contact Details",
+    "address": "Supplier Address",
+    "email": "supplier@example.com",
+    "createdByID": 1,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T11:56:29.025Z",
+    "updatedAt": "2024-10-01T11:56:29.025Z",
+    "status": true
+  }
+]

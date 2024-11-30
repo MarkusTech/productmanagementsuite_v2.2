@@ -1,0 +1,102 @@
+[
+  {
+    "locationID": 1,
+    "locationName": "Location 1",
+    "description": "Description for Location 1",
+    "status": true,
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.531Z",
+    "updatedAt": "2024-10-01T10:52:35.531Z"
+  },
+  {
+    "locationID": 2,
+    "locationName": "Location 2",
+    "description": "Description for Location 2",
+    "status": true,
+    "createdByID": 2,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T10:52:35.538Z",
+    "updatedAt": "2024-10-01T10:52:35.538Z"
+  },
+  {
+    "locationID": 3,
+    "locationName": "Location 3",
+    "description": "Description for Location 3",
+    "status": true,
+    "createdByID": 3,
+    "modifiedByID": 3,
+    "createdAt": "2024-10-01T10:52:35.546Z",
+    "updatedAt": "2024-10-01T10:52:35.546Z"
+  },
+  {
+    "locationID": 4,
+    "locationName": "Location 4",
+    "description": "Description for Location 4",
+    "status": true,
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.552Z",
+    "updatedAt": "2024-10-01T10:52:35.552Z"
+  },
+  {
+    "locationID": 5,
+    "locationName": "Location 5",
+    "description": "Description for Location 5",
+    "status": true,
+    "createdByID": 2,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T10:52:35.563Z",
+    "updatedAt": "2024-10-01T10:52:35.563Z"
+  },
+  {
+    "locationID": 6,
+    "locationName": "Location 6",
+    "description": "Description for Location 6",
+    "status": true,
+    "createdByID": 3,
+    "modifiedByID": 3,
+    "createdAt": "2024-10-01T10:52:35.571Z",
+    "updatedAt": "2024-10-01T10:52:35.571Z"
+  },
+  {
+    "locationID": 7,
+    "locationName": "Location 7",
+    "description": "Description for Location 7",
+    "status": true,
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.579Z",
+    "updatedAt": "2024-10-01T10:52:35.579Z"
+  },
+  {
+    "locationID": 8,
+    "locationName": "Location 8",
+    "description": "Description for Location 8",
+    "status": true,
+    "createdByID": 2,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T10:52:35.586Z",
+    "updatedAt": "2024-10-01T10:52:35.586Z"
+  },
+  {
+    "locationID": 9,
+    "locationName": "Location 9",
+    "description": "Description for Location 9",
+    "status": true,
+    "createdByID": 3,
+    "modifiedByID": 3,
+    "createdAt": "2024-10-01T10:52:35.592Z",
+    "updatedAt": "2024-10-01T10:52:35.592Z"
+  },
+  {
+    "locationID": 10,
+    "locationName": "Location 10",
+    "description": "Description for Location 10",
+    "status": true,
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.599Z",
+    "updatedAt": "2024-10-01T10:52:35.599Z"
+  }
+]

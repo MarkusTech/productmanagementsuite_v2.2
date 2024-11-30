@@ -1,0 +1,122 @@
+[
+  {
+    "adjustmentID": 1,
+    "inventoryID": 1,
+    "adjustmentTypeID": 1,
+    "adjustmentReasonID": 1,
+    "quantityAdjusted": 5,
+    "status": "Completed",
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.912Z",
+    "updatedAt": "2024-10-01T10:52:35.912Z"
+  },
+  {
+    "adjustmentID": 2,
+    "inventoryID": 2,
+    "adjustmentTypeID": 2,
+    "adjustmentReasonID": 2,
+    "quantityAdjusted": 6,
+    "status": "Completed",
+    "createdByID": 2,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T10:52:35.919Z",
+    "updatedAt": "2024-10-01T10:52:35.919Z"
+  },
+  {
+    "adjustmentID": 3,
+    "inventoryID": 3,
+    "adjustmentTypeID": 3,
+    "adjustmentReasonID": 3,
+    "quantityAdjusted": 7,
+    "status": "Completed",
+    "createdByID": 3,
+    "modifiedByID": 3,
+    "createdAt": "2024-10-01T10:52:35.927Z",
+    "updatedAt": "2024-10-01T10:52:35.927Z"
+  },
+  {
+    "adjustmentID": 4,
+    "inventoryID": 4,
+    "adjustmentTypeID": 4,
+    "adjustmentReasonID": 4,
+    "quantityAdjusted": 8,
+    "status": "Completed",
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.934Z",
+    "updatedAt": "2024-10-01T10:52:35.934Z"
+  },
+  {
+    "adjustmentID": 5,
+    "inventoryID": 5,
+    "adjustmentTypeID": 5,
+    "adjustmentReasonID": 5,
+    "quantityAdjusted": 9,
+    "status": "Completed",
+    "createdByID": 2,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T10:52:35.940Z",
+    "updatedAt": "2024-10-01T10:52:35.940Z"
+  },
+  {
+    "adjustmentID": 6,
+    "inventoryID": 1,
+    "adjustmentTypeID": 1,
+    "adjustmentReasonID": 1,
+    "quantityAdjusted": 10,
+    "status": "Completed",
+    "createdByID": 3,
+    "modifiedByID": 3,
+    "createdAt": "2024-10-01T10:52:35.948Z",
+    "updatedAt": "2024-10-01T10:52:35.948Z"
+  },
+  {
+    "adjustmentID": 7,
+    "inventoryID": 2,
+    "adjustmentTypeID": 2,
+    "adjustmentReasonID": 2,
+    "quantityAdjusted": 11,
+    "status": "Completed",
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.954Z",
+    "updatedAt": "2024-10-01T10:52:35.954Z"
+  },
+  {
+    "adjustmentID": 8,
+    "inventoryID": 3,
+    "adjustmentTypeID": 3,
+    "adjustmentReasonID": 3,
+    "quantityAdjusted": 12,
+    "status": "Completed",
+    "createdByID": 2,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T10:52:35.963Z",
+    "updatedAt": "2024-10-01T10:52:35.963Z"
+  },
+  {
+    "adjustmentID": 9,
+    "inventoryID": 4,
+    "adjustmentTypeID": 4,
+    "adjustmentReasonID": 4,
+    "quantityAdjusted": 13,
+    "status": "Completed",
+    "createdByID": 3,
+    "modifiedByID": 3,
+    "createdAt": "2024-10-01T10:52:35.971Z",
+    "updatedAt": "2024-10-01T10:52:35.971Z"
+  },
+  {
+    "adjustmentID": 10,
+    "inventoryID": 5,
+    "adjustmentTypeID": 5,
+    "adjustmentReasonID": 5,
+    "quantityAdjusted": 14,
+    "status": "Completed",
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.977Z",
+    "updatedAt": "2024-10-01T10:52:35.977Z"
+  }
+]

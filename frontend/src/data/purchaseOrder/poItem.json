@@ -1,0 +1,12 @@
+[
+  {
+    "poItemID": 1,
+    "poID": 1,
+    "itemID": 1,
+    "uom": "pcs",
+    "unitCost": 100,
+    "orderQty": 5,
+    "createdAt": "2024-10-01T11:36:34.211Z",
+    "updatedAt": "2024-10-01T11:36:34.211Z"
+  }
+]

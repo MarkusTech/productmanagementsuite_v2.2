@@ -1,0 +1,102 @@
+[
+  {
+    "inventoryTypeID": 1,
+    "typeName": "Inventory Type 1",
+    "description": "Description for Inventory Type 1",
+    "status": true,
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.757Z",
+    "updatedAt": "2024-10-01T10:52:35.757Z"
+  },
+  {
+    "inventoryTypeID": 2,
+    "typeName": "Inventory Type 2",
+    "description": "Description for Inventory Type 2",
+    "status": true,
+    "createdByID": 2,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T10:52:35.765Z",
+    "updatedAt": "2024-10-01T10:52:35.765Z"
+  },
+  {
+    "inventoryTypeID": 3,
+    "typeName": "Inventory Type 3",
+    "description": "Description for Inventory Type 3",
+    "status": true,
+    "createdByID": 3,
+    "modifiedByID": 3,
+    "createdAt": "2024-10-01T10:52:35.774Z",
+    "updatedAt": "2024-10-01T10:52:35.774Z"
+  },
+  {
+    "inventoryTypeID": 4,
+    "typeName": "Inventory Type 4",
+    "description": "Description for Inventory Type 4",
+    "status": true,
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.782Z",
+    "updatedAt": "2024-10-01T10:52:35.782Z"
+  },
+  {
+    "inventoryTypeID": 5,
+    "typeName": "Inventory Type 5",
+    "description": "Description for Inventory Type 5",
+    "status": true,
+    "createdByID": 2,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T10:52:35.789Z",
+    "updatedAt": "2024-10-01T10:52:35.789Z"
+  },
+  {
+    "inventoryTypeID": 6,
+    "typeName": "Inventory Type 6",
+    "description": "Description for Inventory Type 6",
+    "status": true,
+    "createdByID": 3,
+    "modifiedByID": 3,
+    "createdAt": "2024-10-01T10:52:35.796Z",
+    "updatedAt": "2024-10-01T10:52:35.796Z"
+  },
+  {
+    "inventoryTypeID": 7,
+    "typeName": "Inventory Type 7",
+    "description": "Description for Inventory Type 7",
+    "status": true,
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.805Z",
+    "updatedAt": "2024-10-01T10:52:35.805Z"
+  },
+  {
+    "inventoryTypeID": 8,
+    "typeName": "Inventory Type 8",
+    "description": "Description for Inventory Type 8",
+    "status": true,
+    "createdByID": 2,
+    "modifiedByID": 2,
+    "createdAt": "2024-10-01T10:52:35.811Z",
+    "updatedAt": "2024-10-01T10:52:35.811Z"
+  },
+  {
+    "inventoryTypeID": 9,
+    "typeName": "Inventory Type 9",
+    "description": "Description for Inventory Type 9",
+    "status": true,
+    "createdByID": 3,
+    "modifiedByID": 3,
+    "createdAt": "2024-10-01T10:52:35.818Z",
+    "updatedAt": "2024-10-01T10:52:35.818Z"
+  },
+  {
+    "inventoryTypeID": 10,
+    "typeName": "Inventory Type 10",
+    "description": "Description for Inventory Type 10",
+    "status": true,
+    "createdByID": 1,
+    "modifiedByID": 1,
+    "createdAt": "2024-10-01T10:52:35.824Z",
+    "updatedAt": "2024-10-01T10:52:35.824Z"
+  }
+]

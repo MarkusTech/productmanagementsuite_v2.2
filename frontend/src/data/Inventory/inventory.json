@@ -1,0 +1,102 @@
+[
+  {
+    "inventoryID": 1,
+    "locationID": 1,
+    "itemID": 1,
+    "quantity": 100,
+    "inventoryTypeID": 1,
+    "reOrderThreshold": "0",
+    "createdAt": "2024-10-01T10:52:35.833Z",
+    "updatedAt": "2024-10-01T10:52:35.833Z"
+  },
+  {
+    "inventoryID": 2,
+    "locationID": 2,
+    "itemID": 2,
+    "quantity": 110,
+    "inventoryTypeID": 2,
+    "reOrderThreshold": "10",
+    "createdAt": "2024-10-01T10:52:35.840Z",
+    "updatedAt": "2024-10-01T10:52:35.840Z"
+  },
+  {
+    "inventoryID": 3,
+    "locationID": 3,
+    "itemID": 3,
+    "quantity": 120,
+    "inventoryTypeID": 3,
+    "reOrderThreshold": "20",
+    "createdAt": "2024-10-01T10:52:35.847Z",
+    "updatedAt": "2024-10-01T10:52:35.847Z"
+  },
+  {
+    "inventoryID": 4,
+    "locationID": 4,
+    "itemID": 4,
+    "quantity": 130,
+    "inventoryTypeID": 4,
+    "reOrderThreshold": "30",
+    "createdAt": "2024-10-01T10:52:35.854Z",
+    "updatedAt": "2024-10-01T10:52:35.854Z"
+  },
+  {
+    "inventoryID": 5,
+    "locationID": 5,
+    "itemID": 5,
+    "quantity": 140,
+    "inventoryTypeID": 5,
+    "reOrderThreshold": "40",
+    "createdAt": "2024-10-01T10:52:35.863Z",
+    "updatedAt": "2024-10-01T10:52:35.863Z"
+  },
+  {
+    "inventoryID": 6,
+    "locationID": 1,
+    "itemID": 1,
+    "quantity": 150,
+    "inventoryTypeID": 1,
+    "reOrderThreshold": "50",
+    "createdAt": "2024-10-01T10:52:35.869Z",
+    "updatedAt": "2024-10-01T10:52:35.869Z"
+  },
+  {
+    "inventoryID": 7,
+    "locationID": 2,
+    "itemID": 2,
+    "quantity": 160,
+    "inventoryTypeID": 2,
+    "reOrderThreshold": "60",
+    "createdAt": "2024-10-01T10:52:35.876Z",
+    "updatedAt": "2024-10-01T10:52:35.876Z"
+  },
+  {
+    "inventoryID": 8,
+    "locationID": 3,
+    "itemID": 3,
+    "quantity": 170,
+    "inventoryTypeID": 3,
+    "reOrderThreshold": "70",
+    "createdAt": "2024-10-01T10:52:35.884Z",
+    "updatedAt": "2024-10-01T10:52:35.884Z"
+  },
+  {
+    "inventoryID": 9,
+    "locationID": 4,
+    "itemID": 4,
+    "quantity": 180,
+    "inventoryTypeID": 4,
+    "reOrderThreshold": "80",
+    "createdAt": "2024-10-01T10:52:35.893Z",
+    "updatedAt": "2024-10-01T10:52:35.893Z"
+  },
+  {
+    "inventoryID": 10,
+    "locationID": 5,
+    "itemID": 5,
+    "quantity": 190,
+    "inventoryTypeID": 5,
+    "reOrderThreshold": "90",
+    "createdAt": "2024-10-01T10:52:35.899Z",
+    "updatedAt": "2024-10-01T10:52:35.899Z"
+  }
+]

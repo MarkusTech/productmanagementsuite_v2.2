@@ -1,0 +1,341 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  userID       Int      @id @default(autoincrement())
+  firstName    String
+  middleName   String?
+  lastName     String
+  roleID       Int
+  username     String   @unique
+  email        String   @unique
+  password     String
+  phoneNumber  String
+  address      String
+  birthday     String
+  status       Boolean  @default(true)
+  image_url    String?
+  createdByID  Int
+  modifiedByID Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relation field to UserRole
+  role UserRole @relation("UserRoleUsers", fields: [roleID], references: [roleID])
+
+  // Added relation field for poReceiving
+  receivedItems poReceiving[] @relation("UserReceivedItems")
+}
+
+model UserRole {
+  roleID   Int     @id @default(autoincrement())
+  roleName String  @unique
+  users    Users[] @relation("UserRoleUsers")
+}
+
+model Categories {
+  categoryID   Int      @id @default(autoincrement())
+  categoryCode String   @unique
+  categoryName String
+  description  String?
+  status       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  items        Items[]  @relation("CategoryItems")
+}
+
+model Locations {
+  locationID   Int      @id @default(autoincrement())
+  locationName String
+  description  String?
+  status       Boolean  @default(true)
+  createdByID  Int
+  modifiedByID Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  inventory      Inventory[]     @relation("InventoryLocations")
+  purchaseOrders PurchaseOrder[] @relation("LocationOrders")
+}
+
+model Suppliers {
+  supplierID   Int      @id @default(autoincrement())
+  supplierName String
+  description  String?
+  status       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Items {
+  itemID       Int      @id @default(autoincrement())
+  itemCode     String   @unique
+  categoryID   Int
+  barcode      String
+  itemName     String
+  description  String?
+  grams        Float
+  uom          String
+  price        Float
+  cost         Float
+  image_url    String?
+  createdByID  Int
+  modifiedByID Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  status       Boolean  @default(true)
+
+  category           Categories          @relation("CategoryItems", fields: [categoryID], references: [categoryID])
+  inventory          Inventory[]         @relation("InventoryItems")
+  receivingItems     poReceivingItem[]   @relation("ItemPoReceivingItems")
+  purchaseOrderItems PurchaseOrderItem[] @relation("ItemPurchaseOrderItems")
+
+  itemImages ItemImage[] @relation("ItemItemImages")
+}
+
+model ItemImage {
+  id     Int    @id @default(autoincrement())
+  itemID Int
+  url    String
+  item   Items  @relation("ItemItemImages", fields: [itemID], references: [itemID])
+}
+
+model Inventory {
+  inventoryID      Int      @id @default(autoincrement())
+  locationID       Int
+  itemID           Int
+  quantity         Int
+  inventoryTypeID  Int
+  reOrderThreshold String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  item          Items         @relation("InventoryItems", fields: [itemID], references: [itemID])
+  location      Locations     @relation("InventoryLocations", fields: [locationID], references: [locationID])
+  inventoryType InventoryType @relation("InventoryTypeInventories", fields: [inventoryTypeID], references: [inventoryTypeID]) // Added inverse relation
+
+  adjustments InventoryAdjustment[] @relation("InventoryAdjustments") // One-to-many relation
+}
+
+model InventoryType {
+  inventoryTypeID Int      @id @default(autoincrement())
+  typeName        String
+  description     String?
+  status          Boolean  @default(true)
+  createdByID     Int
+  modifiedByID    Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  inventories Inventory[] @relation("InventoryTypeInventories")
+}
+
+model InventoryAdjustment {
+  adjustmentID       Int      @id @default(autoincrement())
+  inventoryID        Int
+  adjustmentTypeID   Int
+  adjustmentReasonID Int
+  quantityAdjusted   Int
+  status             String
+  createdByID        Int
+  modifiedByID       Int?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  inventory        Inventory        @relation("InventoryAdjustments", fields: [inventoryID], references: [inventoryID]) // Foreign key relation
+  adjustmentType   AdjustmentType   @relation("AdjustmentTypeAdjustments", fields: [adjustmentTypeID], references: [adjustmentTypeID]) // Foreign key relation
+  adjustmentReason AdjustmentReason @relation("AdjustmentReasonAdjustments", fields: [adjustmentReasonID], references: [adjustmentReasonID]) // Foreign key relation
+}
+
+model AdjustmentType {
+  adjustmentTypeID Int      @id @default(autoincrement())
+  typeName         String
+  description      String?
+  createdByID      Int
+  modifiedByID     Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  adjustments InventoryAdjustment[] @relation("AdjustmentTypeAdjustments") // One-to-many relation
+}
+
+model AdjustmentReason {
+  adjustmentReasonID Int      @id @default(autoincrement())
+  reasonName         String
+  description        String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  createdByID        Int
+  modifiedByID       Int?
+
+  adjustments InventoryAdjustment[] @relation("AdjustmentReasonAdjustments") // One-to-many relation
+}
+
+model PurchaseOrder {
+  poID                Int      @id @default(autoincrement()) // Primary key
+  poNumber            Int      @unique // Auto-increment handled by the database
+  supplierID          Int
+  orderDate           DateTime
+  expectedDeliverDate DateTime
+  status              String
+  locationID          Int
+  createdByID         Int
+  modifiedByID        Int?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt // Automatically update on changes
+  totalCost           Float    @default(0.0)
+  referenceNo         String?
+  remarks             String?
+
+  supplier    poSupplier          @relation("SupplierOrders", fields: [supplierID], references: [supplierID])
+  location    Locations           @relation("LocationOrders", fields: [locationID], references: [locationID])
+  orderItems  PurchaseOrderItem[] @relation("PurchaseOrderItems")
+  poReceiving poReceiving[]
+
+  @@index([poNumber])
+}
+
+model PurchaseOrderItem {
+  poItemID  Int      @id @default(autoincrement())
+  poID      Int
+  itemID    Int
+  uom       String
+  unitCost  Float
+  orderQty  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchaseOrder PurchaseOrder @relation("PurchaseOrderItems", fields: [poID], references: [poID])
+  item          Items         @relation("ItemPurchaseOrderItems", fields: [itemID], references: [itemID]) // Specify relation name
+}
+
+model poReceivingItem {
+  poReceivingItemID Int      @id @default(autoincrement())
+  itemID            Int
+  uom               String
+  receivedQty       Int
+  unitCost          Float
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  item Items @relation("ItemPoReceivingItems", fields: [itemID], references: [itemID])
+}
+
+model poReceiving {
+  poReceivingID   Int      @id @default(autoincrement())
+  poID            Int
+  receivedDate    DateTime
+  referenceNumber String
+  totalCost       Float
+  totalQty        Int
+  status          String
+  receivedByID    Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  purchaseOrder PurchaseOrder @relation(fields: [poID], references: [poID])
+  receivedBy    Users         @relation("UserReceivedItems", fields: [receivedByID], references: [userID])
+}
+
+model poSupplier {
+  supplierID     Int      @id @default(autoincrement())
+  supplierName   String
+  contactDetails String
+  address        String
+  email          String
+  createdByID    Int
+  modifiedByID   Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  status         Boolean  @default(true)
+
+  purchaseOrders PurchaseOrder[] @relation("SupplierOrders")
+}
+
+model companyProfile {
+  companyID             Int      @id @default(autoincrement())
+  image_url       String?
+  companyName           String
+  registrationNumber    String
+  companyAddress        String?
+  companyEmail          String?
+  companyPhone          String?
+  companyPhoneSecondary String?
+  taxDetails            String
+  createdByID           Int
+  modifiedByID          Int?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model customers {
+  customerID    Int            @id @default(autoincrement())
+  firstName     String
+  middleName    String
+  lastName      String
+  contactNo     String
+  address       String
+  email         String
+  createdByID   Int
+  modifiedByID  Int?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  customerType  customerType?  @relation(fields: [customerTypeID], references: [customerTypeID])
+  customerTypeID Int?
+}
+
+model customerType {
+  customerTypeID Int      @id @default(autoincrement())
+  TypeName       String
+  description    String
+  createdByID    Int
+  modifiedByID   Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  customers customers[]
+}
+
+model salesTransaction {
+  salesTransactionID Int @id @default(autoincrement())
+  locationID Int
+  customerID Int
+  customerTypeID Int
+  itemID Int
+  qty Int
+  price Decimal
+  total Decimal @default(value: 0.0)
+  paymentTypeID Int
+  transactionTypeID Int
+  transactionNumber Int
+  transactionDate DateTime @default(now())
+  status String
+  totalItems Int
+  totalQuantity Int
+  totalPurchase Decimal @default(value: 0.0)
+}
+
+model transactionType {
+  transactionTypeID Int @id @default(autoincrement())
+  transactionName String
+  createdByID    Int
+  modifiedByID   Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model paymentType {
+  paymentTypeID Int @id @default(autoincrement())
+  paymentName String
+  createdByID    Int
+  modifiedByID   Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
