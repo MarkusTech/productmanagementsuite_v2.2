@@ -17,14 +17,6 @@ export class SalesTransactionController {
     } = req.body;
 
     try {
-      // Validate that items array is not empty
-      if (!items || items.length === 0) {
-        res.status(400).json({
-          success: false,
-          message: "Items cannot be empty",
-        });
-      }
-
       // Calculate totals for the transaction
       const totalPurchase: number = items.reduce(
         (total: number, item: { qty: number; price: number }) =>
@@ -41,10 +33,16 @@ export class SalesTransactionController {
       // Create the sales transaction along with related items
       const newSalesTransaction = await prisma.salesTransaction.create({
         data: {
-          locationID,
+          location: {
+            connect: { locationID }, // Corrected relation connection
+          },
           salesTransactionCustomerID,
-          paymentTypeID,
-          transactionTypeID,
+          paymentType: {
+            connect: { paymentTypeID }, // Corrected relation connection
+          },
+          transactionType: {
+            connect: { transactionTypeID }, // Corrected relation connection
+          },
           transactionNumber,
           totalItems,
           totalQuantity,
@@ -55,24 +53,15 @@ export class SalesTransactionController {
           salesTransactionItems: {
             create: items.map(
               (item: { itemID: number; qty: number; price: number }) => ({
-                itemID: item.itemID, // Ensure itemID exists in the database
+                itemID: item.itemID,
                 qty: item.qty,
                 price: item.price,
                 total: item.qty * item.price, // Calculate total for each item
               })
             ),
           },
-          location: {
-            connect: { locationID }, // Connect the location to the transaction
-          },
-          paymentType: {
-            connect: { paymentTypeID }, // Connect the payment type to the transaction
-          },
-          transactionType: {
-            connect: { transactionTypeID }, // Connect the transaction type to the transaction
-          },
           customer: {
-            connect: { salesTransactionCustomerID }, // Connect the customer to the transaction
+            connect: { salesTransactionCustomerID }, // Corrected relation connection
           },
         },
         include: {
