@@ -324,29 +324,25 @@ model salesTransactionCustomer {
 }
 
 model salesTransactionItems {
-  salesTransactionItemID Int      @id @default(autoincrement())
-  salesTransactionID     Int      // Foreign key to salesTransaction
-  itemID                 Int      // Foreign key to Items
+  salesTransactionItemID Int    @id @default(autoincrement())
+  salesTransactionID     Int    // Foreign key to salesTransaction
+  itemID                 Int    // Foreign key to Items
   qty                    Int
-  price                  Float
-  total                  Float
+  price                  Float  // Changed to Float
+  total                  Float  // Changed to Float
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
 
-  // Relations (Specify fields and references here)
   salesTransaction salesTransaction @relation("SalesTransactionItems", fields: [salesTransactionID], references: [salesTransactionID], map: "salesTransactionItems_salesTransaction_fkey")
   item             Items             @relation("SalesTransactionItems", fields: [itemID], references: [itemID], map: "salesTransactionItems_item_fkey")
 
-  @@index([salesTransactionID, itemID])  // Composite index for faster lookups
+  @@index([salesTransactionID, itemID])  
 }
 
 model salesTransaction {
-  salesTransactionID         Int      @id @default(autoincrement())
+  salesTransactionID         Int     @id @default(autoincrement())
   locationID                 Int
   salesTransactionCustomerID Int
-  qty                        Int
-  price                      Float
-  total                      Float
   paymentTypeID              Int
   transactionTypeID          Int
   transactionNumber          Int
@@ -354,7 +350,7 @@ model salesTransaction {
   status                     String
   totalItems                 Int
   totalQuantity              Int
-  totalPurchase              Float
+  totalPurchase              Float  @default(0.0) // Changed to Float
   createdAt                  DateTime @default(now())
   updatedAt                  DateTime @updatedAt
 
@@ -363,10 +359,9 @@ model salesTransaction {
   transactionType transactionType          @relation("TransactionTypeSalesTransactions", fields: [transactionTypeID], references: [transactionTypeID])
   customer        salesTransactionCustomer @relation(fields: [salesTransactionCustomerID], references: [salesTransactionCustomerID])
 
-  // Relation to salesTransactionItems (Opposite relation field on salesTransactionItems)
   salesTransactionItems salesTransactionItems[] @relation("SalesTransactionItems")
   
-  @@index([salesTransactionCustomerID]) // Index for faster lookups
+  @@index([salesTransactionCustomerID]) 
 }
 
 model transactionType {

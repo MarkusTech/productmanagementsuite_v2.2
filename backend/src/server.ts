@@ -41,6 +41,7 @@ import customerTypeRoutes from "./routes/customerTypes.routes";
 // Sales Transaction Routes
 import salesTransactionPaymentTypeRoutes from "./routes/salesTransactionPaymentType.routes";
 import salesTransactionType from "./routes/salesTransactionType.routes";
+import salesTransactionRoutes from "./routes/salesTransaction.routes";
 
 // Initialize express app
 const app = express();
@@ -123,6 +124,7 @@ app.use("/api/v2", customerTypeRoutes);
 // Sales Transaction API
 app.use("/api/v3/transaction", salesTransactionPaymentTypeRoutes);
 app.use("/api/v3/transaction", salesTransactionType);
+app.use("/api/v3/transaction", salesTransactionRoutes);
 
 // Error Handling Middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

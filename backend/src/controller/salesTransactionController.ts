@@ -10,18 +10,17 @@ export class SalesTransactionController {
     const {
       locationID,
       salesTransactionCustomerID,
-      qty,
-      price,
       paymentTypeID,
       transactionTypeID,
       transactionNumber,
-      items,
+      items, // items is expected to be an array of salesTransactionItems
     } = req.body;
 
     try {
+      // Calculate totals for the transaction
       const totalPurchase: number = items.reduce(
         (total: number, item: { qty: number; price: number }) =>
-          total + item.qty * item.price, // Using float arithmetic
+          total + item.qty * item.price, // Calculate total for each item
         0
       );
 
@@ -31,33 +30,45 @@ export class SalesTransactionController {
         0
       );
 
+      // Create the sales transaction along with related items
       const newSalesTransaction = await prisma.salesTransaction.create({
         data: {
           locationID,
           salesTransactionCustomerID,
-          qty,
-          price,
-          total: totalPurchase,
-          totalItems,
-          totalQuantity,
-          totalPurchase,
           paymentTypeID,
           transactionTypeID,
           transactionNumber,
-          status: "Pending", // Default status, you can change it as needed
+          totalItems,
+          totalQuantity,
+          totalPurchase, // Main total for the transaction
+          status: "Pending", // Default status
           createdAt: new Date(),
           updatedAt: new Date(),
           salesTransactionItems: {
-            create: items.map((item) => ({
-              itemID: item.itemID,
-              qty: item.qty,
-              price: item.price,
-              total: item.qty * item.price,
-            })),
+            create: items.map(
+              (item: { itemID: number; qty: number; price: number }) => ({
+                itemID: item.itemID,
+                qty: item.qty,
+                price: item.price,
+                total: item.qty * item.price, // Calculate total for each item
+              })
+            ),
+          },
+          location: {
+            connect: { locationID }, // Connect the location to the transaction
+          },
+          paymentType: {
+            connect: { paymentTypeID }, // Connect the payment type to the transaction
+          },
+          transactionType: {
+            connect: { transactionTypeID }, // Connect the transaction type to the transaction
+          },
+          customer: {
+            connect: { salesTransactionCustomerID }, // Connect the customer to the transaction
           },
         },
         include: {
-          salesTransactionItems: true,
+          salesTransactionItems: true, // Include associated sales transaction items
         },
       });
 
@@ -107,7 +118,7 @@ export class SalesTransactionController {
     }
   }
 
-  // Get sales transaction by ID
+  // Get a sales transaction by ID
   async getSalesTransactionById(req: Request, res: Response): Promise<void> {
     const { salesTransactionID } = req.params;
 
@@ -140,70 +151,6 @@ export class SalesTransactionController {
       res.status(500).json({
         success: false,
         message: "Error fetching sales transaction",
-      });
-    }
-  }
-
-  // Update sales transaction
-  async updateSalesTransaction(req: Request, res: Response): Promise<void> {
-    const { salesTransactionID } = req.params;
-    const { paymentTypeID, transactionTypeID, items } = req.body;
-
-    try {
-      // Recalculate total purchase price for the transaction (using float)
-      const totalPurchase: number = items.reduce(
-        (total: number, item: { qty: number; price: number }) =>
-          total + item.qty * item.price,
-        0
-      );
-
-      // Recalculate total items and total quantity
-      const totalItems: number = items.length;
-      const totalQuantity: number = items.reduce(
-        (totalQty: number, item: { qty: number }) => totalQty + item.qty,
-        0
-      );
-
-      // Update the sales transaction
-      const updatedSalesTransaction = await prisma.salesTransaction.update({
-        where: { salesTransactionID: parseInt(salesTransactionID) },
-        data: {
-          paymentTypeID,
-          transactionTypeID,
-          total: totalPurchase,
-          totalItems,
-          totalQuantity,
-          totalPurchase, // totalPurchase is recalculated above
-          updatedAt: new Date(),
-          salesTransactionItems: {
-            deleteMany: {}, // Optionally delete existing items before creating new ones
-            create: items.map((item) => ({
-              itemID: item.itemID,
-              qty: item.qty,
-              price: item.price,
-              total: item.qty * item.price, // Calculate total per item
-            })),
-          },
-        },
-        include: {
-          salesTransactionItems: true, // Include associated items in the response
-        },
-      });
-
-      logger.info(`Sales Transaction updated: ID ${salesTransactionID}`);
-
-      res.status(200).json({
-        success: true,
-        message: "Sales transaction updated successfully",
-        data: updatedSalesTransaction,
-      });
-    } catch (error) {
-      logger.error(
-        `Error updating sales transaction: ${(error as Error).message}`
-      );
-      res.status(500).json({
-        success: false,
-        message: "Error updating sales transaction",
       });
     }
   }
