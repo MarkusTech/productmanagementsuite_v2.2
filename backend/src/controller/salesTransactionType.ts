@@ -7,12 +7,14 @@ const prisma = new PrismaClient();
 export class TransactionTypeController {
   // Create a new transaction type
   async createTransactionType(req: Request, res: Response): Promise<void> {
-    const { transactionName, createdByID, modifiedByID } = req.body;
+    const { transactionName, description, createdByID, modifiedByID } =
+      req.body;
 
     try {
       const newTransactionType = await prisma.transactionType.create({
         data: {
           transactionName,
+          description, // Include the description field
           createdByID,
           modifiedByID,
         },
@@ -104,13 +106,14 @@ export class TransactionTypeController {
   // Update transaction type
   async updateTransactionType(req: Request, res: Response): Promise<void> {
     const { transactionTypeID } = req.params;
-    const { transactionName, modifiedByID } = req.body;
+    const { transactionName, description, modifiedByID } = req.body;
 
     try {
       const updatedTransactionType = await prisma.transactionType.update({
         where: { transactionTypeID: parseInt(transactionTypeID) },
         data: {
           transactionName,
+          description, // Include description in the update
           modifiedByID,
         },
       });

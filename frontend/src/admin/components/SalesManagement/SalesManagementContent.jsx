@@ -1,7 +1,15 @@
 import React from "react";
+import SalesTransactionList from "./SalesTransactionList";
 
 const SalesManagementContent = () => {
-  return <div>SalesManagementContent</div>;
+  return (
+    <main>
+      <div>
+        <SalesTransactionList />
+        <br />
+      </div>
+    </main>
+  );
 };
 
 export default SalesManagementContent;

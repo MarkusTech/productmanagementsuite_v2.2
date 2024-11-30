@@ -83,6 +83,18 @@ const Sidebar = ({ isClosed }) => {
       allowedRoles: [1, 2],
     },
     {
+      title: "Payment Type",
+      icon: "bx bxs-credit-card",
+      link: "/payment-type",
+      allowedRoles: [1, 2], // Define roles allowed for Payment Type
+    },
+    {
+      title: "Transaction Type",
+      icon: "bx bx-transfer", // New icon
+      link: "/transaction-type",
+      allowedRoles: [1, 2], // Define roles allowed for Transaction Type
+    },
+    {
       title: "Customer",
       icon: "bx bxs-user-check",
       link: "/customer",

@@ -369,6 +369,7 @@ model salesTransaction {
 model transactionType {
   transactionTypeID Int      @id @default(autoincrement())
   transactionName   String
+  description  String?
   createdByID       Int
   modifiedByID      Int?
   createdAt         DateTime @default(now())
@@ -380,6 +381,7 @@ model transactionType {
 model paymentType {
   paymentTypeID Int      @id @default(autoincrement())
   paymentName   String
+  description  String?
   createdByID   Int
   modifiedByID  Int?
   createdAt     DateTime @default(now())

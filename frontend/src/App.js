@@ -37,6 +37,10 @@ import PoReceiving from "./admin/pages/Po_Receiving";
 import PoSupplier from "./admin/pages/Po_Supplier";
 import PoPurchaseOrder from "./admin/pages/Po_PurchaseOrder";
 
+// import Transaction
+import TransactionType from "./admin/pages/TransactrionType";
+import PaymentType from "./admin/pages/PaymentType";
+
 function App() {
   const location = useLocation();
 
@@ -81,6 +85,10 @@ function App() {
         <Route path="/po-receiving-item" element={<PoReceivingItem />} />
         <Route path="/po-receiving" element={<PoReceiving />} />
         <Route path="/supplier" element={<PoSupplier />} />
+
+        {/* Transaction */}
+        <Route path="/payment-type" element={<PaymentType />} />
+        <Route path="/transaction-type" element={<TransactionType />} />
       </Routes>
       <Toaster />
     </div>

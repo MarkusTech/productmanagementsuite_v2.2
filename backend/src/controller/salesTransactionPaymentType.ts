@@ -7,12 +7,13 @@ const prisma = new PrismaClient();
 export class PaymentTypeController {
   // Create a new payment type
   async createPaymentType(req: Request, res: Response): Promise<void> {
-    const { paymentName, createdByID, modifiedByID } = req.body;
+    const { paymentName, description, createdByID, modifiedByID } = req.body;
 
     try {
       const newPaymentType = await prisma.paymentType.create({
         data: {
           paymentName,
+          description, // Include the description field
           createdByID,
           modifiedByID,
         },
@@ -96,13 +97,14 @@ export class PaymentTypeController {
   // Update payment type
   async updatePaymentType(req: Request, res: Response): Promise<void> {
     const { paymentTypeID } = req.params;
-    const { paymentName, modifiedByID } = req.body;
+    const { paymentName, description, modifiedByID } = req.body;
 
     try {
       const updatedPaymentType = await prisma.paymentType.update({
         where: { paymentTypeID: parseInt(paymentTypeID) },
         data: {
           paymentName,
+          description, // Include description in the update
           modifiedByID,
         },
       });
