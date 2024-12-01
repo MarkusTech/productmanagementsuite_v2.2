@@ -196,9 +196,13 @@ const SalesTransaction = () => {
   const transactionData = {
     transactionNumber: "TX123456",
     transactionDate: "2024-12-01",
-    status: "Completed",
-    location: "New York",
+    status: "Pending",
+    location: "Store 1",
     transactionType: "Credit Card",
+    paymentType: "Cash",
+    totalItems: 20,
+    totalQuantity: 100,
+    totalPurchase: 530000,
   };
 
   const handleChange = (e) => {
@@ -293,7 +297,7 @@ const SalesTransaction = () => {
 
       {error && <div style={{ color: "red" }}>Error: {error}</div>}
       <div style={styles.salesTransactionTable}>
-        <div>
+        <div style={styles.divContainer}>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               {/* Location Dropdown */}
@@ -692,7 +696,7 @@ const SalesTransaction = () => {
           </Dialog>
         </div>
         {/* ------------------------------------------------------------------------------------- */}
-        <div>
+        <div style={styles.divContainer}>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -903,9 +907,14 @@ const styles = {
     right: "10px",
   },
   salesTransactionTable: {
-    display: "flex", // Corrected here
-    flexDirection: "row", // Optionally, specify the direction (row or column)
-    gap: "20px", // Optionally, add space between items
+    display: "flex",
+    flexDirection: "row",
+    gap: "20px",
+  },
+  divContainer: {
+    borderRadius: "10px",
+    padding: "10px",
+    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // Added shadow
   },
 };
 
