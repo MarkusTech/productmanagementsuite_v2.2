@@ -845,7 +845,35 @@ const SalesTransaction = () => {
               <Grid item xs={12}>
                 <Divider sx={{ marginY: 2 }} />
               </Grid>
+
+              {/* Buttons Container */}
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between">
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    // onClick={handleCancel}
+                  >
+                    Cancel Transaction
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    // onClick={handleSave}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    // onClick={handleCompleteTransaction}
+                  >
+                    Complete Transaction
+                  </Button>
+                </Box>
+              </Grid>
             </Grid>
+
             <br />
             <br />
           </form>
