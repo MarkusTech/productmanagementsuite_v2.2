@@ -50,19 +50,19 @@ const Sidebar = ({ isClosed }) => {
       title: "Inventory Type",
       icon: "bx bxs-box",
       link: "/inventory-type",
-      allowedRoles: [1],
+      allowedRoles: [1, 2],
     },
     {
       title: "Adjustment Reason",
       icon: "bx bxs-info-circle",
       link: "/adjustment-type-reason",
-      allowedRoles: [1],
+      allowedRoles: [1, 2],
     },
     {
       title: "Purchase Order",
       icon: "bx bxs-shopping-bag",
       link: "/purchase-order",
-      allowedRoles: [1, 2, 4],
+      allowedRoles: [1, 2],
     },
     {
       title: "Categories",
