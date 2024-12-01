@@ -525,7 +525,7 @@ const SalesTransaction = () => {
                     <TableBody>
                       {formData.purchaseOrderItems.length > 0 ? (
                         formData.purchaseOrderItems.map((item, index) => {
-                          const total = item.orderQty * item.price; // Calculate total (qty * price)
+                          const total = item.orderQty * item.price;
 
                           return (
                             <TableRow key={index}>
@@ -540,10 +540,10 @@ const SalesTransaction = () => {
                                   }
                                   fullWidth
                                   inputProps={{
-                                    inputMode: "numeric", // Forces numeric input (on mobile)
-                                    pattern: "[0-9]*", // Regex pattern to allow only numbers
+                                    inputMode: "numeric",
+                                    pattern: "[0-9]*",
                                   }}
-                                  sx={{ width: "80px" }} // Reduce width of the TextField
+                                  sx={{ width: "80px" }}
                                 />
                               </TableCell>
                               <TableCell>{item.price}</TableCell>
