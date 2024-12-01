@@ -15,3 +15,10 @@ W3nnm4rk09121997@
 
 wm.recopelacion@gmail.com
 W3nnm4rk09121997@
+
+
+
+
+database: alwaysdata
+backend: render
+frontend: vercel
