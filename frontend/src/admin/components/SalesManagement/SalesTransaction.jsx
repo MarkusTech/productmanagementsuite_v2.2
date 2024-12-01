@@ -253,377 +253,658 @@ const SalesTransaction = () => {
         <CloseIcon />
       </IconButton>
 
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography
+        variant="h4"
+        align="center"
+        gutterBottom
+        sx={{ fontWeight: "bold" }}
+      >
         Create Sales Transaction
       </Typography>
+
       {error && <div style={{ color: "red" }}>Error: {error}</div>}
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          {/* Location Dropdown */}
-          <Grid item xs={6}>
-            <Select
-              name="locationID"
-              value={formData.locationID}
-              onChange={handleChange}
-              required
-              fullWidth
-              displayEmpty
-            >
-              <MenuItem value="" disabled>
-                Select Location
-              </MenuItem>
-              {locations.map((location) => (
-                <MenuItem key={location.locationID} value={location.locationID}>
-                  {location.locationName}
-                </MenuItem>
-              ))}
-            </Select>
-          </Grid>
-
-          {/* Trasaction Type */}
-          <Grid item xs={6}>
-            <Select
-              name="transactionType"
-              value={formData.transactionType}
-              onChange={handleChange}
-              required
-              fullWidth
-              displayEmpty
-            >
-              <MenuItem value="" disabled>
-                Select Transaction
-              </MenuItem>
-              {transactionType.map((type) => (
-                <MenuItem
-                  key={type.transactionTypeID}
-                  value={type.transactionTypeID}
+      <div style={styles.salesTransactionTable}>
+        <div>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+              {/* Location Dropdown */}
+              <Grid item xs={6}>
+                <Select
+                  name="locationID"
+                  value={formData.locationID}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  displayEmpty
                 >
-                  {type.transactionName}
-                </MenuItem>
-              ))}
-            </Select>
-          </Grid>
-
-          <Grid item xs={12}>
-            <p>Customers Information</p>
-          </Grid>
-          {/* Customer Dropdown */}
-          <Grid item xs={10}>
-            <TextField
-              fullWidth
-              name="supplierID"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search Customers"
-              required
-            />
-            {filteredCustomers.length > 0 && (
-              <List style={{ border: "1px solid #ccc", marginTop: "5px" }}>
-                {filteredCustomers.map((customer) => (
-                  <ListItem key={customer.customerID} disablePadding>
-                    <ListItemButton
-                      onClick={() => handleCustomerSelect(customer.customerID)}
+                  <MenuItem value="" disabled>
+                    Select Location
+                  </MenuItem>
+                  {locations.map((location) => (
+                    <MenuItem
+                      key={location.locationID}
+                      value={location.locationID}
                     >
-                      {customer.customerName}
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            )}
-          </Grid>
-
-          {/* button */}
-          <Grid item xs={2}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={handleOpenMenu}
-            >
-              Select Customer
-            </Button>
-
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleCloseMenu}
-              PaperProps={{ style: { maxHeight: 300, width: 300 } }}
-            >
-              <MenuItem>
-                <input
-                  type="text"
-                  placeholder="Search Customers"
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  style={{
-                    width: "100%",
-                    border: "none",
-                    outline: "none",
-                    padding: "5px",
-                  }}
-                />
-              </MenuItem>
-              {filteredCustomers.length > 0 ? (
-                <List>
-                  {filteredCustomers.map((customer) => (
-                    <ListItem key={customer.customerID} disablePadding>
-                      <ListItemButton
-                        onClick={() =>
-                          handleCustomerSelect(customer.customerID)
-                        }
-                      >
-                        {customer.customerName}
-                      </ListItemButton>
-                    </ListItem>
+                      {location.locationName}
+                    </MenuItem>
                   ))}
-                </List>
-              ) : (
-                <MenuItem disabled>No Customers Found</MenuItem>
-              )}
-            </Menu>
-          </Grid>
+                </Select>
+              </Grid>
 
-          {/* Names */}
-          <Grid item xs={4}>
-            <TextField
-              label="First Name"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Middle Name"
-              name="middleName"
-              value={formData.middleName}
-              onChange={handleChange}
-              required
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Last Name"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-              fullWidth
-            />
-          </Grid>
-          {/* seconde row*/}
-          <Grid item xs={4}>
-            <TextField
-              label="Contact No"
-              name="contactNo"
-              value={formData.contactNo}
-              onChange={handleChange}
-              required
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={8}>
-            <TextField
-              label="Address"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              required
-              fullWidth
-            />
-          </Grid>
+              {/* Trasaction Type */}
+              <Grid item xs={6}>
+                <Select
+                  name="transactionType"
+                  value={formData.transactionType}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  displayEmpty
+                >
+                  <MenuItem value="" disabled>
+                    Select Transaction
+                  </MenuItem>
+                  {transactionType.map((type) => (
+                    <MenuItem
+                      key={type.transactionTypeID}
+                      value={type.transactionTypeID}
+                    >
+                      {type.transactionName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Grid>
 
-          {/* third row */}
-          <Grid item xs={4}>
-            <Select
-              name="customerTypeID"
-              value={formData.customerTypeID}
-              onChange={handleChange}
-              required
-              fullWidth
-              displayEmpty
-            >
-              <MenuItem value="" disabled>
-                Select Customer Type
-              </MenuItem>
-              {customerTypes.map((type) => (
-                <MenuItem key={type.customerTypeID} value={type.customerTypeID}>
-                  {type.TypeName}
-                </MenuItem>
-              ))}
-            </Select>
-          </Grid>
+              <Grid item xs={12}>
+                <p sx={{ fontWeight: "bold" }}>Customers Information</p>
+              </Grid>
 
-          {/* Email Field */}
-          <Grid item xs={8}>
-            <TextField
-              label="Email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              fullWidth
-            />
-          </Grid>
+              {/* Customer Dropdown */}
+              <Grid item xs={9}>
+                <TextField
+                  fullWidth
+                  name="supplierID"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search Customers"
+                  required
+                />
+                {filteredCustomers.length > 0 && (
+                  <List style={{ border: "1px solid #ccc", marginTop: "5px" }}>
+                    {filteredCustomers.map((customer) => (
+                      <ListItem key={customer.customerID} disablePadding>
+                        <ListItemButton
+                          onClick={() =>
+                            handleCustomerSelect(customer.customerID)
+                          }
+                        >
+                          {customer.customerName}
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </Grid>
 
-          <Grid item xs={12}>
-            <Button
-              variant="outlined"
-              color="secondary"
-              // onClick={handleClear}
-              fullWidth
-            >
-              Clear Customer Information
-            </Button>
-          </Grid>
+              {/* button */}
+              <Grid item xs={3}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={handleOpenMenu}
+                >
+                  Select Customer
+                </Button>
 
-          <Grid item xs={12}>
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ fontWeight: "bold" }}>
-                      ITEM ID
-                    </TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>
-                      ITEM NAME
-                    </TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>QTY</TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>PRICE</TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>TOTAL</TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>
-                      Actions
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {formData.purchaseOrderItems.length > 0 ? (
-                    formData.purchaseOrderItems.map((item, index) => {
-                      const total = item.orderQty * item.price; // Calculate total (qty * price)
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleCloseMenu}
+                  PaperProps={{ style: { maxHeight: 300, width: 300 } }}
+                >
+                  <MenuItem>
+                    <input
+                      type="text"
+                      placeholder="Search Customers"
+                      value={searchTerm}
+                      onChange={handleSearchChange}
+                      style={{
+                        width: "100%",
+                        border: "none",
+                        outline: "none",
+                        padding: "5px",
+                      }}
+                    />
+                  </MenuItem>
+                  {filteredCustomers.length > 0 ? (
+                    <List>
+                      {filteredCustomers.map((customer) => (
+                        <ListItem key={customer.customerID} disablePadding>
+                          <ListItemButton
+                            onClick={() =>
+                              handleCustomerSelect(customer.customerID)
+                            }
+                          >
+                            {customer.customerName}
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  ) : (
+                    <MenuItem disabled>No Customers Found</MenuItem>
+                  )}
+                </Menu>
+              </Grid>
 
-                      return (
-                        <TableRow key={index}>
-                          <TableCell>{item.itemID}</TableCell>
-                          <TableCell>{item.itemName}</TableCell>
-                          <TableCell>
-                            <TextField
-                              type="text" // Change the type to text
-                              value={item.orderQty}
-                              onChange={(e) => handleOrderQtyChange(index, e)}
-                              fullWidth
-                              inputProps={{
-                                inputMode: "numeric", // Forces numeric input (on mobile)
-                                pattern: "[0-9]*", // Regex pattern to allow only numbers
-                              }}
-                              sx={{ width: "80px" }} // Reduce width of the TextField
-                            />
-                          </TableCell>
-                          <TableCell>{item.price}</TableCell>
-                          <TableCell>{total.toFixed(2)}</TableCell>
-                          <TableCell>
-                            <IconButton
-                              onClick={() => removeItem(index)}
-                              aria-label="delete"
-                            >
-                              <DeleteIcon />
-                            </IconButton>
+              {/* Names */}
+              <Grid item xs={4}>
+                <TextField
+                  label="First Name"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  label="Middle Name"
+                  name="middleName"
+                  value={formData.middleName}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  label="Last Name"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              {/* seconde row*/}
+              <Grid item xs={4}>
+                <TextField
+                  label="Contact No"
+                  name="contactNo"
+                  value={formData.contactNo}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={8}>
+                <TextField
+                  label="Address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                />
+              </Grid>
+
+              {/* third row */}
+              <Grid item xs={4}>
+                <Select
+                  name="customerTypeID"
+                  value={formData.customerTypeID}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  displayEmpty
+                >
+                  <MenuItem value="" disabled>
+                    Select Customer Type
+                  </MenuItem>
+                  {customerTypes.map((type) => (
+                    <MenuItem
+                      key={type.customerTypeID}
+                      value={type.customerTypeID}
+                    >
+                      {type.TypeName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Grid>
+
+              {/* Email Field */}
+              <Grid item xs={8}>
+                <TextField
+                  label="Email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  // onClick={handleClear}
+                  fullWidth
+                >
+                  Clear Customer Information
+                </Button>
+              </Grid>
+
+              <Grid item xs={12}>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell style={{ fontWeight: "bold" }}>
+                          ITEM ID
+                        </TableCell>
+                        <TableCell style={{ fontWeight: "bold" }}>
+                          ITEM NAME
+                        </TableCell>
+                        <TableCell style={{ fontWeight: "bold" }}>
+                          QTY
+                        </TableCell>
+                        <TableCell style={{ fontWeight: "bold" }}>
+                          PRICE
+                        </TableCell>
+                        <TableCell style={{ fontWeight: "bold" }}>
+                          TOTAL
+                        </TableCell>
+                        <TableCell style={{ fontWeight: "bold" }}>
+                          Actions
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {formData.purchaseOrderItems.length > 0 ? (
+                        formData.purchaseOrderItems.map((item, index) => {
+                          const total = item.orderQty * item.price; // Calculate total (qty * price)
+
+                          return (
+                            <TableRow key={index}>
+                              <TableCell>{item.itemID}</TableCell>
+                              <TableCell>{item.itemName}</TableCell>
+                              <TableCell>
+                                <TextField
+                                  type="text" // Change the type to text
+                                  value={item.orderQty}
+                                  onChange={(e) =>
+                                    handleOrderQtyChange(index, e)
+                                  }
+                                  fullWidth
+                                  inputProps={{
+                                    inputMode: "numeric", // Forces numeric input (on mobile)
+                                    pattern: "[0-9]*", // Regex pattern to allow only numbers
+                                  }}
+                                  sx={{ width: "80px" }} // Reduce width of the TextField
+                                />
+                              </TableCell>
+                              <TableCell>{item.price}</TableCell>
+                              <TableCell>{total.toFixed(2)}</TableCell>
+                              <TableCell>
+                                <IconButton
+                                  onClick={() => removeItem(index)}
+                                  aria-label="delete"
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={6} align="center">
+                            No items added
                           </TableCell>
                         </TableRow>
-                      );
-                    })
-                  ) : (
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+
+              {/* Add Item Button */}
+              <Grid item xs={2}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setIsItemDialogOpen(true)}
+                  fullWidth
+                >
+                  Add Item
+                </Button>
+              </Grid>
+
+              {/* Submit Button */}
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                >
+                  Create Purchase Order
+                </Button>
+              </Grid>
+            </Grid>
+            <br />
+            <br />
+          </form>
+
+          {/* Add Item Dialog */}
+          <Dialog
+            open={isItemDialogOpen}
+            onClose={() => setIsItemDialogOpen(false)}
+            fullWidth
+            maxWidth="md"
+          >
+            <DialogTitle>Select Item</DialogTitle>
+            <DialogContent>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
                     <TableRow>
-                      <TableCell colSpan={6} align="center">
-                        No items added
+                      <TableCell style={{ fontWeight: "bold" }}>
+                        Item Code
+                      </TableCell>
+                      <TableCell style={{ fontWeight: "bold" }}>Name</TableCell>
+                      <TableCell style={{ fontWeight: "bold" }}>
+                        Description
+                      </TableCell>
+                      <TableCell style={{ fontWeight: "bold" }}>
+                        Price
+                      </TableCell>
+                      <TableCell style={{ fontWeight: "bold" }}>
+                        Action
                       </TableCell>
                     </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {items.map((item) => (
+                      <TableRow key={item.itemID}>
+                        <TableCell>{item.itemCode}</TableCell>
+                        <TableCell>{item.itemName}</TableCell>
+                        <TableCell>{item.description}</TableCell>
+                        <TableCell>{item.price}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                              addItemToOrder(item);
+                              setIsItemDialogOpen(false);
+                            }}
+                          >
+                            Add
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => setIsItemDialogOpen(false)}
+                color="secondary"
+              >
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+        {/* ------------------------------------------------------------------------------------- */}
+        <div>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <p>Payment Information</p>
+              </Grid>
+              <Grid item xs={6}>
+                <Select
+                  name="locationID"
+                  value={formData.locationID}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  displayEmpty
+                >
+                  <MenuItem value="" disabled>
+                    Select Location
+                  </MenuItem>
+                  {locations.map((location) => (
+                    <MenuItem
+                      key={location.locationID}
+                      value={location.locationID}
+                    >
+                      {location.locationName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Grid>
+
+              {/* Trasaction Type */}
+              <Grid item xs={6}>
+                <Select
+                  name="transactionType"
+                  value={formData.transactionType}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  displayEmpty
+                >
+                  <MenuItem value="" disabled>
+                    Select Transaction
+                  </MenuItem>
+                  {transactionType.map((type) => (
+                    <MenuItem
+                      key={type.transactionTypeID}
+                      value={type.transactionTypeID}
+                    >
+                      {type.transactionName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Typography sx={{ fontWeight: "bold" }}>
+                  Customers Information
+                </Typography>
+              </Grid>
+
+              {/* Customer Dropdown */}
+              <Grid item xs={10}>
+                <TextField
+                  fullWidth
+                  name="supplierID"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search Customers"
+                  required
+                />
+                {filteredCustomers.length > 0 && (
+                  <List style={{ border: "1px solid #ccc", marginTop: "5px" }}>
+                    {filteredCustomers.map((customer) => (
+                      <ListItem key={customer.customerID} disablePadding>
+                        <ListItemButton
+                          onClick={() =>
+                            handleCustomerSelect(customer.customerID)
+                          }
+                        >
+                          {customer.customerName}
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </Grid>
+
+              {/* button */}
+              <Grid item xs={2}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={handleOpenMenu}
+                >
+                  Select Customer
+                </Button>
+
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleCloseMenu}
+                  PaperProps={{ style: { maxHeight: 300, width: 300 } }}
+                >
+                  <MenuItem>
+                    <input
+                      type="text"
+                      placeholder="Search Customers"
+                      value={searchTerm}
+                      onChange={handleSearchChange}
+                      style={{
+                        width: "100%",
+                        border: "none",
+                        outline: "none",
+                        padding: "5px",
+                      }}
+                    />
+                  </MenuItem>
+                  {filteredCustomers.length > 0 ? (
+                    <List>
+                      {filteredCustomers.map((customer) => (
+                        <ListItem key={customer.customerID} disablePadding>
+                          <ListItemButton
+                            onClick={() =>
+                              handleCustomerSelect(customer.customerID)
+                            }
+                          >
+                            {customer.customerName}
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  ) : (
+                    <MenuItem disabled>No Customers Found</MenuItem>
                   )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
+                </Menu>
+              </Grid>
 
-          {/* Add Item Button */}
-          <Grid item xs={2}>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => setIsItemDialogOpen(true)}
-              fullWidth
-            >
-              Add Item
-            </Button>
-          </Grid>
+              {/* Names */}
+              <Grid item xs={4}>
+                <TextField
+                  label="First Name"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  label="Middle Name"
+                  name="middleName"
+                  value={formData.middleName}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  label="Last Name"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              {/* seconde row*/}
+              <Grid item xs={4}>
+                <TextField
+                  label="Contact No"
+                  name="contactNo"
+                  value={formData.contactNo}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={8}>
+                <TextField
+                  label="Address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                />
+              </Grid>
 
-          {/* Submit Button */}
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-              Create Purchase Order
-            </Button>
-          </Grid>
-        </Grid>
-        <br />
-        <br />
-      </form>
+              {/* third row */}
+              <Grid item xs={4}>
+                <Select
+                  name="customerTypeID"
+                  value={formData.customerTypeID}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  displayEmpty
+                >
+                  <MenuItem value="" disabled>
+                    Select Customer Type
+                  </MenuItem>
+                  {customerTypes.map((type) => (
+                    <MenuItem
+                      key={type.customerTypeID}
+                      value={type.customerTypeID}
+                    >
+                      {type.TypeName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Grid>
 
-      {/* Add Item Dialog */}
-      <Dialog
-        open={isItemDialogOpen}
-        onClose={() => setIsItemDialogOpen(false)}
-        fullWidth
-        maxWidth="md"
-      >
-        <DialogTitle>Select Item</DialogTitle>
-        <DialogContent>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell style={{ fontWeight: "bold" }}>
-                    Item Code
-                  </TableCell>
-                  <TableCell style={{ fontWeight: "bold" }}>Name</TableCell>
-                  <TableCell style={{ fontWeight: "bold" }}>
-                    Description
-                  </TableCell>
-                  <TableCell style={{ fontWeight: "bold" }}>Price</TableCell>
-                  <TableCell style={{ fontWeight: "bold" }}>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {items.map((item) => (
-                  <TableRow key={item.itemID}>
-                    <TableCell>{item.itemCode}</TableCell>
-                    <TableCell>{item.itemName}</TableCell>
-                    <TableCell>{item.description}</TableCell>
-                    <TableCell>{item.price}</TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          addItemToOrder(item);
-                          setIsItemDialogOpen(false);
-                        }}
-                      >
-                        Add
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsItemDialogOpen(false)} color="secondary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+              {/* Email Field */}
+              <Grid item xs={8}>
+                <TextField
+                  label="Email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  // onClick={handleClear}
+                  fullWidth
+                >
+                  Clear Customer Information
+                </Button>
+              </Grid>
+            </Grid>
+            <br />
+            <br />
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
@@ -634,7 +915,7 @@ const styles = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "1000px",
+    width: "1350px",
     backgroundColor: "#fff",
     padding: "20px",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
@@ -646,6 +927,11 @@ const styles = {
     position: "absolute",
     top: "10px",
     right: "10px",
+  },
+  salesTransactionTable: {
+    display: "flex", // Corrected here
+    flexDirection: "row", // Optionally, specify the direction (row or column)
+    gap: "20px", // Optionally, add space between items
   },
 };
 
