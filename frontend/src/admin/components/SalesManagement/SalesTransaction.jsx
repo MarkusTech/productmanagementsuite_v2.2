@@ -41,6 +41,7 @@ const SalesTransaction = () => {
     supplierID: "",
     locationID: "",
     transactionType: "",
+    customerTypeID: "",
 
     orderDate: "",
     expectedDeliverDate: "",
@@ -55,6 +56,7 @@ const SalesTransaction = () => {
   const [locations, setLocations] = useState([]);
   const [items, setItems] = useState([]);
   const [transactionType, setTransactionType] = useState([]);
+  const [customerTypes, setCustomerTypes] = useState([]);
   const [error, setError] = useState(null);
   const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -62,12 +64,12 @@ const SalesTransaction = () => {
   const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  // Fetch suppliers, locations, and items on component mount
   useEffect(() => {
     fetchDropdownData();
     fetchItems();
     fetchTransactionType();
     fetchCustomers();
+    fetchCustomerTypes();
   }, []);
 
   const fetchDropdownData = async () => {
@@ -92,11 +94,20 @@ const SalesTransaction = () => {
     }
   };
 
+  const fetchCustomerTypes = async () => {
+    try {
+      const response = await axios.get("/api/v2/customer-types");
+      if (response.data.success) {
+        setCustomerTypes(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching customer types:", error);
+    }
+  };
+
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5000/api/v2/customers"
-      );
+      const response = await axios.get("/api/v2/customers");
       if (response.data.success) {
         setCustomers(response.data.data);
       }
@@ -243,7 +254,7 @@ const SalesTransaction = () => {
       </IconButton>
 
       <Typography variant="h4" align="center" gutterBottom>
-        Create New Purchase Order
+        Create Sales Transaction
       </Typography>
       {error && <div style={{ color: "red" }}>Error: {error}</div>}
       <form onSubmit={handleSubmit}>
@@ -372,55 +383,89 @@ const SalesTransaction = () => {
             </Menu>
           </Grid>
 
-          {/* Dates */}
-          <Grid item xs={6}>
+          {/* Names */}
+          <Grid item xs={4}>
             <TextField
-              label="Order Date"
-              name="orderDate"
-              type="date"
-              value={formData.orderDate}
+              label="First Name"
+              name="firstName"
+              value={formData.firstName}
               onChange={handleChange}
               required
               fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField
-              label="Expected Delivery Date"
-              name="expectedDeliverDate"
-              type="date"
-              value={formData.expectedDeliverDate}
+              label="Middle Name"
+              name="middleName"
+              value={formData.middleName}
               onChange={handleChange}
               required
               fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Last Name"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+          </Grid>
+          {/* seconde row*/}
+          <Grid item xs={4}>
+            <TextField
+              label="Contact No"
+              name="contactNo"
+              value={formData.contactNo}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={8}>
+            <TextField
+              label="Address"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              required
+              fullWidth
             />
           </Grid>
 
-          {/* Additional Information */}
-          <Grid item xs={12}>
-            <TextField
-              label="Reference Number"
-              name="referenceNo"
-              value={formData.referenceNo}
+          {/* third row */}
+          <Grid item xs={4}>
+            <Select
+              name="customerTypeID"
+              value={formData.customerTypeID}
               onChange={handleChange}
+              required
               fullWidth
-            />
+              displayEmpty
+            >
+              <MenuItem value="" disabled>
+                Select Customer Type
+              </MenuItem>
+              {customerTypes.map((type) => (
+                <MenuItem key={type.customerTypeID} value={type.customerTypeID}>
+                  {type.TypeName}
+                </MenuItem>
+              ))}
+            </Select>
           </Grid>
-          <Grid item xs={12}>
+
+          {/* Email Field */}
+          <Grid item xs={8}>
             <TextField
-              label="Remarks"
-              name="remarks"
-              value={formData.remarks}
+              label="Email"
+              name="email"
+              value={formData.email}
               onChange={handleChange}
+              required
               fullWidth
-              multiline
-              rows={2}
             />
           </Grid>
 
