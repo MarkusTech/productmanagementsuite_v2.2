@@ -81,9 +81,7 @@ const Header = () => {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/v2/company-profile"
-        );
+        const response = await axios.get("/api/v2/company-profile");
         setLogoUrl(response.data.data.image_url);
       } catch (error) {
         console.error("Failed to fetch logo:", error);
