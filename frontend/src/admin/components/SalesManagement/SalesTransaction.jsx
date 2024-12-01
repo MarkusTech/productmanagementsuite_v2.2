@@ -37,6 +37,8 @@ const SalesTransaction = () => {
   const [formData, setFormData] = useState({
     supplierID: "",
     locationID: "",
+    transactionType: "",
+
     orderDate: "",
     expectedDeliverDate: "",
     status: "Pending",
@@ -50,6 +52,7 @@ const SalesTransaction = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [locations, setLocations] = useState([]);
   const [items, setItems] = useState([]);
+  const [transactionType, setTransactionType] = useState([]);
   const [error, setError] = useState(null);
   const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
 
@@ -57,6 +60,7 @@ const SalesTransaction = () => {
   useEffect(() => {
     fetchDropdownData();
     fetchItems();
+    fetchTransactionType();
   }, []);
 
   const fetchDropdownData = async () => {
@@ -71,9 +75,21 @@ const SalesTransaction = () => {
     }
   };
 
+  const fetchTransactionType = async () => {
+    try {
+      const response = await axios.get("/api/v3/transaction/transaction-types");
+      if (response.data.success) {
+        setTransactionType(response.data.data);
+      }
+    } catch (error) {
+      console.log(error);
+      setError("Failed to Fetch Transaction Type");
+    }
+  };
+
   const fetchItems = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/items");
+      const response = await axios.get("/api/v1/items");
       if (response.data.success) {
         setItems(response.data.data);
       } else {
@@ -172,27 +188,6 @@ const SalesTransaction = () => {
       {error && <div style={{ color: "red" }}>Error: {error}</div>}
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
-          {/* Supplier Dropdown */}
-          <Grid item xs={6}>
-            <Select
-              name="supplierID"
-              value={formData.supplierID}
-              onChange={handleChange}
-              required
-              fullWidth
-              displayEmpty
-            >
-              <MenuItem value="" disabled>
-                Select Supplier
-              </MenuItem>
-              {suppliers.map((supplier) => (
-                <MenuItem key={supplier.supplierID} value={supplier.supplierID}>
-                  {supplier.supplierName}
-                </MenuItem>
-              ))}
-            </Select>
-          </Grid>
-
           {/* Location Dropdown */}
           <Grid item xs={6}>
             <Select
@@ -209,6 +204,51 @@ const SalesTransaction = () => {
               {locations.map((location) => (
                 <MenuItem key={location.locationID} value={location.locationID}>
                   {location.locationName}
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
+
+          {/* Trasaction Type */}
+          <Grid item xs={6}>
+            <Select
+              name="transactionType"
+              value={formData.transactionType}
+              onChange={handleChange}
+              required
+              fullWidth
+              displayEmpty
+            >
+              <MenuItem value="" disabled>
+                Select Transaction
+              </MenuItem>
+              {transactionType.map((type) => (
+                <MenuItem
+                  key={type.transactionTypeID}
+                  value={type.transactionTypeID}
+                >
+                  {type.transactionName}
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
+
+          {/* Supplier Dropdown */}
+          <Grid item xs={6}>
+            <Select
+              name="supplierID"
+              value={formData.supplierID}
+              onChange={handleChange}
+              required
+              fullWidth
+              displayEmpty
+            >
+              <MenuItem value="" disabled>
+                Select Supplier
+              </MenuItem>
+              {suppliers.map((supplier) => (
+                <MenuItem key={supplier.supplierID} value={supplier.supplierID}>
+                  {supplier.supplierName}
                 </MenuItem>
               ))}
             </Select>
