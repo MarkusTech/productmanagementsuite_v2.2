@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-
-import { images } from "../constants";
 import { logout } from "../store/actions/user";
 
 const navItemsInfo = [
@@ -25,9 +24,7 @@ const NavItem = ({ item }) => {
   const [dropdown, setDropdown] = useState(false);
 
   const toggleDropdownHandler = () => {
-    setDropdown((curState) => {
-      return !curState;
-    });
+    setDropdown((curState) => !curState);
   };
 
   return (
@@ -79,11 +76,25 @@ const Header = () => {
   const [navIsVisible, setNavIsVisible] = useState(false);
   const userState = useSelector((state) => state.user);
   const [profileDrowpdown, setProfileDrowpdown] = useState(false);
+  const [logoUrl, setLogoUrl] = useState("");
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/v2/company-profile"
+        );
+        setLogoUrl(response.data.data.image_url);
+      } catch (error) {
+        console.error("Failed to fetch logo:", error);
+      }
+    };
+
+    fetchLogo();
+  }, []);
 
   const navVisibilityHandler = () => {
-    setNavIsVisible((curState) => {
-      return !curState;
-    });
+    setNavIsVisible((curState) => !curState);
   };
 
   const logoutHandler = () => {
@@ -94,7 +105,11 @@ const Header = () => {
     <section className="sticky top-0 left-0 right-0 z-50 bg-white">
       <header className="container mx-auto px-5 flex justify-between py-4 items-center">
         <Link to="/">
-          <img className="w-16" src={images.Logo} alt="logo" />
+          {logoUrl ? (
+            <img className="w-16" src={logoUrl} alt="logo" />
+          ) : (
+            <span>Loading...</span>
+          )}
         </Link>
         <div className="lg:hidden z-50">
           {navIsVisible ? (
@@ -143,13 +158,6 @@ const Header = () => {
                       >
                         Dashboard
                       </button>
-                      {/* <button
-                        onClick={() => navigate("/profile")}
-                        type="button"
-                        className="hover:bg-dark-hard hover:text-white px-4 py-2 text-white lg:text-dark-soft"
-                      >
-                        Profile Page
-                      </button> */}
                       <button
                         onClick={logoutHandler}
                         type="button"
