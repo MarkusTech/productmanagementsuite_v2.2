@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Table from "../Table";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 // import TransactionTypeList from "./TransactionTypeList";
+import SalesTransaction from "./SalesTransaction";
 
 // Table headers for Sales Transaction
 const categoryTableHead = [
@@ -24,10 +25,15 @@ const renderHead = (item, index) => <th key={index}>{item}</th>;
 
 const SalesTransactionList = () => {
   // const [showTransactionTypeList, setShowTransactionTypeList] = useState(false);
+  const [showSalesTransaction, setShowSalesTransaction] = useState(false);
 
   // const toggleTransactionTypeList = () => {
   //   setShowTransactionTypeList((prev) => !prev);
   // };
+
+  const showSalesTransactionbutton = () => {
+    setShowSalesTransaction(!showSalesTransaction);
+  };
 
   const dummyData = [
     {
@@ -127,7 +133,12 @@ const SalesTransactionList = () => {
           Transaction Type
         </button>
         <button className="create-form-btn">Payment Type</button> */}
-        <button className="create-form-btn">+ Create Sales Transaction</button>
+        <button
+          className="create-form-btn"
+          onClick={showSalesTransactionbutton}
+        >
+          + Create Sales Transaction
+        </button>
       </div>
 
       <div className="table-container">
@@ -147,6 +158,7 @@ const SalesTransactionList = () => {
             </div>
           </div>
           {/* {showTransactionTypeList && <TransactionTypeList />} */}
+          {showSalesTransaction && <SalesTransaction />}
         </div>
       </div>
 
