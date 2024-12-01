@@ -19,13 +19,16 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  List,
+  ListItem,
+  ListItemButton,
+  Menu,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Swal from "sweetalert2";
 import {
   createPurchaseOrderAndItems,
-  fetchSuppliers,
   fetchLocations,
 } from "../../../services/purchaseOrder/purchaseOrderService";
 import axios from "axios";
@@ -49,25 +52,27 @@ const SalesTransaction = () => {
     purchaseOrderItems: [],
   });
 
-  const [suppliers, setSuppliers] = useState([]);
   const [locations, setLocations] = useState([]);
   const [items, setItems] = useState([]);
   const [transactionType, setTransactionType] = useState([]);
   const [error, setError] = useState(null);
   const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [customers, setCustomers] = useState([]);
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   // Fetch suppliers, locations, and items on component mount
   useEffect(() => {
     fetchDropdownData();
     fetchItems();
     fetchTransactionType();
+    fetchCustomers();
   }, []);
 
   const fetchDropdownData = async () => {
     try {
-      const supplierData = await fetchSuppliers();
       const locationData = await fetchLocations();
-      setSuppliers(supplierData);
       setLocations(locationData);
     } catch (err) {
       console.error("Error fetching suppliers or locations:", err);
@@ -87,6 +92,19 @@ const SalesTransaction = () => {
     }
   };
 
+  const fetchCustomers = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/v2/customers"
+      );
+      if (response.data.success) {
+        setCustomers(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+    }
+  };
+
   const fetchItems = async () => {
     try {
       const response = await axios.get("/api/v1/items");
@@ -99,6 +117,48 @@ const SalesTransaction = () => {
       console.error("Error fetching items:", err);
       setError("Failed to fetch items.");
     }
+  };
+
+  // Filter customers based on search term
+  useEffect(() => {
+    if (searchTerm) {
+      setFilteredCustomers(
+        customers.filter((customer) =>
+          customer.customerName.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredCustomers([]);
+    }
+  }, [searchTerm, customers]);
+
+  // Handle customer selection
+  const handleCustomerSelect = (customerID) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      supplierID: customerID,
+    }));
+    setSearchTerm(""); // Clear the search input after selection
+    setFilteredCustomers([]); // Clear the suggestions
+  };
+
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+    setFilteredCustomers(customers); // Reset filter on menu open
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSearchChange = (event) => {
+    const term = event.target.value.toLowerCase();
+    setSearchTerm(term);
+    setFilteredCustomers(
+      customers.filter((customer) =>
+        customer.customerName.toLowerCase().includes(term)
+      )
+    );
   };
 
   const handleChange = (e) => {
@@ -233,25 +293,83 @@ const SalesTransaction = () => {
             </Select>
           </Grid>
 
-          {/* Supplier Dropdown */}
-          <Grid item xs={6}>
-            <Select
-              name="supplierID"
-              value={formData.supplierID}
-              onChange={handleChange}
-              required
+          <Grid item xs={12}>
+            <p>Customers Information</p>
+          </Grid>
+          {/* Customer Dropdown */}
+          <Grid item xs={10}>
+            <TextField
               fullWidth
-              displayEmpty
+              name="supplierID"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search Customers"
+              required
+            />
+            {filteredCustomers.length > 0 && (
+              <List style={{ border: "1px solid #ccc", marginTop: "5px" }}>
+                {filteredCustomers.map((customer) => (
+                  <ListItem key={customer.customerID} disablePadding>
+                    <ListItemButton
+                      onClick={() => handleCustomerSelect(customer.customerID)}
+                    >
+                      {customer.customerName}
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            )}
+          </Grid>
+
+          {/* button */}
+          <Grid item xs={2}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={handleOpenMenu}
             >
-              <MenuItem value="" disabled>
-                Select Supplier
+              Select Customer
+            </Button>
+
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleCloseMenu}
+              PaperProps={{ style: { maxHeight: 300, width: 300 } }}
+            >
+              <MenuItem>
+                <input
+                  type="text"
+                  placeholder="Search Customers"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  style={{
+                    width: "100%",
+                    border: "none",
+                    outline: "none",
+                    padding: "5px",
+                  }}
+                />
               </MenuItem>
-              {suppliers.map((supplier) => (
-                <MenuItem key={supplier.supplierID} value={supplier.supplierID}>
-                  {supplier.supplierName}
-                </MenuItem>
-              ))}
-            </Select>
+              {filteredCustomers.length > 0 ? (
+                <List>
+                  {filteredCustomers.map((customer) => (
+                    <ListItem key={customer.customerID} disablePadding>
+                      <ListItemButton
+                        onClick={() =>
+                          handleCustomerSelect(customer.customerID)
+                        }
+                      >
+                        {customer.customerName}
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
+              ) : (
+                <MenuItem disabled>No Customers Found</MenuItem>
+              )}
+            </Menu>
           </Grid>
 
           {/* Dates */}
