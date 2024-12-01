@@ -23,6 +23,9 @@ import {
   ListItem,
   ListItemButton,
   Menu,
+  CircularProgress,
+  Box,
+  Divider,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -42,6 +45,7 @@ const SalesTransaction = () => {
     locationID: "",
     transactionType: "",
     customerTypeID: "",
+    paymentTypeID: "",
 
     orderDate: "",
     expectedDeliverDate: "",
@@ -57,12 +61,14 @@ const SalesTransaction = () => {
   const [items, setItems] = useState([]);
   const [transactionType, setTransactionType] = useState([]);
   const [customerTypes, setCustomerTypes] = useState([]);
+  const [paymentTypes, setPaymentTypes] = useState([]);
   const [error, setError] = useState(null);
   const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [customers, setCustomers] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchDropdownData();
@@ -70,6 +76,7 @@ const SalesTransaction = () => {
     fetchTransactionType();
     fetchCustomers();
     fetchCustomerTypes();
+    fetchPaymentTypes();
   }, []);
 
   const fetchDropdownData = async () => {
@@ -91,6 +98,20 @@ const SalesTransaction = () => {
     } catch (error) {
       console.log(error);
       setError("Failed to Fetch Transaction Type");
+    }
+  };
+
+  const fetchPaymentTypes = async () => {
+    try {
+      const response = await fetch("/api/v3/transaction/payment-types");
+      const data = await response.json();
+      if (data.success) {
+        setPaymentTypes(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching payment types:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -170,6 +191,14 @@ const SalesTransaction = () => {
         customer.customerName.toLowerCase().includes(term)
       )
     );
+  };
+
+  const transactionData = {
+    transactionNumber: "TX123456",
+    transactionDate: "2024-12-01",
+    status: "Completed",
+    location: "New York",
+    transactionType: "Credit Card",
   };
 
   const handleChange = (e) => {
@@ -669,235 +698,152 @@ const SalesTransaction = () => {
               <Grid item xs={12}>
                 <p>Payment Information</p>
               </Grid>
+              {/* Payment Type */}
               <Grid item xs={6}>
                 <Select
-                  name="locationID"
-                  value={formData.locationID}
+                  name="paymentTypeID"
+                  value={formData.paymentTypeID}
                   onChange={handleChange}
                   required
                   fullWidth
                   displayEmpty
                 >
                   <MenuItem value="" disabled>
-                    Select Location
+                    Select Payment Type
                   </MenuItem>
-                  {locations.map((location) => (
-                    <MenuItem
-                      key={location.locationID}
-                      value={location.locationID}
-                    >
-                      {location.locationName}
+                  {loading ? (
+                    <MenuItem disabled>
+                      <CircularProgress size={24} />
                     </MenuItem>
-                  ))}
+                  ) : (
+                    paymentTypes.map((paymentType) => (
+                      <MenuItem
+                        key={paymentType.paymentTypeID}
+                        value={paymentType.paymentTypeID}
+                      >
+                        {paymentType.paymentName}
+                      </MenuItem>
+                    ))
+                  )}
                 </Select>
               </Grid>
 
-              {/* Trasaction Type */}
+              {/* Payment Amount */}
               <Grid item xs={6}>
-                <Select
-                  name="transactionType"
-                  value={formData.transactionType}
+                <TextField
+                  name="paymentAmount"
+                  label="Payment Amount"
+                  // value={formData.paymentAmount}
                   onChange={handleChange}
                   required
                   fullWidth
                   displayEmpty
-                >
-                  <MenuItem value="" disabled>
-                    Select Transaction
-                  </MenuItem>
-                  {transactionType.map((type) => (
-                    <MenuItem
-                      key={type.transactionTypeID}
-                      value={type.transactionTypeID}
-                    >
-                      {type.transactionName}
-                    </MenuItem>
-                  ))}
-                </Select>
+                  InputProps={{
+                    inputMode: "numeric",
+                  }}
+                />
               </Grid>
 
+              {/* Transaction */}
               <Grid item xs={12}>
                 <Typography sx={{ fontWeight: "bold" }}>
-                  Customers Information
+                  Trasaction Summary
                 </Typography>
               </Grid>
 
-              {/* Customer Dropdown */}
-              <Grid item xs={10}>
-                <TextField
-                  fullWidth
-                  name="supplierID"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search Customers"
-                  required
-                />
-                {filteredCustomers.length > 0 && (
-                  <List style={{ border: "1px solid #ccc", marginTop: "5px" }}>
-                    {filteredCustomers.map((customer) => (
-                      <ListItem key={customer.customerID} disablePadding>
-                        <ListItemButton
-                          onClick={() =>
-                            handleCustomerSelect(customer.customerID)
-                          }
-                        >
-                          {customer.customerName}
-                        </ListItemButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
-              </Grid>
-
-              {/* button */}
-              <Grid item xs={2}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  onClick={handleOpenMenu}
-                >
-                  Select Customer
-                </Button>
-
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleCloseMenu}
-                  PaperProps={{ style: { maxHeight: 300, width: 300 } }}
-                >
-                  <MenuItem>
-                    <input
-                      type="text"
-                      placeholder="Search Customers"
-                      value={searchTerm}
-                      onChange={handleSearchChange}
-                      style={{
-                        width: "100%",
-                        border: "none",
-                        outline: "none",
-                        padding: "5px",
-                      }}
-                    />
-                  </MenuItem>
-                  {filteredCustomers.length > 0 ? (
-                    <List>
-                      {filteredCustomers.map((customer) => (
-                        <ListItem key={customer.customerID} disablePadding>
-                          <ListItemButton
-                            onClick={() =>
-                              handleCustomerSelect(customer.customerID)
-                            }
-                          >
-                            {customer.customerName}
-                          </ListItemButton>
-                        </ListItem>
-                      ))}
-                    </List>
-                  ) : (
-                    <MenuItem disabled>No Customers Found</MenuItem>
-                  )}
-                </Menu>
-              </Grid>
-
-              {/* Names */}
-              <Grid item xs={4}>
-                <TextField
-                  label="First Name"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  label="Middle Name"
-                  name="middleName"
-                  value={formData.middleName}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  label="Last Name"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              {/* seconde row*/}
-              <Grid item xs={4}>
-                <TextField
-                  label="Contact No"
-                  name="contactNo"
-                  value={formData.contactNo}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={8}>
-                <TextField
-                  label="Address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-              </Grid>
-
-              {/* third row */}
-              <Grid item xs={4}>
-                <Select
-                  name="customerTypeID"
-                  value={formData.customerTypeID}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                  displayEmpty
-                >
-                  <MenuItem value="" disabled>
-                    Select Customer Type
-                  </MenuItem>
-                  {customerTypes.map((type) => (
-                    <MenuItem
-                      key={type.customerTypeID}
-                      value={type.customerTypeID}
-                    >
-                      {type.TypeName}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </Grid>
-
-              {/* Email Field */}
-              <Grid item xs={8}>
-                <TextField
-                  label="Email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-              </Grid>
-
+              {/* Transaction Number */}
               <Grid item xs={12}>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  // onClick={handleClear}
-                  fullWidth
-                >
-                  Clear Customer Information
-                </Button>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="body1">Transaction Number:</Typography>
+                  <Typography variant="body1">
+                    {transactionData.transactionNumber}
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Transaction Date */}
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="body1">Transaction Date:</Typography>
+                  <Typography variant="body1">
+                    {transactionData.transactionDate}
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Status */}
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="body1">Status:</Typography>
+                  <Typography variant="body1">
+                    {transactionData.status}
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Location */}
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="body1">Location:</Typography>
+                  <Typography variant="body1">
+                    {transactionData.location}
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Transaction Type */}
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="body1">Transaction Type:</Typography>
+                  <Typography variant="body1">
+                    {transactionData.transactionType}
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Payment Type */}
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="body1">Payment Type:</Typography>
+                  <Typography variant="body1">
+                    {transactionData.paymentType}
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Total Items */}
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="body1">Total Items:</Typography>
+                  <Typography variant="body1">
+                    {transactionData.totalItems}
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Total Quantity */}
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="body1">Total Quantity:</Typography>
+                  <Typography variant="body1">
+                    {transactionData.totalQuantity}
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Total Purchase */}
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="body1">Total Purchase:</Typography>
+                  <Typography variant="body1">
+                    ₱{transactionData.totalPurchase}
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* Divider for visual separation */}
+              <Grid item xs={12}>
+                <Divider sx={{ marginY: 2 }} />
               </Grid>
             </Grid>
             <br />

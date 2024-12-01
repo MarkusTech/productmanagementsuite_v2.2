@@ -32,6 +32,9 @@ const InventoryTypeCreateForm = ({ onInventoryTypeCreated, closeForm }) => {
           icon: "success",
           title: "Inventory Type Created!",
           text: "The new inventory type has been successfully created.",
+          customClass: {
+            confirmButton: "swal-confirm-button",
+          },
         });
         onInventoryTypeCreated(); // Notify parent component to refresh data
         closeForm(); // Close the form

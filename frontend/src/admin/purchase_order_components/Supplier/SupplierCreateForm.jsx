@@ -34,6 +34,9 @@ const SupplierCreateForm = ({ onSupplierCreated, closeForm }) => {
           icon: "success",
           title: "Supplier Created!",
           text: "The new supplier has been successfully created.",
+          customClass: {
+            confirmButton: "swal-confirm-button",
+          },
         });
         onSupplierCreated();
         closeForm();
