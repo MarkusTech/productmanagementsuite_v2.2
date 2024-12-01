@@ -470,23 +470,30 @@ const SalesTransaction = () => {
           </Grid>
 
           <Grid item xs={12}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              // onClick={handleClear}
+              fullWidth
+            >
+              Clear Customer Information
+            </Button>
+          </Grid>
+
+          <Grid item xs={12}>
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
                   <TableRow>
                     <TableCell style={{ fontWeight: "bold" }}>
-                      Item ID
+                      ITEM ID
                     </TableCell>
                     <TableCell style={{ fontWeight: "bold" }}>
-                      Item Name
+                      ITEM NAME
                     </TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>UOM</TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>
-                      Unit Cost
-                    </TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>
-                      Order Quantity
-                    </TableCell>
+                    <TableCell style={{ fontWeight: "bold" }}>QTY</TableCell>
+                    <TableCell style={{ fontWeight: "bold" }}>PRICE</TableCell>
+                    <TableCell style={{ fontWeight: "bold" }}>TOTAL</TableCell>
                     <TableCell style={{ fontWeight: "bold" }}>
                       Actions
                     </TableCell>
@@ -494,33 +501,42 @@ const SalesTransaction = () => {
                 </TableHead>
                 <TableBody>
                   {formData.purchaseOrderItems.length > 0 ? (
-                    formData.purchaseOrderItems.map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{item.itemID}</TableCell>
-                        <TableCell>{item.itemName}</TableCell>
-                        <TableCell>{item.uom}</TableCell>
-                        <TableCell>{item.price}</TableCell>
-                        <TableCell>
-                          <TextField
-                            type="number"
-                            value={item.orderQty}
-                            onChange={(e) => handleOrderQtyChange(index, e)}
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <IconButton
-                            onClick={() => removeItem(index)}
-                            aria-label="delete"
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))
+                    formData.purchaseOrderItems.map((item, index) => {
+                      const total = item.orderQty * item.price; // Calculate total (qty * price)
+
+                      return (
+                        <TableRow key={index}>
+                          <TableCell>{item.itemID}</TableCell>
+                          <TableCell>{item.itemName}</TableCell>
+                          <TableCell>
+                            <TextField
+                              type="text" // Change the type to text
+                              value={item.orderQty}
+                              onChange={(e) => handleOrderQtyChange(index, e)}
+                              fullWidth
+                              inputProps={{
+                                inputMode: "numeric", // Forces numeric input (on mobile)
+                                pattern: "[0-9]*", // Regex pattern to allow only numbers
+                              }}
+                              sx={{ width: "80px" }} // Reduce width of the TextField
+                            />
+                          </TableCell>
+                          <TableCell>{item.price}</TableCell>
+                          <TableCell>{total.toFixed(2)}</TableCell>
+                          <TableCell>
+                            <IconButton
+                              onClick={() => removeItem(index)}
+                              aria-label="delete"
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={5} align="center">
+                      <TableCell colSpan={6} align="center">
                         No items added
                       </TableCell>
                     </TableRow>
