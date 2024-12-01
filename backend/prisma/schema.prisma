@@ -5,7 +5,9 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL") // Optional, use if needed
 }
+
 
 model Users {
   userID       Int      @id @default(autoincrement())
