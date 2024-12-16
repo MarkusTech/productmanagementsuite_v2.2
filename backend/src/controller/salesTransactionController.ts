@@ -9,7 +9,7 @@ export class SalesTransactionController {
   async createSalesTransaction(req: Request, res: Response): Promise<void> {
     const {
       locationID,
-      salesTransactionCustomerID,
+      customerID,
       paymentTypeID,
       transactionTypeID,
       transactionNumber,
@@ -23,7 +23,7 @@ export class SalesTransactionController {
       const newTransaction = await prisma.salesTransaction.create({
         data: {
           locationID,
-          salesTransactionCustomerID,
+          customerID,
           paymentTypeID,
           transactionTypeID,
           transactionNumber,
@@ -134,7 +134,7 @@ export class SalesTransactionController {
     const { salesTransactionID } = req.params;
     const {
       locationID,
-      salesTransactionCustomerID,
+      customerID,
       paymentTypeID,
       transactionTypeID,
       transactionNumber,
@@ -150,7 +150,7 @@ export class SalesTransactionController {
         where: { salesTransactionID: parseInt(salesTransactionID) },
         data: {
           locationID,
-          salesTransactionCustomerID,
+          customerID,
           paymentTypeID,
           transactionTypeID,
           transactionNumber,
@@ -292,11 +292,11 @@ export class SalesTransactionController {
       address,
       email,
       customerTypeID,
-      customerType,
+      createdByID,
     } = req.body;
 
     try {
-      const newCustomer = await prisma.salesTransactionCustomer.create({
+      const newCustomer = await prisma.customers.create({
         data: {
           firstName,
           middleName,
@@ -305,26 +305,22 @@ export class SalesTransactionController {
           address,
           email,
           customerTypeID,
-          customerType,
+          createdByID,
         },
       });
 
-      logger.info(
-        `Sales transaction customer created: ID ${newCustomer.salesTransactionCustomerID}`
-      );
+      logger.info(`Customer created: ID ${newCustomer.customerID}`);
 
       res.status(201).json({
         success: true,
-        message: "Sales transaction customer created successfully",
+        message: "Customer created successfully",
         data: newCustomer,
       });
     } catch (error) {
-      logger.error(
-        `Error creating sales transaction customer: ${(error as Error).message}`
-      );
+      logger.error(`Error creating customer: ${(error as Error).message}`);
       res.status(500).json({
         success: false,
-        message: "Error creating sales transaction customer",
+        message: "Error creating customer",
       });
     }
   }
@@ -334,7 +330,7 @@ export class SalesTransactionController {
     req: Request,
     res: Response
   ): Promise<void> {
-    const { salesTransactionCustomerID } = req.params;
+    const { customerID } = req.params;
     const {
       firstName,
       middleName,
@@ -343,13 +339,13 @@ export class SalesTransactionController {
       address,
       email,
       customerTypeID,
-      customerType,
+      modifiedByID,
     } = req.body;
 
     try {
-      const updatedCustomer = await prisma.salesTransactionCustomer.update({
+      const updatedCustomer = await prisma.customers.update({
         where: {
-          salesTransactionCustomerID: parseInt(salesTransactionCustomerID),
+          customerID: parseInt(customerID),
         },
         data: {
           firstName,
@@ -359,26 +355,22 @@ export class SalesTransactionController {
           address,
           email,
           customerTypeID,
-          customerType,
+          modifiedByID,
         },
       });
 
-      logger.info(
-        `Sales transaction customer updated: ID ${salesTransactionCustomerID}`
-      );
+      logger.info(`Customer updated: ID ${customerID}`);
 
       res.status(200).json({
         success: true,
-        message: "Sales transaction customer updated successfully",
+        message: "Customer updated successfully",
         data: updatedCustomer,
       });
     } catch (error) {
-      logger.error(
-        `Error updating sales transaction customer: ${(error as Error).message}`
-      );
+      logger.error(`Error updating customer: ${(error as Error).message}`);
       res.status(500).json({
         success: false,
-        message: "Error updating sales transaction customer",
+        message: "Error updating customer",
       });
     }
   }
