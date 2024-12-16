@@ -187,40 +187,53 @@ export class SalesTransactionController {
   }
 
   // Sales Transaction Item
-  async createSalesTransactionItem(req: Request, res: Response): Promise<void> {
-    const { salesTransactionID, itemID, qty, price, total } = req.body;
+  async createSalesTransactionItems(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    const { items } = req.body; // Expecting an array of items
+
+    if (!Array.isArray(items) || items.length === 0) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid input. Provide an array of items.",
+      });
+      return;
+    }
 
     try {
-      const newTransactionItem = await prisma.salesTransactionItems.create({
-        data: {
-          salesTransactionID,
-          itemID,
-          qty,
-          price,
-          total: total || qty * price, // Calculate total if not provided
-        },
-        include: {
-          salesTransaction: true,
-          item: true,
-        },
-      });
-
-      logger.info(
-        `Sales transaction item created: ID ${newTransactionItem.salesTransactionItemID}`
+      const createdItems = await prisma.$transaction(
+        items.map((item) =>
+          prisma.salesTransactionItems.create({
+            data: {
+              salesTransactionID: item.salesTransactionID,
+              itemID: item.itemID,
+              qty: item.qty,
+              price: item.price,
+              total: item.total || item.qty * item.price, // Calculate total if not provided
+            },
+            include: {
+              salesTransaction: true,
+              item: true,
+            },
+          })
+        )
       );
+
+      logger.info(`Created ${createdItems.length} sales transaction items.`);
 
       res.status(201).json({
         success: true,
-        message: "Sales transaction item created successfully",
-        data: newTransactionItem,
+        message: "Sales transaction items created successfully.",
+        data: createdItems,
       });
     } catch (error) {
       logger.error(
-        `Error creating sales transaction item: ${(error as Error).message}`
+        `Error creating sales transaction items: ${(error as Error).message}`
       );
       res.status(500).json({
         success: false,
-        message: "Error creating sales transaction item",
+        message: "Error creating sales transaction items.",
       });
     }
   }
@@ -262,6 +275,110 @@ export class SalesTransactionController {
       res.status(500).json({
         success: false,
         message: "Error updating sales transaction item",
+      });
+    }
+  }
+
+  // Sales Cutomers
+  async saveSalesTransactionCustomer(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    const {
+      firstName,
+      middleName,
+      lastName,
+      contactNo,
+      address,
+      email,
+      customerTypeID,
+      customerType,
+    } = req.body;
+
+    try {
+      const newCustomer = await prisma.salesTransactionCustomer.create({
+        data: {
+          firstName,
+          middleName,
+          lastName,
+          contactNo,
+          address,
+          email,
+          customerTypeID,
+          customerType,
+        },
+      });
+
+      logger.info(
+        `Sales transaction customer created: ID ${newCustomer.salesTransactionCustomerID}`
+      );
+
+      res.status(201).json({
+        success: true,
+        message: "Sales transaction customer created successfully",
+        data: newCustomer,
+      });
+    } catch (error) {
+      logger.error(
+        `Error creating sales transaction customer: ${(error as Error).message}`
+      );
+      res.status(500).json({
+        success: false,
+        message: "Error creating sales transaction customer",
+      });
+    }
+  }
+
+  // Update an existing sales transaction customer
+  async updateSalesTransactionCustomer(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    const { salesTransactionCustomerID } = req.params;
+    const {
+      firstName,
+      middleName,
+      lastName,
+      contactNo,
+      address,
+      email,
+      customerTypeID,
+      customerType,
+    } = req.body;
+
+    try {
+      const updatedCustomer = await prisma.salesTransactionCustomer.update({
+        where: {
+          salesTransactionCustomerID: parseInt(salesTransactionCustomerID),
+        },
+        data: {
+          firstName,
+          middleName,
+          lastName,
+          contactNo,
+          address,
+          email,
+          customerTypeID,
+          customerType,
+        },
+      });
+
+      logger.info(
+        `Sales transaction customer updated: ID ${salesTransactionCustomerID}`
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Sales transaction customer updated successfully",
+        data: updatedCustomer,
+      });
+    } catch (error) {
+      logger.error(
+        `Error updating sales transaction customer: ${(error as Error).message}`
+      );
+      res.status(500).json({
+        success: false,
+        message: "Error updating sales transaction customer",
       });
     }
   }
