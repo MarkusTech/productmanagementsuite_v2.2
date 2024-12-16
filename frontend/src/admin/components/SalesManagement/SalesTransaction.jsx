@@ -789,9 +789,7 @@ const SalesTransaction = () => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Location:</Typography>
-                  <Typography variant="body1">
-                    {transactionData.location}
-                  </Typography>
+                  <Typography variant="body1">{formData.locationID}</Typography>
                 </Box>
               </Grid>
 
@@ -800,7 +798,7 @@ const SalesTransaction = () => {
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Transaction Type:</Typography>
                   <Typography variant="body1">
-                    {transactionData.transactionType}
+                    {formData.transactionType}
                   </Typography>
                 </Box>
               </Grid>
@@ -810,7 +808,7 @@ const SalesTransaction = () => {
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Payment Type:</Typography>
                   <Typography variant="body1">
-                    {transactionData.paymentType}
+                    {formData.paymentTypeID}
                   </Typography>
                 </Box>
               </Grid>
