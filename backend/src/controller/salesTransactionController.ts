@@ -69,10 +69,16 @@ export class SalesTransactionController {
           paymentType: true,
           transactionType: true,
           customer: true,
+          salesTransactionItems: {
+            // Add this line to include salesTransactionItems
+            include: {
+              item: true, // Optionally, include the associated item details (if needed)
+            },
+          },
         },
       });
 
-      logger.info("Fetched all sales transactions");
+      logger.info("Fetched all sales transactions with items");
 
       res.status(200).json({
         success: true,
