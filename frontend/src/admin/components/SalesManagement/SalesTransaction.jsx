@@ -95,12 +95,9 @@ const SalesTransaction = ({ closeForm }) => {
   }, [formData.purchaseOrderItems]); // Add formData.purchaseOrderItems as a dependency
 
   const generateTransactionNumber = () => {
-    return (
-      "TX" +
-      Math.floor(Math.random() * 1000000)
-        .toString()
-        .padStart(6, "0")
-    );
+    return Math.floor(Math.random() * 1000000)
+      .toString()
+      .padStart(6, "0");
   };
 
   const transactionNumbersss = generateTransactionNumber();
@@ -222,6 +219,11 @@ const SalesTransaction = ({ closeForm }) => {
         customerTypeID: selectedCustomer.customerType.customerTypeID,
         email: selectedCustomer.email,
       });
+
+      setFormData((prevState) => ({
+        ...prevState,
+        customerID: customerID, // Update customerID in formData
+      }));
       setAnchorEl(null); // Close the menu
     }
   };
@@ -337,6 +339,39 @@ const SalesTransaction = ({ closeForm }) => {
       }
     } catch (err) {
       setError(err.message || "An unknown error occurred");
+    }
+  };
+
+  // save
+  const saveTransaction = async () => {
+    try {
+      // Prepare the data for the API request
+      const transactionData = {
+        locationID: formData.locationID,
+        customerID: formData.customerID,
+        paymentTypeID: formData.paymentTypeID,
+        transactionTypeID: formData.transactionTypeID,
+        transactionNumber: Math.floor(transactionNumbersss),
+        status: "Pending",
+        totalItems: totalItems,
+        totalQuantity: totalQuantity,
+        totalPurchase: Math.floor(totalPurchase),
+      };
+
+      // Sending the data to the API
+      const response = await axios.post(
+        "http://localhost:5000/api/v3/transaction",
+        transactionData
+      );
+
+      if (response.data.success) {
+        // const transactionIDData = response.data.data.salesTransactionID;
+      } else {
+        alert("Failed to save transaction.");
+      }
+    } catch (error) {
+      console.error("Error saving transaction:", error);
+      alert("Error saving transaction.");
     }
   };
 
@@ -919,7 +954,7 @@ const SalesTransaction = ({ closeForm }) => {
                   <Button
                     variant="contained"
                     color="primary"
-                    // onClick={handleSave}
+                    onClick={saveTransaction}
                   >
                     Save
                   </Button>
