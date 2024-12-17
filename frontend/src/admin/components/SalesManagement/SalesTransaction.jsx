@@ -41,20 +41,16 @@ const SalesTransaction = () => {
   const roleID = userState?.roleID;
 
   const [formData, setFormData] = useState({
-    supplierID: "",
     locationID: "",
-    transactionType: "",
-    customerTypeID: "",
+    customerID: "",
     paymentTypeID: "",
-
-    orderDate: "",
-    expectedDeliverDate: "",
+    transactionTypeID: "",
+    transactionNumber: "",
     status: "Pending",
-    createdByID: roleID,
-    modifiedByID: null,
-    referenceNo: "",
-    remarks: "",
-    purchaseOrderItems: [],
+    totalItems: 0,
+    totalQuantity: 0,
+    totalPurchase: 0,
+    purchaseOrderItems: [], // Add purchaseOrderItems to formData
   });
 
   const [customerFormData, setCustomerFormData] = useState({
@@ -66,6 +62,20 @@ const SalesTransaction = () => {
     customerTypeID: "",
     email: "",
   });
+
+  const [salesItems, setSalesItems] = useState([]);
+
+  // const [salesItems, setSalesItems] = useState({
+  //   salesTransactionID: 0,
+  //   itemID: 0,
+  //   qty: 0,
+  //   price: 0,
+  //   total: 0,
+  // });
+
+  useEffect(() => {
+    setSalesItems(formData.purchaseOrderItems); // Sync purchaseOrderItems with salesItems
+  }, [formData.purchaseOrderItems]);
 
   const [locations, setLocations] = useState([]);
   const [items, setItems] = useState([]);
@@ -181,6 +191,18 @@ const SalesTransaction = () => {
     }
   };
 
+  const handleClearCustomerData = () => {
+    setCustomerFormData({
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      contactNo: "",
+      address: "",
+      customerTypeID: "",
+      email: "",
+    });
+  };
+
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
@@ -210,14 +232,15 @@ const SalesTransaction = () => {
     }));
   };
 
-  const handleOrderQtyChange = (index, e) => {
-    const updatedItems = [...formData.purchaseOrderItems];
-    const orderQty = parseInt(e.target.value, 10) || 0;
-    updatedItems[index].orderQty = orderQty;
-    setFormData((prev) => ({
-      ...prev,
-      purchaseOrderItems: updatedItems,
-    }));
+  // Handle changes to order quantity
+  const handleOrderQtyChange = (index, event) => {
+    const newQty = event.target.value;
+    const updatedItems = [...salesItems];
+    updatedItems[index].orderQty = newQty;
+    updatedItems[index].total =
+      updatedItems[index].orderQty * updatedItems[index].price; // Recalculate total
+    setSalesItems(updatedItems); // Update salesItems state
+    updateFormData(updatedItems); // Also update formData with the new items
   };
 
   const removeItem = (index) => {
@@ -225,6 +248,27 @@ const SalesTransaction = () => {
       ...prev,
       purchaseOrderItems: prev.purchaseOrderItems.filter((_, i) => i !== index),
     }));
+  };
+
+  // Helper function to update formData
+  const updateFormData = (updatedItems) => {
+    const totalItems = updatedItems.length;
+    const totalQuantity = updatedItems.reduce(
+      (sum, item) => sum + item.orderQty,
+      0
+    );
+    const totalPurchase = updatedItems.reduce(
+      (sum, item) => sum + item.total,
+      0
+    );
+
+    setFormData({
+      ...formData,
+      purchaseOrderItems: updatedItems, // Update items list in formData
+      totalItems: totalItems,
+      totalQuantity: totalQuantity,
+      totalPurchase: totalPurchase.toFixed(2), // Format totalPurchase to 2 decimal places
+    });
   };
 
   const addItemToOrder = (item) => {
@@ -325,7 +369,7 @@ const SalesTransaction = () => {
               <Grid item xs={6}>
                 <Select
                   name="transactionType"
-                  value={formData.transactionType}
+                  value={formData.transactionTypeID}
                   onChange={handleChange}
                   required
                   fullWidth
@@ -515,7 +559,7 @@ const SalesTransaction = () => {
                 <Button
                   variant="outlined"
                   color="secondary"
-                  // onClick={handleClear}
+                  onClick={handleClearCustomerData} // Add this handler
                   fullWidth
                 >
                   Clear Customer Information
@@ -597,7 +641,7 @@ const SalesTransaction = () => {
               </Grid>
 
               {/* Add Item Button */}
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <Button
                   variant="outlined"
                   color="primary"
@@ -605,18 +649,6 @@ const SalesTransaction = () => {
                   fullWidth
                 >
                   Add Item
-                </Button>
-              </Grid>
-
-              {/* Submit Button */}
-              <Grid item xs={12}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
-                  Create Purchase Order
                 </Button>
               </Grid>
             </Grid>
