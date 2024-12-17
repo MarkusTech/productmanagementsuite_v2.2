@@ -57,6 +57,16 @@ const SalesTransaction = () => {
     purchaseOrderItems: [],
   });
 
+  const [customerFormData, setCustomerFormData] = useState({
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    contactNo: "",
+    address: "",
+    customerTypeID: "",
+    email: "",
+  });
+
   const [locations, setLocations] = useState([]);
   const [items, setItems] = useState([]);
   const [transactionType, setTransactionType] = useState([]);
@@ -66,7 +76,7 @@ const SalesTransaction = () => {
   const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [customers, setCustomers] = useState([]);
-  const [filteredCustomers, setFilteredCustomers] = useState([]);
+  // const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -151,32 +161,24 @@ const SalesTransaction = () => {
     }
   };
 
-  // Filter customers based on search term
-  useEffect(() => {
-    if (searchTerm) {
-      setFilteredCustomers(
-        customers.filter((customer) =>
-          customer.customerName.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
-    } else {
-      setFilteredCustomers([]);
-    }
-  }, [searchTerm, customers]);
-
   // Handle customer selection
   const handleCustomerSelect = (customerID) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      supplierID: customerID,
-    }));
-    setSearchTerm(""); // Clear the search input after selection
-    setFilteredCustomers([]); // Clear the suggestions
-  };
+    const selectedCustomer = customers.find(
+      (customer) => customer.customerID === customerID
+    );
 
-  const handleOpenMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-    setFilteredCustomers(customers); // Reset filter on menu open
+    if (selectedCustomer) {
+      setCustomerFormData({
+        firstName: selectedCustomer.firstName,
+        middleName: selectedCustomer.middleName,
+        lastName: selectedCustomer.lastName,
+        contactNo: selectedCustomer.contactNo,
+        address: selectedCustomer.address,
+        customerTypeID: selectedCustomer.customerType.customerTypeID,
+        email: selectedCustomer.email,
+      });
+      setAnchorEl(null); // Close the menu
+    }
   };
 
   const handleCloseMenu = () => {
@@ -184,13 +186,8 @@ const SalesTransaction = () => {
   };
 
   const handleSearchChange = (event) => {
-    const term = event.target.value.toLowerCase();
-    setSearchTerm(term);
-    setFilteredCustomers(
-      customers.filter((customer) =>
-        customer.customerName.toLowerCase().includes(term)
-      )
-    );
+    const value = event.target.value.toLowerCase();
+    setSearchTerm(value);
   };
 
   const transactionData = {
@@ -352,50 +349,27 @@ const SalesTransaction = () => {
                 <p sx={{ fontWeight: "bold" }}>Customers Information</p>
               </Grid>
 
-              {/* Customer Dropdown */}
-              <Grid item xs={9}>
-                <TextField
-                  fullWidth
-                  name="supplierID"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search Customers"
-                  required
-                />
-                {filteredCustomers.length > 0 && (
-                  <List style={{ border: "1px solid #ccc", marginTop: "5px" }}>
-                    {filteredCustomers.map((customer) => (
-                      <ListItem key={customer.customerID} disablePadding>
-                        <ListItemButton
-                          onClick={() =>
-                            handleCustomerSelect(customer.customerID)
-                          }
-                        >
-                          {customer.customerName}
-                        </ListItemButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
-              </Grid>
-
               {/* button */}
-              <Grid item xs={3}>
+              <Grid item xs={12}>
                 <Button
                   fullWidth
                   variant="contained"
                   color="primary"
-                  onClick={handleOpenMenu}
+                  onClick={(e) => setAnchorEl(e.currentTarget)}
                 >
                   Select Customer
                 </Button>
 
+                {/* task */}
                 <Menu
                   anchorEl={anchorEl}
                   open={Boolean(anchorEl)}
                   onClose={handleCloseMenu}
-                  PaperProps={{ style: { maxHeight: 300, width: 300 } }}
+                  PaperProps={{
+                    style: { maxHeight: 400, width: 500 }, // Adjusted width to 500px
+                  }}
                 >
+                  {/* Search Input */}
                   <MenuItem>
                     <input
                       type="text"
@@ -410,16 +384,40 @@ const SalesTransaction = () => {
                       }}
                     />
                   </MenuItem>
-                  {filteredCustomers.length > 0 ? (
+
+                  {/* Header */}
+                  <MenuItem
+                    disabled
+                    style={{ fontWeight: "bold", backgroundColor: "#f0f0f0" }}
+                  >
+                    <div style={{ display: "flex", width: "100%" }}>
+                      <span style={{ flex: 1 }}>Name</span>
+                      <span style={{ flex: 1 }}>Contact No</span>
+                      <span style={{ flex: 1 }}>Type</span>
+                    </div>
+                  </MenuItem>
+
+                  {/* Customer List */}
+                  {customers.length > 0 ? (
                     <List>
-                      {filteredCustomers.map((customer) => (
+                      {customers.map((customer) => (
                         <ListItem key={customer.customerID} disablePadding>
                           <ListItemButton
                             onClick={() =>
                               handleCustomerSelect(customer.customerID)
                             }
                           >
-                            {customer.customerName}
+                            <div style={{ display: "flex", width: "500px" }}>
+                              <span style={{ flex: 1 }}>
+                                {`${customer.firstName} ${customer.middleName} ${customer.lastName}`}
+                              </span>
+                              <span style={{ flex: 1 }}>
+                                {customer.contactNo}
+                              </span>
+                              <span style={{ flex: 1 }}>
+                                {customer.customerType.TypeName}
+                              </span>
+                            </div>
                           </ListItemButton>
                         </ListItem>
                       ))}
@@ -435,63 +433,58 @@ const SalesTransaction = () => {
                 <TextField
                   label="First Name"
                   name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  required
+                  value={customerFormData.firstName}
                   fullWidth
+                  required
                 />
               </Grid>
               <Grid item xs={4}>
                 <TextField
                   label="Middle Name"
                   name="middleName"
-                  value={formData.middleName}
-                  onChange={handleChange}
-                  required
+                  value={customerFormData.middleName}
                   fullWidth
+                  required
                 />
               </Grid>
               <Grid item xs={4}>
                 <TextField
                   label="Last Name"
                   name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  required
+                  value={customerFormData.lastName}
                   fullWidth
+                  required
                 />
               </Grid>
-              {/* seconde row*/}
+
+              {/* Second Row */}
               <Grid item xs={4}>
                 <TextField
                   label="Contact No"
                   name="contactNo"
-                  value={formData.contactNo}
-                  onChange={handleChange}
-                  required
+                  value={customerFormData.contactNo}
                   fullWidth
+                  required
                 />
               </Grid>
               <Grid item xs={8}>
                 <TextField
                   label="Address"
                   name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  required
+                  value={customerFormData.address}
                   fullWidth
+                  required
                 />
               </Grid>
 
-              {/* third row */}
+              {/* Third Row */}
               <Grid item xs={4}>
                 <Select
                   name="customerTypeID"
-                  value={formData.customerTypeID}
-                  onChange={handleChange}
-                  required
-                  fullWidth
+                  value={customerFormData.customerTypeID}
                   displayEmpty
+                  fullWidth
+                  required
                 >
                   <MenuItem value="" disabled>
                     Select Customer Type
@@ -512,10 +505,9 @@ const SalesTransaction = () => {
                 <TextField
                   label="Email"
                   name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
+                  value={customerFormData.email}
                   fullWidth
+                  required
                 />
               </Grid>
 
