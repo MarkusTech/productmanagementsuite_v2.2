@@ -41,10 +41,10 @@ const SalesTransaction = () => {
   const roleID = userState?.roleID;
 
   const [formData, setFormData] = useState({
+    transactionTypeID: "",
     locationID: "",
     customerID: "",
     paymentTypeID: "",
-    transactionTypeID: "",
     transactionNumber: "",
     status: "Pending",
     totalItems: 0,
@@ -64,6 +64,9 @@ const SalesTransaction = () => {
   });
 
   const [salesItems, setSalesItems] = useState([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+  const [totalPurchase, setTotalPurchase] = useState(0.0);
 
   // const [salesItems, setSalesItems] = useState({
   //   salesTransactionID: 0,
@@ -73,8 +76,40 @@ const SalesTransaction = () => {
   //   total: 0,
   // });
 
+  const calculateTotals = () => {
+    const itemsCount = formData.purchaseOrderItems.length;
+
+    // Ensure that orderQty and price are treated as numbers
+    const quantitySum = formData.purchaseOrderItems.reduce((sum, item) => {
+      return sum + (Number(item.orderQty) || 0); // Convert orderQty to number and add to sum
+    }, 0);
+
+    const purchaseSum = formData.purchaseOrderItems.reduce((sum, item) => {
+      return sum + (Number(item.orderQty) || 0) * (Number(item.price) || 0); // Convert orderQty and price to numbers
+    }, 0);
+
+    // Update individual state variables
+    setTotalItems(itemsCount);
+    setTotalQuantity(quantitySum);
+    setTotalPurchase(purchaseSum.toFixed(2)); // Format to two decimal places
+  };
+
+  const generateTransactionNumber = () => {
+    return (
+      "TX" +
+      Math.floor(Math.random() * 1000000)
+        .toString()
+        .padStart(6, "0")
+    );
+  };
+
+  const transactionNumbersss = generateTransactionNumber();
+
+  const currentDate = new Date().toLocaleDateString(); // Formats the current date
+
   useEffect(() => {
-    setSalesItems(formData.purchaseOrderItems); // Sync purchaseOrderItems with salesItems
+    setSalesItems(formData.purchaseOrderItems);
+    calculateTotals();
   }, [formData.purchaseOrderItems]);
 
   const [locations, setLocations] = useState([]);
@@ -86,7 +121,6 @@ const SalesTransaction = () => {
   const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [customers, setCustomers] = useState([]);
-  // const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -210,18 +244,6 @@ const SalesTransaction = () => {
   const handleSearchChange = (event) => {
     const value = event.target.value.toLowerCase();
     setSearchTerm(value);
-  };
-
-  const transactionData = {
-    transactionNumber: "TX123456",
-    transactionDate: "2024-12-01",
-    status: "Pending",
-    location: "Store 1",
-    transactionType: "Credit Card",
-    paymentType: "Cash",
-    totalItems: 20,
-    totalQuantity: 100,
-    totalPurchase: 530000,
   };
 
   const handleChange = (e) => {
@@ -365,12 +387,12 @@ const SalesTransaction = () => {
                 </Select>
               </Grid>
 
-              {/* Trasaction Type */}
+              {/* Trasaction Types */}
               <Grid item xs={6}>
                 <Select
-                  name="transactionType"
-                  value={formData.transactionTypeID}
-                  onChange={handleChange}
+                  name="transactionTypeID" // Name must match the key in formData
+                  value={formData.transactionTypeID} // Value should reflect the state for the selected transaction type
+                  onChange={handleChange} // Ensure that this triggers handleChange to update state
                   required
                   fullWidth
                   displayEmpty
@@ -595,14 +617,21 @@ const SalesTransaction = () => {
                       {formData.purchaseOrderItems.length > 0 ? (
                         formData.purchaseOrderItems.map((item, index) => {
                           const total = item.orderQty * item.price;
-
                           return (
-                            <TableRow key={index}>
-                              <TableCell>{item.itemID}</TableCell>
-                              <TableCell>{item.itemName}</TableCell>
-                              <TableCell>
+                            <TableRow key={index} sx={{ height: "40px" }}>
+                              {" "}
+                              {/* Set height for row */}
+                              <TableCell sx={{ padding: "4px" }}>
+                                {item.itemID}
+                              </TableCell>{" "}
+                              {/* Reduce padding */}
+                              <TableCell sx={{ padding: "4px" }}>
+                                {item.itemName}
+                              </TableCell>{" "}
+                              {/* Reduce padding */}
+                              <TableCell sx={{ padding: "4px" }}>
                                 <TextField
-                                  type="text" // Change the type to text
+                                  type="text"
                                   value={item.orderQty}
                                   onChange={(e) =>
                                     handleOrderQtyChange(index, e)
@@ -612,12 +641,16 @@ const SalesTransaction = () => {
                                     inputMode: "numeric",
                                     pattern: "[0-9]*",
                                   }}
-                                  sx={{ width: "80px" }}
+                                  sx={{ width: "80px", padding: "4px" }} // Reduce padding for textfield
                                 />
                               </TableCell>
-                              <TableCell>{item.price}</TableCell>
-                              <TableCell>{total.toFixed(2)}</TableCell>
-                              <TableCell>
+                              <TableCell sx={{ padding: "4px" }}>
+                                {item.price}
+                              </TableCell>
+                              <TableCell sx={{ padding: "4px" }}>
+                                {total.toFixed(2)}
+                              </TableCell>
+                              <TableCell sx={{ padding: "4px" }}>
                                 <IconButton
                                   onClick={() => removeItem(index)}
                                   aria-label="delete"
@@ -784,7 +817,7 @@ const SalesTransaction = () => {
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Transaction Number:</Typography>
                   <Typography variant="body1">
-                    {transactionData.transactionNumber}
+                    {transactionNumbersss}
                   </Typography>
                 </Box>
               </Grid>
@@ -793,9 +826,7 @@ const SalesTransaction = () => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Transaction Date:</Typography>
-                  <Typography variant="body1">
-                    {transactionData.transactionDate}
-                  </Typography>
+                  <Typography variant="body1">{currentDate}</Typography>
                 </Box>
               </Grid>
 
@@ -803,9 +834,7 @@ const SalesTransaction = () => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Status:</Typography>
-                  <Typography variant="body1">
-                    {transactionData.status}
-                  </Typography>
+                  <Typography variant="body1">{formData.status}</Typography>
                 </Box>
               </Grid>
 
@@ -813,7 +842,11 @@ const SalesTransaction = () => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Location:</Typography>
-                  <Typography variant="body1">{formData.locationID}</Typography>
+                  <Typography variant="body1">
+                    {locations.find(
+                      (location) => location.locationID === formData.locationID
+                    )?.locationName || "No Location Selected"}
+                  </Typography>
                 </Box>
               </Grid>
 
@@ -822,7 +855,10 @@ const SalesTransaction = () => {
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Transaction Type:</Typography>
                   <Typography variant="body1">
-                    {formData.transactionType}
+                    {transactionType.find(
+                      (type) =>
+                        type.transactionTypeID === formData.transactionTypeID
+                    )?.transactionName || "No Type Selected"}
                   </Typography>
                 </Box>
               </Grid>
@@ -832,7 +868,10 @@ const SalesTransaction = () => {
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Payment Type:</Typography>
                   <Typography variant="body1">
-                    {formData.paymentTypeID}
+                    {paymentTypes.find(
+                      (payment) =>
+                        payment.paymentTypeID === formData.paymentTypeID
+                    )?.paymentName || "No Payment Type Selected"}
                   </Typography>
                 </Box>
               </Grid>
@@ -841,9 +880,7 @@ const SalesTransaction = () => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Total Items:</Typography>
-                  <Typography variant="body1">
-                    {transactionData.totalItems}
-                  </Typography>
+                  <Typography variant="body1">{totalItems}</Typography>
                 </Box>
               </Grid>
 
@@ -851,9 +888,7 @@ const SalesTransaction = () => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Total Quantity:</Typography>
-                  <Typography variant="body1">
-                    {transactionData.totalQuantity}
-                  </Typography>
+                  <Typography variant="body1">{totalQuantity}</Typography>
                 </Box>
               </Grid>
 
@@ -861,9 +896,7 @@ const SalesTransaction = () => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Total Purchase:</Typography>
-                  <Typography variant="body1">
-                    ₱{transactionData.totalPurchase}
-                  </Typography>
+                  <Typography variant="body1">₱{totalPurchase}</Typography>
                 </Box>
               </Grid>
 
