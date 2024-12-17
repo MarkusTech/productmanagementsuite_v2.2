@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Table from "../Table";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-// import TransactionTypeList from "./TransactionTypeList";
 import SalesTransaction from "./SalesTransaction";
+import axios from "axios";
 
 // Table headers for Sales Transaction
 const categoryTableHead = [
@@ -24,94 +24,62 @@ const categoryTableHead = [
 const renderHead = (item, index) => <th key={index}>{item}</th>;
 
 const SalesTransactionList = () => {
-  // const [showTransactionTypeList, setShowTransactionTypeList] = useState(false);
+  const [salesTransactions, setSalesTransactions] = useState([]);
   const [showSalesTransaction, setShowSalesTransaction] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // const toggleTransactionTypeList = () => {
-  //   setShowTransactionTypeList((prev) => !prev);
-  // };
+  useEffect(() => {
+    // Fetch data from the API
+    const fetchSalesTransactions = async () => {
+      try {
+        const result = await axios.get(
+          "http://localhost:5000/api/v3/transaction"
+        );
+
+        // Check response format
+        console.log(result.data); // Log the full response for debugging
+        const transactionSuccess = result.data.success;
+        const transactionData = result.data.data;
+
+        if (transactionSuccess) {
+          setSalesTransactions(transactionData);
+        } else {
+          setError("Failed to fetch sales transactions");
+        }
+      } catch (error) {
+        setError("Error fetching sales transactions");
+        console.error("Error fetching sales transactions:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSalesTransactions();
+  }, []);
 
   const showSalesTransactionbutton = () => {
     setShowSalesTransaction(!showSalesTransaction);
   };
 
-  const dummyData = [
-    {
-      salesTransactionID: 1,
-      transactionNumber: 1001,
-      location: "New York Store",
-      transactionType: "Sale",
-      paymentType: "Credit Card",
-      totalItems: 3,
-      totalQuantity: 5,
-      totalPurchase: 149.99,
-      transactionDate: "2024-11-28T12:30:00",
-      status: "Completed",
-    },
-    {
-      salesTransactionID: 2,
-      transactionNumber: 1002,
-      location: "Los Angeles Store",
-      transactionType: "Sale",
-      paymentType: "Cash",
-      totalItems: 2,
-      totalQuantity: 3,
-      totalPurchase: 99.97,
-      transactionDate: "2024-11-29T14:45:00",
-      status: "Pending",
-    },
-    {
-      salesTransactionID: 3,
-      transactionNumber: 1003,
-      location: "Chicago Store",
-      transactionType: "Return",
-      paymentType: "Credit Card",
-      totalItems: 1,
-      totalQuantity: 1,
-      totalPurchase: 29.99,
-      transactionDate: "2024-11-30T09:00:00",
-      status: "Completed",
-    },
-    {
-      salesTransactionID: 4,
-      transactionNumber: 1004,
-      location: "Miami Store",
-      transactionType: "Sale",
-      paymentType: "Debit Card",
-      totalItems: 4,
-      totalQuantity: 6,
-      totalPurchase: 219.96,
-      transactionDate: "2024-12-01T11:00:00",
-      status: "Completed",
-    },
-    {
-      salesTransactionID: 5,
-      transactionNumber: 1005,
-      location: "Dallas Store",
-      transactionType: "Sale",
-      paymentType: "Cash",
-      totalItems: 2,
-      totalQuantity: 4,
-      totalPurchase: 129.98,
-      transactionDate: "2024-12-02T15:30:00",
-      status: "Pending",
-    },
-  ];
+  const closeForm = () => {
+    setShowSalesTransaction(false); // Close the form
+  };
 
   const renderBody = (item, index) => (
     <tr key={index}>
       <td>{item.salesTransactionID}</td>
       <td>{item.transactionNumber}</td>
-      <td>{item.location}</td>
-      <td>{item.transactionType}</td>
-      <td>{item.paymentType}</td>
+      <td>{item.location?.locationName}</td>
+      <td>{item.transactionType?.transactionName}</td>
+      <td>{item.paymentType?.paymentName}</td>
       <td>{item.totalItems}</td>
       <td>{item.totalQuantity}</td>
-      <td>{item.totalPurchase.toFixed(2)}</td>
+      <td>{item.totalPurchase?.toFixed(2)}</td>
       <td>{new Date(item.transactionDate).toLocaleString()}</td>
       <td
         style={{
-          color: item.status === "Completed" ? "blue" : "orange",
+          color: item.status === "COMPLETED" ? "blue" : "orange",
           fontWeight: "bold",
         }}
       >
@@ -129,10 +97,6 @@ const SalesTransactionList = () => {
     <div>
       <h3>SALES TRANSACTION LIST</h3>
       <div className="button-container">
-        {/* <button className="create-form-btn" onClick={toggleTransactionTypeList}>
-          Transaction Type
-        </button>
-        <button className="create-form-btn">Payment Type</button> */}
         <button
           className="create-form-btn"
           onClick={showSalesTransactionbutton}
@@ -142,27 +106,35 @@ const SalesTransactionList = () => {
       </div>
 
       <div className="table-container">
-        <div className="row">
-          <div className="col-12">
-            <div className="card">
-              <div className="card__body">
-                <Table
-                  limit="10"
-                  headData={categoryTableHead}
-                  renderHead={renderHead}
-                  bodyData={dummyData}
-                  renderBody={renderBody}
-                  tableClass="table"
-                />
+        {loading && <p>Loading sales transactions...</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {!loading && !error && salesTransactions.length === 0 && (
+          <p>No sales transactions available.</p>
+        )}
+
+        {!loading && !error && salesTransactions.length > 0 && (
+          <div className="row">
+            <div className="col-12">
+              <div className="card">
+                <div className="card__body">
+                  <Table
+                    limit="10"
+                    headData={categoryTableHead}
+                    renderHead={renderHead}
+                    bodyData={salesTransactions}
+                    renderBody={renderBody}
+                    tableClass="table"
+                  />
+                </div>
               </div>
             </div>
           </div>
-          {/* {showTransactionTypeList && <TransactionTypeList />} */}
-          {showSalesTransaction && <SalesTransaction />}
-        </div>
+        )}
+
+        {showSalesTransaction && <SalesTransaction closeForm={closeForm} />}
       </div>
 
-      <style jsx>{`
+      <style>{`
         .button-container {
           display: flex;
           justify-content: flex-end;

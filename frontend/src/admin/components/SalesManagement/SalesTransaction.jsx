@@ -36,7 +36,7 @@ import {
 } from "../../../services/purchaseOrder/purchaseOrderService";
 import axios from "axios";
 
-const SalesTransaction = () => {
+const SalesTransaction = ({ closeForm }) => {
   const userState = useSelector((state) => state.user.userInfo);
   const roleID = userState?.roleID;
 
@@ -344,7 +344,7 @@ const SalesTransaction = () => {
     <div style={styles.formContainer}>
       <IconButton
         style={styles.closeButton}
-        // onClick={closeForm}
+        onClick={closeForm}
         aria-label="close"
       >
         <CloseIcon />
