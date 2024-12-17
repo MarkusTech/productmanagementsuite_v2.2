@@ -39,7 +39,7 @@ const Reports = () => {
     <div className="table-container">
       <div style={styles.formContainer}>
         <header style={styles.header}>
-          <h1 style={styles.title}>Inventory System Report</h1>
+          <h1 style={styles.title}>Inventory System Reports</h1>
           <p style={styles.subtitle}>Date: {new Date().toLocaleDateString()}</p>
         </header>
 
