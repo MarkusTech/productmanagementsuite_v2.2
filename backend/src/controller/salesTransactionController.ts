@@ -70,16 +70,18 @@ export class SalesTransactionController {
           transactionType: true,
           customer: true,
           salesTransactionItems: {
-            // Add this line to include salesTransactionItems
             include: {
               item: true, // Optionally, include the associated item details (if needed)
             },
           },
         },
+        orderBy: {
+          salesTransactionID: 'desc', // Order by salesTransactionID in descending order
+        },
       });
-
+  
       logger.info("Fetched all sales transactions with items");
-
+  
       res.status(200).json({
         success: true,
         data: transactions,
@@ -94,6 +96,7 @@ export class SalesTransactionController {
       });
     }
   }
+  
 
   // Get a single sales transaction by ID
   async getSalesTransactionById(req: Request, res: Response): Promise<void> {
