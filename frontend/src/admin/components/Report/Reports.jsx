@@ -37,7 +37,7 @@ const Reports = () => {
 
   return (
     <div className="table-container">
-      <div>
+      <div style={styles.formContainer}>
         <header style={styles.header}>
           <h1 style={styles.title}>Inventory System Daily Report</h1>
           <p style={styles.subtitle}>Date: {new Date().toLocaleDateString()}</p>
@@ -204,11 +204,14 @@ const Reports = () => {
 // Styles
 const styles = {
   container: {
-    padding: "30px",
+    padding: "30px", // Add padding to the outer container
     fontFamily: "Arial, sans-serif",
     backgroundColor: "#f9f9f9",
     margin: "0 auto",
     maxWidth: "1200px", // Limit width for larger screens
+  },
+  formContainer: {
+    padding: "20px", // Padding around the form container
   },
   header: {
     textAlign: "center",
@@ -218,10 +221,12 @@ const styles = {
     fontSize: "32px",
     fontWeight: "bold",
     color: "#007bff",
+    padding: "0 10px", // Padding for title
   },
   subtitle: {
     fontSize: "16px",
     color: "#6c757d",
+    padding: "0 10px", // Padding for subtitle
   },
   loading: {
     textAlign: "center",
@@ -247,6 +252,7 @@ const styles = {
     gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", // Responsive grid
     gap: "30px",
     justifyItems: "center",
+    padding: "20px", // Padding inside grid container
   },
   card: {
     backgroundColor: "#fff",
@@ -255,6 +261,7 @@ const styles = {
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
     width: "300px",
     textAlign: "center",
+    paddingTop: "20px", // Add padding to card top
   },
   cardTitle: {
     fontSize: "20px",
@@ -282,6 +289,7 @@ const styles = {
     gap: "30px", // Space between sections
     justifyContent: "space-between",
     flexWrap: "wrap",
+    padding: "20px", // Padding inside the report content area
   },
   tableSection: {
     flex: 1,
@@ -303,6 +311,7 @@ const styles = {
   table: {
     width: "100%",
     borderCollapse: "collapse",
+    padding: "10px", // Padding inside table cells
   },
 };
 
