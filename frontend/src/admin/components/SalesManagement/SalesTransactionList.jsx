@@ -85,12 +85,20 @@ const SalesTransactionList = () => {
       <td>{new Date(item.transactionDate).toLocaleString()}</td>
       <td
         style={{
-          color: item.status === "COMPLETED" ? "blue" : "orange",
+          color:
+            item.status === "Completed"
+              ? "blue"
+              : item.status === "Pending"
+              ? "orange"
+              : item.status === "Canceled"
+              ? "red"
+              : "black", // Default color if none match
           fontWeight: "bold",
         }}
       >
         {item.status}
       </td>
+
       <td>
         <Button variant="contained" color="primary" startIcon={<EditIcon />}>
           Edit

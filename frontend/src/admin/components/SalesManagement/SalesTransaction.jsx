@@ -342,59 +342,186 @@ const SalesTransaction = ({ closeForm }) => {
     }
   };
 
-  // save
+  // save Transaction
   const saveTransaction = async () => {
-    try {
-      // Prepare the transaction data for the API request
-      const transactionData = {
-        locationID: formData.locationID,
-        customerID: formData.customerID,
-        paymentTypeID: formData.paymentTypeID,
-        transactionTypeID: formData.transactionTypeID,
-        transactionNumber: Math.floor(transactionNumbersss),
-        status: "Pending",
-        totalItems: totalItems,
-        totalQuantity: totalQuantity,
-        totalPurchase: Math.floor(totalPurchase), // Make sure it's an integer
-      };
+    // Show confirmation dialog before proceeding with save
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to save this transaction?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, save it!",
+      cancelButtonText: "No, cancel",
+      background: "#f4f4f9", // Background color of the popup
+      color: "#1d72b8", // Title text color
+      confirmButtonColor: "#28a745", // Green color for "Yes" button
+      cancelButtonColor: "#dc3545", // Red color for "No" button
+      backdrop: "rgba(0, 0, 0, 0.4)", // Backdrop color
+    });
 
-      // Sending the transaction data to the API
-      const response = await axios.post(
-        "http://localhost:5000/api/v3/transaction",
-        transactionData
-      );
+    if (result.isConfirmed) {
+      try {
+        // Prepare the transaction data for the API request
+        const transactionData = {
+          locationID: formData.locationID,
+          customerID: formData.customerID,
+          paymentTypeID: formData.paymentTypeID,
+          transactionTypeID: formData.transactionTypeID,
+          transactionNumber: Math.floor(transactionNumbersss),
+          status: "Pending", // You can set status to "Pending" or another value depending on your needs
+          totalItems: totalItems,
+          totalQuantity: totalQuantity,
+          totalPurchase: Math.floor(totalPurchase), // Make sure it's an integer
+        };
 
-      if (response.data.success) {
-        // Get the salesTransactionID from the response
-        const salesTransactionID = response.data.data.salesTransactionID;
-
-        // Prepare the sales items data
-        const salesItems = formData.purchaseOrderItems.map((item) => ({
-          salesTransactionID: salesTransactionID,
-          itemID: item.itemID,
-          qty: Math.floor(item.orderQty),
-          price: item.price,
-          total: item.orderQty * item.price, // Total is qty * price
-        }));
-
-        // Send sales items to the API
-        const saveSalesItemsResponse = await axios.post(
-          "http://localhost:5000/api/v3/transaction/saveSalesItems",
-          { items: salesItems }
+        // Sending the transaction data to the API
+        const response = await axios.post(
+          "http://localhost:5000/api/v3/transaction",
+          transactionData
         );
 
-        if (saveSalesItemsResponse.data.success) {
-          alert("Transaction and sales items saved successfully.");
-          // Optionally reset the form or perform other actions
+        if (response.data.success) {
+          // Get the salesTransactionID from the response
+          const salesTransactionID = response.data.data.salesTransactionID;
+
+          // Prepare the sales items data
+          const salesItems = formData.purchaseOrderItems.map((item) => ({
+            salesTransactionID: salesTransactionID,
+            itemID: item.itemID,
+            qty: Math.floor(item.orderQty),
+            price: item.price,
+            total: item.orderQty * item.price, // Total is qty * price
+          }));
+
+          // Send sales items to the API
+          const saveSalesItemsResponse = await axios.post(
+            "http://localhost:5000/api/v3/transaction/saveSalesItems",
+            { items: salesItems }
+          );
+
+          if (saveSalesItemsResponse.data.success) {
+            Swal.fire({
+              icon: "success",
+              text: "Transaction and sales items saved successfully.",
+              confirmButtonText: "Okay",
+              customClass: {
+                confirmButton: "swal-confirm-button",
+              },
+            });
+            // Optionally reset the form or perform other actions
+          } else {
+            Swal.fire("Error", "Failed to save sales items.", "error");
+          }
         } else {
-          alert("Failed to save sales items.");
+          Swal.fire("Error", "Failed to save transaction.", "error");
         }
-      } else {
-        alert("Failed to save transaction.");
+      } catch (error) {
+        console.error("Error saving transaction:", error);
+        Swal.fire("Error", "Error saving transaction.", "error");
       }
-    } catch (error) {
-      console.error("Error saving transaction:", error);
-      alert("Error saving transaction.");
+    } else {
+      Swal.fire({
+        title: "Cancelled",
+        text: "Your transaction was not saved.",
+        icon: "info",
+        background: "#f0f8ff", // Light background color for info
+        color: "#007bff", // Title text color (blue for info)
+        confirmButtonText: "OK",
+        confirmButtonColor: "#007bff", // Blue color for the confirm button
+        backdrop: "rgba(0, 0, 0, 0.4)", // Backdrop color
+      });
+    }
+  };
+
+  // Canceled
+  const canceledTransaction = async () => {
+    // Show confirmation dialog
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to cancel this transaction?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, cancel it!",
+      cancelButtonText: "No, keep it",
+      background: "#f4f4f9", // Background color of the popup
+      color: "#dc3545", // Title text color (red for warning)
+      confirmButtonColor: "#dc3545", // Red color for "Yes, cancel it!" button
+      cancelButtonColor: "#28a745", // Green color for "No, keep it" button
+      backdrop: "rgba(0, 0, 0, 0.4)", // Backdrop color
+    });
+
+    if (result.isConfirmed) {
+      try {
+        // Prepare the transaction data for the API request
+        const transactionData = {
+          locationID: formData.locationID,
+          customerID: formData.customerID,
+          paymentTypeID: formData.paymentTypeID,
+          transactionTypeID: formData.transactionTypeID,
+          transactionNumber: Math.floor(transactionNumbersss),
+          status: "Canceled",
+          totalItems: totalItems,
+          totalQuantity: totalQuantity,
+          totalPurchase: Math.floor(totalPurchase), // Make sure it's an integer
+        };
+
+        // Sending the transaction data to the API
+        const response = await axios.post(
+          "http://localhost:5000/api/v3/transaction",
+          transactionData
+        );
+
+        if (response.data.success) {
+          // Get the salesTransactionID from the response
+          const salesTransactionID = response.data.data.salesTransactionID;
+
+          // Prepare the sales items data
+          const salesItems = formData.purchaseOrderItems.map((item) => ({
+            salesTransactionID: salesTransactionID,
+            itemID: item.itemID,
+            qty: Math.floor(item.orderQty),
+            price: item.price,
+            total: item.orderQty * item.price, // Total is qty * price
+          }));
+
+          // Send sales items to the API
+          const saveSalesItemsResponse = await axios.post(
+            "http://localhost:5000/api/v3/transaction/saveSalesItems",
+            { items: salesItems }
+          );
+
+          if (saveSalesItemsResponse.data.success) {
+            Swal.fire({
+              title: "Canceled",
+              text: "Transaction Canceled Successfully.",
+              background: "#f4f4f9", // Background color of the popup
+              color: "#28a745", // Title text color (green for success)
+              confirmButtonText: "OK",
+              confirmButtonColor: "#28a745", // Green color for the confirm button
+              backdrop: "rgba(0, 0, 0, 0.4)", // Backdrop color
+            });
+            // Optionally reset the form or perform other actions
+          } else {
+            Swal.fire("Error", "Failed to save sales items.", "error");
+          }
+        } else {
+          Swal.fire("Error", "Failed to save transaction.", "error");
+        }
+      } catch (error) {
+        console.error("Error saving transaction:", error);
+        Swal.fire("Error", "Error saving transaction.", "error");
+      }
+    } else {
+      Swal.fire({
+        title: "Cancelled",
+        text: "Your transaction was not cancelled.",
+        icon: "info",
+        background: "#e7f3ff", // Light blue background
+        color: "#0d6efd", // Blue title text
+        confirmButtonText: "OK",
+        confirmButtonColor: "#0d6efd", // Blue confirm button
+        backdrop: "rgba(0, 0, 0, 0.3)", // Slight dark backdrop to make the alert stand out
+      });
     }
   };
 
@@ -970,7 +1097,7 @@ const SalesTransaction = ({ closeForm }) => {
                   <Button
                     variant="outlined"
                     color="secondary"
-                    // onClick={handleCancel}
+                    onClick={canceledTransaction}
                   >
                     Cancel Transaction
                   </Button>
