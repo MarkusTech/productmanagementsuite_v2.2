@@ -604,17 +604,18 @@ const SalesTransaction = ({ closeForm }) => {
               confirmButtonText: "Okay",
               confirmButtonColor: "#28a745",
               backdrop: "rgba(0, 0, 0, 0.4)",
+            }).then(() => {
+              // Generate and Print Receipt
+              generateReceipt(
+                Math.floor(transactionNumbersss),
+                formData.customerName, // Assuming you have the customer name in formData
+                totalItems,
+                totalQuantity,
+                totalPurchase,
+                paymentAmount
+              );
+              window.location.href = "/sales";
             });
-
-            // Generate and Print Receipt
-            generateReceipt(
-              Math.floor(transactionNumbersss),
-              formData.customerName, // Assuming you have the customer name in formData
-              totalItems,
-              totalQuantity,
-              totalPurchase,
-              paymentAmount
-            );
           } else {
             Swal.fire({
               title: "Error",
