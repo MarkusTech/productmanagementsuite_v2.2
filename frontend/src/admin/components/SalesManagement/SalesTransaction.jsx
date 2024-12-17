@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
 import {
   TextField,
@@ -76,7 +76,7 @@ const SalesTransaction = () => {
   //   total: 0,
   // });
 
-  const calculateTotals = () => {
+  const calculateTotals = useCallback(() => {
     const itemsCount = formData.purchaseOrderItems.length;
 
     // Ensure that orderQty and price are treated as numbers
@@ -92,7 +92,7 @@ const SalesTransaction = () => {
     setTotalItems(itemsCount);
     setTotalQuantity(quantitySum);
     setTotalPurchase(purchaseSum.toFixed(2)); // Format to two decimal places
-  };
+  }, [formData.purchaseOrderItems]); // Add formData.purchaseOrderItems as a dependency
 
   const generateTransactionNumber = () => {
     return (
@@ -110,6 +110,7 @@ const SalesTransaction = () => {
   useEffect(() => {
     setSalesItems(formData.purchaseOrderItems);
     calculateTotals();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.purchaseOrderItems]);
 
   const [locations, setLocations] = useState([]);
