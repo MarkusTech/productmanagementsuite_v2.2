@@ -7,6 +7,7 @@ const Reports = () => {
     totalSales: 0,
     totalItemsSold: 0,
     totalPurchases: 0,
+    totalProfit: 0, // Add totalProfit to the state
   });
 
   const [loading, setLoading] = useState(true);
@@ -33,6 +34,7 @@ const Reports = () => {
         totalSales: data.totals.totalSales,
         totalItemsSold: data.totals.totalItemsSold,
         totalPurchases: data.totals.totalPurchases,
+        totalProfit: data.totals.totalProfit, // Add totalProfit from the response
       });
     } catch (error) {
       console.error("Error fetching sales data:", error);
@@ -132,7 +134,7 @@ const Reports = () => {
                 </div>
               </div>
 
-              {/* Profit (example calculation) */}
+              {/* Profit for the selected report */}
               <div style={styles.card}>
                 <h3 style={styles.cardTitle}>
                   Profit for the {selectedReport}
@@ -141,10 +143,7 @@ const Reports = () => {
                   <FaChartLine size={40} color="#28a745" />
                   <div>
                     <h4 style={styles.cardAmount}>
-                      ₱
-                      {(
-                        salesData.totalSales - salesData.totalPurchases
-                      ).toLocaleString()}
+                      ₱{salesData.totalProfit.toLocaleString()}
                     </h4>
                     <p style={styles.cardSubtitle}>
                       Profit from sales during this {selectedReport}

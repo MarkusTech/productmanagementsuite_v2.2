@@ -25,7 +25,7 @@ export class SalesReportController {
         include: {
           salesTransactionItems: {
             include: {
-              item: true,
+              item: true, // Include the item details to access price and cost
             },
           },
         },
@@ -40,23 +40,26 @@ export class SalesReportController {
         return;
       }
 
-      const totalSales = transactions.reduce(
-        (sum, transaction) => sum + transaction.totalPurchase,
-        0
-      );
-      const totalItemsSold = transactions.reduce(
-        (sum, transaction) =>
-          sum +
-          transaction.salesTransactionItems.reduce(
-            (itemSum, item) => itemSum + item.qty,
-            0
-          ),
-        0
-      );
-      const totalPurchases = transactions.reduce(
-        (sum, transaction) => sum + transaction.totalPurchase,
-        0
-      );
+      // Calculate totals
+      let totalSales = 0;
+      let totalItemsSold = 0;
+      let totalPurchases = 0;
+      let totalProfit = 0;
+
+      transactions.forEach((transaction) => {
+        totalSales += transaction.totalPurchase;
+        totalItemsSold += transaction.salesTransactionItems.reduce(
+          (itemSum, item) => itemSum + item.qty,
+          0
+        );
+        totalPurchases += transaction.totalPurchase;
+
+        // Calculate profit for the transaction
+        transaction.salesTransactionItems.forEach((item) => {
+          const itemProfit = (item.price - item.item.cost) * item.qty;
+          totalProfit += itemProfit; // Sum up the profit for all items sold
+        });
+      });
 
       logger.info("Fetched daily sales transactions report");
       res.status(200).json({
@@ -66,6 +69,7 @@ export class SalesReportController {
           totalSales,
           totalItemsSold,
           totalPurchases,
+          totalProfit, // Include total profit in the response
         },
       });
     } catch (error) {
@@ -98,7 +102,7 @@ export class SalesReportController {
         include: {
           salesTransactionItems: {
             include: {
-              item: true,
+              item: true, // Include the item details to access price and cost
             },
           },
         },
@@ -113,23 +117,26 @@ export class SalesReportController {
         return;
       }
 
-      const totalSales = transactions.reduce(
-        (sum, transaction) => sum + transaction.totalPurchase,
-        0
-      );
-      const totalItemsSold = transactions.reduce(
-        (sum, transaction) =>
-          sum +
-          transaction.salesTransactionItems.reduce(
-            (itemSum, item) => itemSum + item.qty,
-            0
-          ),
-        0
-      );
-      const totalPurchases = transactions.reduce(
-        (sum, transaction) => sum + transaction.totalPurchase,
-        0
-      );
+      // Calculate totals
+      let totalSales = 0;
+      let totalItemsSold = 0;
+      let totalPurchases = 0;
+      let totalProfit = 0;
+
+      transactions.forEach((transaction) => {
+        totalSales += transaction.totalPurchase;
+        totalItemsSold += transaction.salesTransactionItems.reduce(
+          (itemSum, item) => itemSum + item.qty,
+          0
+        );
+        totalPurchases += transaction.totalPurchase;
+
+        // Calculate profit for the transaction
+        transaction.salesTransactionItems.forEach((item) => {
+          const itemProfit = (item.price - item.item.cost) * item.qty;
+          totalProfit += itemProfit; // Sum up the profit for all items sold
+        });
+      });
 
       logger.info("Fetched weekly sales transactions report");
       res.status(200).json({
@@ -139,6 +146,7 @@ export class SalesReportController {
           totalSales,
           totalItemsSold,
           totalPurchases,
+          totalProfit, // Include total profit in the response
         },
       });
     } catch (error) {
@@ -171,7 +179,7 @@ export class SalesReportController {
         include: {
           salesTransactionItems: {
             include: {
-              item: true,
+              item: true, // Include the item details to access price and cost
             },
           },
         },
@@ -186,23 +194,26 @@ export class SalesReportController {
         return;
       }
 
-      const totalSales = transactions.reduce(
-        (sum, transaction) => sum + transaction.totalPurchase,
-        0
-      );
-      const totalItemsSold = transactions.reduce(
-        (sum, transaction) =>
-          sum +
-          transaction.salesTransactionItems.reduce(
-            (itemSum, item) => itemSum + item.qty,
-            0
-          ),
-        0
-      );
-      const totalPurchases = transactions.reduce(
-        (sum, transaction) => sum + transaction.totalPurchase,
-        0
-      );
+      // Calculate totals
+      let totalSales = 0;
+      let totalItemsSold = 0;
+      let totalPurchases = 0;
+      let totalProfit = 0;
+
+      transactions.forEach((transaction) => {
+        totalSales += transaction.totalPurchase;
+        totalItemsSold += transaction.salesTransactionItems.reduce(
+          (itemSum, item) => itemSum + item.qty,
+          0
+        );
+        totalPurchases += transaction.totalPurchase;
+
+        // Calculate profit for the transaction
+        transaction.salesTransactionItems.forEach((item) => {
+          const itemProfit = (item.price - item.item.cost) * item.qty;
+          totalProfit += itemProfit; // Sum up the profit for all items sold
+        });
+      });
 
       logger.info("Fetched monthly sales transactions report");
       res.status(200).json({
@@ -212,6 +223,7 @@ export class SalesReportController {
           totalSales,
           totalItemsSold,
           totalPurchases,
+          totalProfit, // Include total profit in the response
         },
       });
     } catch (error) {
@@ -221,6 +233,90 @@ export class SalesReportController {
       res.status(500).json({
         success: false,
         message: "Error fetching monthly sales report.",
+      });
+    }
+  }
+
+  // Get annually sales report
+  async getAnnuallySalesReport(req: Request, res: Response): Promise<void> {
+    const { date } = req.query;
+
+    try {
+      const reportDate = date ? new Date(date as string) : new Date();
+      const startOfYearDate = new Date(reportDate.getFullYear(), 0, 1); // Start of the year
+      const endOfYearDate = new Date(
+        reportDate.getFullYear(),
+        11,
+        31,
+        23,
+        59,
+        59
+      ); // End of the year
+
+      const transactions = await prisma.salesTransaction.findMany({
+        where: {
+          transactionDate: {
+            gte: startOfYearDate,
+            lte: endOfYearDate,
+          },
+        },
+        include: {
+          salesTransactionItems: {
+            include: {
+              item: true, // Include the item details to access price and cost
+            },
+          },
+        },
+      });
+
+      if (!transactions || transactions.length === 0) {
+        logger.warn("No sales transactions found for the given year");
+        res.status(404).json({
+          success: false,
+          message: "No sales transactions found for the given year.",
+        });
+        return;
+      }
+
+      // Calculate totals
+      let totalSales = 0;
+      let totalItemsSold = 0;
+      let totalPurchases = 0;
+      let totalProfit = 0;
+
+      transactions.forEach((transaction) => {
+        totalSales += transaction.totalPurchase;
+        totalItemsSold += transaction.salesTransactionItems.reduce(
+          (itemSum, item) => itemSum + item.qty,
+          0
+        );
+        totalPurchases += transaction.totalPurchase;
+
+        // Calculate profit for the transaction
+        transaction.salesTransactionItems.forEach((item) => {
+          const itemProfit = (item.price - item.item.cost) * item.qty;
+          totalProfit += itemProfit; // Sum up the profit for all items sold
+        });
+      });
+
+      logger.info("Fetched annual sales transactions report");
+      res.status(200).json({
+        success: true,
+        data: transactions,
+        totals: {
+          totalSales,
+          totalItemsSold,
+          totalPurchases,
+          totalProfit, // Include total profit in the response
+        },
+      });
+    } catch (error) {
+      logger.error(
+        `Error fetching annual sales report: ${(error as Error).message}`
+      );
+      res.status(500).json({
+        success: false,
+        message: "Error fetching annual sales report.",
       });
     }
   }
