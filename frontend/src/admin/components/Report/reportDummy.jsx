@@ -2,61 +2,50 @@ import React, { useEffect, useState } from "react";
 import { FaDollarSign, FaBox, FaChartLine, FaRegClock } from "react-icons/fa";
 
 const Reports = () => {
-  // State for sales data
+  // Dummy Data
   const [salesData, setSalesData] = useState({
-    totalSales: 0,
-    totalItemsSold: 0,
-    totalPurchases: 0,
+    totalSales: 25000, // Total sales amount in pesos
+    totalItemsSold: 120, // Number of items sold
+    topSellingItems: [
+      { name: "Item A", sold: 50, totalRevenue: 5000 },
+      { name: "Item B", sold: 30, totalRevenue: 6000 },
+      { name: "Item C", sold: 20, totalRevenue: 4000 },
+      { name: "Item D", sold: 10, totalRevenue: 2500 },
+      { name: "Item E", sold: 10, totalRevenue: 2500 },
+    ],
+    lowStockItems: [
+      { name: "Item X", stock: 5, reorderLevel: 10 },
+      { name: "Item Y", stock: 2, reorderLevel: 5 },
+    ],
+    totalPurchases: 15000, // Total amount spent on inventory purchases
+    profit: 5000, // Profit from sales
   });
 
   const [loading, setLoading] = useState(true);
   const [selectedReport, setSelectedReport] = useState("Day");
 
-  // Function to fetch sales data based on the selected report
-  const fetchSalesData = async (reportType) => {
-    setLoading(true);
-    try {
-      let url = "";
-      if (reportType === "Day") {
-        url = `http://localhost:5000/api/v3/sales-report/daily`;
-      } else if (reportType === "Week") {
-        url = `http://localhost:5000/api/v3/sales-report/weekly`;
-      } else if (reportType === "Month") {
-        url = `http://localhost:5000/api/v3/sales-report/monthly`;
-      }
-
-      const response = await fetch(url);
-      const data = await response.json();
-
-      // Update the sales data state with the totals from the response
-      setSalesData({
-        totalSales: data.totals.totalSales,
-        totalItemsSold: data.totals.totalItemsSold,
-        totalPurchases: data.totals.totalPurchases,
-      });
-    } catch (error) {
-      console.error("Error fetching sales data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch the data whenever the selected report changes
   useEffect(() => {
-    fetchSalesData(selectedReport);
-  }, [selectedReport]);
+    const fetchSalesData = () => {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1500);
+    };
+
+    fetchSalesData();
+  }, []);
 
   return (
     <div className="table-container">
       <div style={styles.formContainer}>
         <header style={styles.header}>
-          <h1 style={styles.title}>Inventory System Reports</h1>
+          <h1 style={styles.title}>Inventory System Report</h1>
           <p style={styles.subtitle}>Date: {new Date().toLocaleDateString()}</p>
         </header>
 
         {loading ? (
           <div style={styles.loading}>
-            <FaRegClock size={24} /> Loading {selectedReport} sales data...
+            <FaRegClock size={24} /> Loading daily sales data...
           </div>
         ) : (
           <div>
@@ -132,7 +121,7 @@ const Reports = () => {
                 </div>
               </div>
 
-              {/* Profit (example calculation) */}
+              {/* Profit */}
               <div style={styles.card}>
                 <h3 style={styles.cardTitle}>
                   Profit for the {selectedReport}
@@ -141,10 +130,7 @@ const Reports = () => {
                   <FaChartLine size={40} color="#28a745" />
                   <div>
                     <h4 style={styles.cardAmount}>
-                      ₱
-                      {(
-                        salesData.totalSales - salesData.totalPurchases
-                      ).toLocaleString()}
+                      ₱{salesData.profit.toLocaleString()}
                     </h4>
                     <p style={styles.cardSubtitle}>
                       Profit from sales during this {selectedReport}
@@ -157,7 +143,57 @@ const Reports = () => {
             <br />
             <br />
             {/* Top 5 Best-Selling Items and Low Stock Items */}
-            {/* Similar to the above section, you can map over data for best-selling items and low stock */}
+            <div style={styles.reportContent}>
+              {/* Top 5 Best-Selling Items */}
+              <section style={styles.tableSection}>
+                <div style={styles.tableCard}>
+                  <h3 style={styles.tableTitle}>Top 5 Best-Selling Items</h3>
+                  <table style={styles.table}>
+                    <thead>
+                      <tr>
+                        <th>Item Name</th>
+                        <th>Quantity Sold</th>
+                        <th>Revenue</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {salesData.topSellingItems.map((item, index) => (
+                        <tr key={index}>
+                          <td>{item.name}</td>
+                          <td>{item.sold}</td>
+                          <td>₱{item.totalRevenue.toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              {/* Low Stock Items */}
+              <section style={styles.tableSection}>
+                <div style={styles.tableCard}>
+                  <h3 style={styles.tableTitle}>Low Stock Items</h3>
+                  <table style={styles.table}>
+                    <thead>
+                      <tr>
+                        <th>Item Name</th>
+                        <th>Stock Level</th>
+                        <th>Reorder Level</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {salesData.lowStockItems.map((item, index) => (
+                        <tr key={index}>
+                          <td>{item.name}</td>
+                          <td>{item.stock}</td>
+                          <td>{item.reorderLevel}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
           </div>
         )}
       </div>
@@ -165,7 +201,7 @@ const Reports = () => {
   );
 };
 
-// Styles (same as your existing styles)
+// Styles
 const styles = {
   container: {
     padding: "30px", // Add padding to the outer container
@@ -247,6 +283,35 @@ const styles = {
   cardSubtitle: {
     fontSize: "16px",
     color: "#6c757d",
+  },
+  reportContent: {
+    display: "flex",
+    gap: "30px", // Space between sections
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+    padding: "20px", // Padding inside the report content area
+  },
+  tableSection: {
+    flex: 1,
+    minWidth: "45%",
+  },
+  tableCard: {
+    backgroundColor: "#fff",
+    padding: "20px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    textAlign: "center",
+  },
+  tableTitle: {
+    fontSize: "20px",
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: "15px",
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    padding: "10px", // Padding inside table cells
   },
 };
 
