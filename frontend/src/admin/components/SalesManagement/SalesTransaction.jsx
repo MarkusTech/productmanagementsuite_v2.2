@@ -205,6 +205,7 @@ const SalesTransaction = ({ closeForm }) => {
     }
   };
 
+  const [customerReceipt, setCustomerReceipt] = useState("");
   // Handle customer selection
   const handleCustomerSelect = (customerID) => {
     const selectedCustomer = customers.find(
@@ -226,6 +227,13 @@ const SalesTransaction = ({ closeForm }) => {
         ...prevState,
         customerID: customerID, // Update customerID in formData
       }));
+      setCustomerReceipt(
+        selectedCustomer.firstName +
+          " " +
+          selectedCustomer.middleName +
+          " " +
+          selectedCustomer.lastName
+      );
       setAnchorEl(null); // Close the menu
     }
   };
@@ -586,6 +594,7 @@ const SalesTransaction = ({ closeForm }) => {
           );
 
           if (saveSalesItemsResponse.data.success) {
+            // Display Success Message
             Swal.fire({
               title: "Success",
               text: "Transaction has been completed successfully.",
@@ -596,6 +605,16 @@ const SalesTransaction = ({ closeForm }) => {
               confirmButtonColor: "#28a745",
               backdrop: "rgba(0, 0, 0, 0.4)",
             });
+
+            // Generate and Print Receipt
+            generateReceipt(
+              Math.floor(transactionNumbersss),
+              formData.customerName, // Assuming you have the customer name in formData
+              totalItems,
+              totalQuantity,
+              totalPurchase,
+              paymentAmount
+            );
           } else {
             Swal.fire({
               title: "Error",
@@ -640,6 +659,102 @@ const SalesTransaction = ({ closeForm }) => {
       });
     }
   };
+
+  // Function to generate and print the receipt
+  function generateReceipt(
+    transactionNumber,
+    customerName,
+    totalItems,
+    totalQuantity,
+    totalPurchase,
+    paymentAmount
+  ) {
+    const receiptHTML = `
+    <html>
+      <head>
+        <title>Receipt</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+          }
+          .receipt {
+            width: 300px;
+            margin: 0;
+            border: 1px solid #ddd;
+            padding: 20px;
+            text-align: center;
+          }
+          .receipt-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+          }
+          .receipt-details {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center; /* Center content horizontally */
+          }
+          .receipt-details div {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            text-align: left;
+          }
+          .receipt-footer {
+            margin-top: 20px;
+            font-size: 14px;
+          }
+          .total {
+            font-weight: bold;
+          }
+          @media print {
+            body {
+              margin: 0;
+              padding: 0;
+            }
+            .receipt {
+              border: none;
+              width: 100%;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="receipt">
+          <div class="receipt-header">
+            <h3>Receipt</h3>
+            <p>Transaction Number: ${transactionNumber}</p>
+          </div>
+          <div class="receipt-details">
+            <div><strong>Customer Name:</strong><span>${customerReceipt}</span></div>
+            <div><strong>Total Items:</strong><span>${totalItems}</span></div>
+            <div><strong>Total Quantity:</strong><span>${totalQuantity}</span></div>
+            <div><strong>Total Purchase:</strong><span>₱${totalPurchase.toLocaleString()}</span></div>
+            <div><strong>Payment Amount:</strong><span>₱${paymentAmount.toLocaleString()}</span></div>
+          </div>
+          <div class="receipt-footer">
+            <p>Thank you for your purchase!</p>
+          </div>
+        </div>
+        <script>
+          window.print();
+        </script>
+      </body>
+    </html>
+  `;
+
+    const printWindow = window.open("", "", "height=400,width=600");
+    printWindow.document.write(receiptHTML);
+    printWindow.document.close();
+  }
 
   return (
     <div style={styles.formContainer}>
