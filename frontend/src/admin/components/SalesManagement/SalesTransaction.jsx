@@ -67,14 +67,16 @@ const SalesTransaction = ({ closeForm }) => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [totalPurchase, setTotalPurchase] = useState(0.0);
+  const [paymentAmount, setPaymentAmount] = useState("");
 
-  // const [salesItems, setSalesItems] = useState({
-  //   salesTransactionID: 0,
-  //   itemID: 0,
-  //   qty: 0,
-  //   price: 0,
-  //   total: 0,
-  // });
+  const handlePaymentAmountChange = (e) => {
+    const value = e.target.value;
+
+    // Validate numeric input if needed
+    if (!isNaN(value)) {
+      setPaymentAmount(value);
+    }
+  };
 
   const calculateTotals = useCallback(() => {
     const itemsCount = formData.purchaseOrderItems.length;
@@ -519,6 +521,125 @@ const SalesTransaction = ({ closeForm }) => {
   };
 
   // completed
+  const completeTransaction = async () => {
+    // Check if paymentAmount is valid
+    if (!paymentAmount || Number(paymentAmount) !== Math.floor(totalPurchase)) {
+      return Swal.fire({
+        title: "Payment Mismatch",
+        text: "Payment Amount is either empty or does not match the Total Purchase amount.",
+        icon: "warning",
+        background: "#fff5f5",
+        color: "#dc3545",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#dc3545",
+        backdrop: "rgba(0, 0, 0, 0.4)",
+      });
+    }
+
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to complete this transaction?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, complete it!",
+      cancelButtonText: "No, cancel",
+      background: "#f4f4f9",
+      color: "#1d72b8",
+      confirmButtonColor: "#28a745",
+      cancelButtonColor: "#dc3545",
+      backdrop: "rgba(0, 0, 0, 0.4)",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const transactionData = {
+          locationID: formData.locationID,
+          customerID: formData.customerID,
+          paymentTypeID: formData.paymentTypeID,
+          transactionTypeID: formData.transactionTypeID,
+          transactionNumber: Math.floor(transactionNumbersss),
+          status: "Completed",
+          totalItems: totalItems,
+          totalQuantity: totalQuantity,
+          totalPurchase: Math.floor(totalPurchase),
+        };
+
+        const response = await axios.post(
+          "http://localhost:5000/api/v3/transaction",
+          transactionData
+        );
+
+        if (response.data.success) {
+          const salesTransactionID = response.data.data.salesTransactionID;
+
+          const salesItems = formData.purchaseOrderItems.map((item) => ({
+            salesTransactionID: salesTransactionID,
+            itemID: item.itemID,
+            qty: Math.floor(item.orderQty),
+            price: item.price,
+            total: item.orderQty * item.price,
+          }));
+
+          const saveSalesItemsResponse = await axios.post(
+            "http://localhost:5000/api/v3/transaction/saveSalesItems",
+            { items: salesItems }
+          );
+
+          if (saveSalesItemsResponse.data.success) {
+            Swal.fire({
+              title: "Success",
+              text: "Transaction has been completed successfully.",
+              icon: "success",
+              background: "#f4f4f9",
+              color: "#28a745",
+              confirmButtonText: "Okay",
+              confirmButtonColor: "#28a745",
+              backdrop: "rgba(0, 0, 0, 0.4)",
+            });
+          } else {
+            Swal.fire({
+              title: "Error",
+              text: "Failed to save sales items.",
+              icon: "error",
+              background: "#fff5f5",
+              color: "#dc3545",
+              confirmButtonColor: "#dc3545",
+            });
+          }
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: "Failed to complete transaction.",
+            icon: "error",
+            background: "#fff5f5",
+            color: "#dc3545",
+            confirmButtonColor: "#dc3545",
+          });
+        }
+      } catch (error) {
+        console.error("Error completing transaction:", error);
+        Swal.fire({
+          title: "Error",
+          text: "An error occurred while completing the transaction.",
+          icon: "error",
+          background: "#fff5f5",
+          color: "#dc3545",
+          confirmButtonColor: "#dc3545",
+        });
+      }
+    } else {
+      Swal.fire({
+        title: "Cancelled",
+        text: "Transaction was not completed.",
+        icon: "info",
+        background: "#f0f8ff",
+        color: "#007bff",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#007bff",
+        backdrop: "rgba(0, 0, 0, 0.4)",
+      });
+    }
+  };
 
   return (
     <div style={styles.formContainer}>
@@ -975,13 +1096,12 @@ const SalesTransaction = ({ closeForm }) => {
                 <TextField
                   name="paymentAmount"
                   label="Payment Amount"
-                  // value={formData.paymentAmount}
-                  onChange={handleChange}
+                  value={paymentAmount} // Bind input to paymentAmount state
+                  onChange={handlePaymentAmountChange} // Handle input change
                   required
                   fullWidth
-                  displayEmpty
                   InputProps={{
-                    inputMode: "numeric",
+                    inputMode: "numeric", // Ensure numeric input
                   }}
                 />
               </Grid>
@@ -1077,7 +1197,9 @@ const SalesTransaction = ({ closeForm }) => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Total Purchase:</Typography>
-                  <Typography variant="body1">₱{totalPurchase}</Typography>
+                  <Typography variant="body1">
+                    ₱{new Intl.NumberFormat("en-US").format(totalPurchase)}
+                  </Typography>
                 </Box>
               </Grid>
 
@@ -1106,7 +1228,7 @@ const SalesTransaction = ({ closeForm }) => {
                   <Button
                     variant="contained"
                     color="success"
-                    // onClick={handleCompleteTransaction}
+                    onClick={completeTransaction}
                   >
                     Complete Transaction
                   </Button>
