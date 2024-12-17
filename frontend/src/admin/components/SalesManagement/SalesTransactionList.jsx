@@ -75,7 +75,13 @@ const SalesTransactionList = () => {
       <td>{item.paymentType?.paymentName}</td>
       <td>{item.totalItems}</td>
       <td>{item.totalQuantity}</td>
-      <td>{item.totalPurchase?.toFixed(2)}</td>
+      <td>
+        ₱
+        {item.totalPurchase?.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </td>
       <td>{new Date(item.transactionDate).toLocaleString()}</td>
       <td
         style={{
