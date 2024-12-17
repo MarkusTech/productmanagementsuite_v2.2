@@ -23,10 +23,6 @@ export class SalesReportController {
           },
         },
         include: {
-          customer: true,
-          location: true,
-          paymentType: true,
-          transactionType: true,
           salesTransactionItems: {
             include: {
               item: true,
@@ -44,10 +40,33 @@ export class SalesReportController {
         return;
       }
 
+      const totalSales = transactions.reduce(
+        (sum, transaction) => sum + transaction.totalPurchase,
+        0
+      );
+      const totalItemsSold = transactions.reduce(
+        (sum, transaction) =>
+          sum +
+          transaction.salesTransactionItems.reduce(
+            (itemSum, item) => itemSum + item.qty,
+            0
+          ),
+        0
+      );
+      const totalPurchases = transactions.reduce(
+        (sum, transaction) => sum + transaction.totalPurchase,
+        0
+      );
+
       logger.info("Fetched daily sales transactions report");
       res.status(200).json({
         success: true,
         data: transactions,
+        totals: {
+          totalSales,
+          totalItemsSold,
+          totalPurchases,
+        },
       });
     } catch (error) {
       logger.error(
@@ -77,10 +96,6 @@ export class SalesReportController {
           },
         },
         include: {
-          customer: true,
-          location: true,
-          paymentType: true,
-          transactionType: true,
           salesTransactionItems: {
             include: {
               item: true,
@@ -98,10 +113,33 @@ export class SalesReportController {
         return;
       }
 
+      const totalSales = transactions.reduce(
+        (sum, transaction) => sum + transaction.totalPurchase,
+        0
+      );
+      const totalItemsSold = transactions.reduce(
+        (sum, transaction) =>
+          sum +
+          transaction.salesTransactionItems.reduce(
+            (itemSum, item) => itemSum + item.qty,
+            0
+          ),
+        0
+      );
+      const totalPurchases = transactions.reduce(
+        (sum, transaction) => sum + transaction.totalPurchase,
+        0
+      );
+
       logger.info("Fetched weekly sales transactions report");
       res.status(200).json({
         success: true,
         data: transactions,
+        totals: {
+          totalSales,
+          totalItemsSold,
+          totalPurchases,
+        },
       });
     } catch (error) {
       logger.error(
@@ -131,10 +169,6 @@ export class SalesReportController {
           },
         },
         include: {
-          customer: true,
-          location: true,
-          paymentType: true,
-          transactionType: true,
           salesTransactionItems: {
             include: {
               item: true,
@@ -152,10 +186,33 @@ export class SalesReportController {
         return;
       }
 
+      const totalSales = transactions.reduce(
+        (sum, transaction) => sum + transaction.totalPurchase,
+        0
+      );
+      const totalItemsSold = transactions.reduce(
+        (sum, transaction) =>
+          sum +
+          transaction.salesTransactionItems.reduce(
+            (itemSum, item) => itemSum + item.qty,
+            0
+          ),
+        0
+      );
+      const totalPurchases = transactions.reduce(
+        (sum, transaction) => sum + transaction.totalPurchase,
+        0
+      );
+
       logger.info("Fetched monthly sales transactions report");
       res.status(200).json({
         success: true,
         data: transactions,
+        totals: {
+          totalSales,
+          totalItemsSold,
+          totalPurchases,
+        },
       });
     } catch (error) {
       logger.error(
