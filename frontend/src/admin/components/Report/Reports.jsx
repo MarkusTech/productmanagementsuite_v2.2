@@ -250,7 +250,7 @@ const styles = {
   gridContainer: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", // Responsive grid
-    gap: "30px",
+    gap: "80px",
     justifyItems: "center",
     padding: "20px", // Padding inside grid container
   },
