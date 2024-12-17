@@ -345,7 +345,7 @@ const SalesTransaction = ({ closeForm }) => {
   // save
   const saveTransaction = async () => {
     try {
-      // Prepare the data for the API request
+      // Prepare the transaction data for the API request
       const transactionData = {
         locationID: formData.locationID,
         customerID: formData.customerID,
@@ -355,17 +355,40 @@ const SalesTransaction = ({ closeForm }) => {
         status: "Pending",
         totalItems: totalItems,
         totalQuantity: totalQuantity,
-        totalPurchase: Math.floor(totalPurchase),
+        totalPurchase: Math.floor(totalPurchase), // Make sure it's an integer
       };
 
-      // Sending the data to the API
+      // Sending the transaction data to the API
       const response = await axios.post(
         "http://localhost:5000/api/v3/transaction",
         transactionData
       );
 
       if (response.data.success) {
-        // const transactionIDData = response.data.data.salesTransactionID;
+        // Get the salesTransactionID from the response
+        const salesTransactionID = response.data.data.salesTransactionID;
+
+        // Prepare the sales items data
+        const salesItems = formData.purchaseOrderItems.map((item) => ({
+          salesTransactionID: salesTransactionID,
+          itemID: item.itemID,
+          qty: Math.floor(item.orderQty),
+          price: item.price,
+          total: item.orderQty * item.price, // Total is qty * price
+        }));
+
+        // Send sales items to the API
+        const saveSalesItemsResponse = await axios.post(
+          "http://localhost:5000/api/v3/transaction/saveSalesItems",
+          { items: salesItems }
+        );
+
+        if (saveSalesItemsResponse.data.success) {
+          alert("Transaction and sales items saved successfully.");
+          // Optionally reset the form or perform other actions
+        } else {
+          alert("Failed to save sales items.");
+        }
       } else {
         alert("Failed to save transaction.");
       }
