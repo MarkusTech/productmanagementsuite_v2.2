@@ -24,6 +24,8 @@ const Reports = () => {
         url = `http://localhost:5000/api/v3/sales-report/weekly`;
       } else if (reportType === "Month") {
         url = `http://localhost:5000/api/v3/sales-report/monthly`;
+      } else if (reportType === "Year") {
+        url = `http://localhost:5000/api/v3/sales-report/annual`;
       }
 
       const response = await fetch(url);
@@ -81,6 +83,12 @@ const Reports = () => {
                 onClick={() => setSelectedReport("Month")}
               >
                 Monthly Report
+              </button>
+              <button
+                style={styles.reportButton}
+                onClick={() => setSelectedReport("Year")}
+              >
+                Annual Report
               </button>
             </div>
 
