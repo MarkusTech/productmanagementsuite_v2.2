@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Navbar = ({
   onSidebarToggle,
@@ -7,6 +9,31 @@ const Navbar = ({
   onDarkModeToggle,
   isSearchFormVisible,
 }) => {
+  const userState = useSelector((state) => state.user.userInfo);
+  const roleID = userState?.roleID;
+  const [profileImage, setProfileImage] = useState(
+    "https://robohash.org/default.png"
+  );
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          // `http://localhost:5000/api/v1/users/${roleID}`
+          `http://localhost:5000/api/v1/users/5`
+        );
+        if (response.data.success) {
+          const userImage = response.data.data.image_url;
+          setProfileImage(userImage || "https://robohash.org/default.png");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [roleID]);
+
   return (
     <nav>
       <i className="bx bx-menu" onClick={onSidebarToggle}></i>
@@ -30,7 +57,7 @@ const Navbar = ({
         <span className="count">12</span>
       </Link>
       <Link to="/" className="profile">
-        <img src="https://robohash.org/default.png" alt="Profile" />
+        <img src={profileImage} alt="Profile" />
       </Link>
     </nav>
   );
