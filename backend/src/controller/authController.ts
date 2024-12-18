@@ -43,7 +43,7 @@ export class AuthController {
       logger.info(`User with email ${email} logged in successfully`);
 
       // Send the token back in the response
-      res.status(200).json({ token, roleID: user.roleID });
+      res.status(200).json({ token, roleID: user.roleID, userID: user.userID });
     } catch (error) {
       logger.error(
         `Login error for email ${email}: ${(error as Error).message}`

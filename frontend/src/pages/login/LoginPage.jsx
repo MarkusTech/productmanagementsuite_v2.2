@@ -28,6 +28,7 @@ const LoginPage = () => {
         userActions.setUserInfo({
           token: data.token,
           roleID: data.roleID,
+          userID: data.userID,
         })
       );
 
@@ -37,6 +38,7 @@ const LoginPage = () => {
         JSON.stringify({
           token: data.token,
           roleID: data.roleID,
+          userID: data.userID,
         })
       );
 

@@ -10,7 +10,7 @@ const Navbar = ({
   isSearchFormVisible,
 }) => {
   const userState = useSelector((state) => state.user.userInfo);
-  const roleID = userState?.roleID;
+  const userID = userState?.userID;
   const [profileImage, setProfileImage] = useState(
     "https://robohash.org/default.png"
   );
@@ -19,8 +19,7 @@ const Navbar = ({
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          // `http://localhost:5000/api/v1/users/${roleID}`
-          `http://localhost:5000/api/v1/users/5`
+          `http://localhost:5000/api/v1/users/${userID}`
         );
         if (response.data.success) {
           const userImage = response.data.data.image_url;
@@ -32,7 +31,7 @@ const Navbar = ({
     };
 
     fetchUserData();
-  }, [roleID]);
+  }, [userID]);
 
   return (
     <nav>
