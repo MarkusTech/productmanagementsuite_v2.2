@@ -213,11 +213,14 @@ const InventoryAdjustmentList = () => {
               ? "orange"
               : item.status === "Rejected"
               ? "red"
+              : item.status === "Declined"
+              ? "purple"
               : "inherit",
         }}
       >
         {item.status}
       </td>
+
       <td>
         {roleID === 1 ? (
           <div

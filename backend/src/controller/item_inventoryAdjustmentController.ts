@@ -286,34 +286,15 @@ export class InventoryAdjustmentController {
         throw new CustomError("Inventory adjustment is already declined", 400);
       }
 
-      // Subtract the quantity if needed and update the inventory and adjustment
-      const updatedData = await prisma.$transaction(async (tx) => {
-        const inventory = await tx.inventory.findUnique({
-          where: { inventoryID: adjustment.inventoryID },
-        });
-
-        if (!inventory) {
-          throw new CustomError("Inventory record not found", 404);
-        }
-
-        const newQuantity = inventory.quantity - adjustment.quantityAdjusted;
-
-        const updatedInventory = await tx.inventory.update({
-          where: { inventoryID: adjustment.inventoryID },
-          data: { quantity: newQuantity },
-        });
-
-        const updatedAdjustment = await tx.inventoryAdjustment.update({
-          where: { adjustmentID: Number(adjustmentID) },
-          data: { status: "Declined" },
-        });
-
-        return { updatedInventory, updatedAdjustment };
+      // Update the adjustment's status to "Declined"
+      const updatedAdjustment = await prisma.inventoryAdjustment.update({
+        where: { adjustmentID: Number(adjustmentID) },
+        data: { status: "Declined" },
       });
 
       res.status(200).json({
-        message: "Inventory updated and adjustment has been declined",
-        data: updatedData,
+        message: "Inventory adjustment has been declined",
+        data: updatedAdjustment,
       });
     } catch (error) {
       logger.error(
@@ -325,6 +306,65 @@ export class InventoryAdjustmentController {
       });
     }
   }
+
+  // async inventoryDeclined(req: Request, res: Response): Promise<void> {
+  //   const { adjustmentID } = req.params;
+
+  //   try {
+  //     // Fetch the inventory adjustment record
+  //     const adjustment = await prisma.inventoryAdjustment.findUnique({
+  //       where: { adjustmentID: Number(adjustmentID) },
+  //     });
+
+  //     // Check if the adjustment exists
+  //     if (!adjustment) {
+  //       throw new CustomError("Inventory adjustment not found", 404);
+  //     }
+
+  //     // Check if the adjustment is already declined
+  //     if (adjustment.status === "Declined") {
+  //       throw new CustomError("Inventory adjustment is already declined", 400);
+  //     }
+
+  //     // Subtract the quantity if needed and update the inventory and adjustment
+  //     const updatedData = await prisma.$transaction(async (tx) => {
+  //       const inventory = await tx.inventory.findUnique({
+  //         where: { inventoryID: adjustment.inventoryID },
+  //       });
+
+  //       if (!inventory) {
+  //         throw new CustomError("Inventory record not found", 404);
+  //       }
+
+  //       const newQuantity = inventory.quantity - adjustment.quantityAdjusted;
+
+  //       const updatedInventory = await tx.inventory.update({
+  //         where: { inventoryID: adjustment.inventoryID },
+  //         data: { quantity: newQuantity },
+  //       });
+
+  //       const updatedAdjustment = await tx.inventoryAdjustment.update({
+  //         where: { adjustmentID: Number(adjustmentID) },
+  //         data: { status: "Declined" },
+  //       });
+
+  //       return { updatedInventory, updatedAdjustment };
+  //     });
+
+  //     res.status(200).json({
+  //       message: "Inventory updated and adjustment has been declined",
+  //       data: updatedData,
+  //     });
+  //   } catch (error) {
+  //     logger.error(
+  //       `Error declining inventory adjustment: ${(error as Error).message}`
+  //     );
+  //     res.status(500).json({
+  //       error: "Error declining inventory adjustment",
+  //       message: (error as Error).message,
+  //     });
+  //   }
+  // }
 
   // Delete InventoryAdjustment
   async deleteInventoryAdjustment(req: Request, res: Response): Promise<void> {
