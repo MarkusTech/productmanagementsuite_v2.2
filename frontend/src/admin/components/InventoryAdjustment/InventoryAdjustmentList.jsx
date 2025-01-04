@@ -39,12 +39,13 @@ const InventoryAdjustmentList = () => {
 
   const loadInventoryAdjustments = async () => {
     try {
+      setLoading(true); // Optional: Show loading state
       const data = await fetchInventoryAdjustments();
       setInventoryAdjustments(data);
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false);
+      setLoading(false); // Hide loading state
     }
   };
 
@@ -93,7 +94,6 @@ const InventoryAdjustmentList = () => {
 
   const handleApproval = async (inventoryID, adjustmentID) => {
     try {
-      // Show confirmation dialog
       const result = await Swal.fire({
         icon: "warning",
         title: "Are you sure?",
@@ -118,7 +118,9 @@ const InventoryAdjustmentList = () => {
             confirmButton: "swal-confirm-button",
           },
         });
-        loadInventoryAdjustments();
+
+        // Reload inventory adjustments
+        await loadInventoryAdjustments();
       } else {
         Swal.fire({
           icon: "info",
