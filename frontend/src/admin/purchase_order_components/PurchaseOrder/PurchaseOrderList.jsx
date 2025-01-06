@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Table from "../../components/Table";
-import { fetchPurchaseOrders } from "../../../services/purchaseOrder/purchaseOrderService";
+import {
+  fetchPurchaseOrders,
+  cancelPurchaseOrder,
+} from "../../../services/purchaseOrder/purchaseOrderService"; // Make sure you import the cancel function
 import PurchaseOrderCreateForm from "./PurchaseOrderCreateForm";
 import PurchaseOrderEditForm from "./PurchaseOrderUpdateForm";
 import { Button } from "@mui/material";
@@ -27,7 +30,6 @@ const renderHead = (item, index) => <th key={index}>{item}</th>;
 
 const PurchaseOrderList = () => {
   const userState = useSelector((state) => state.user.userInfo);
-
   const roleID = userState?.roleID;
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,11 +59,6 @@ const PurchaseOrderList = () => {
     setShowCreateForm(false);
   };
 
-  // const handleEdit = (purchaseOrder) => {
-  //   setEditPurchaseOrderID(purchaseOrder.poID);
-  //   setShowEditForm(true);
-  // };
-
   const handleEditFormClose = () => {
     setShowEditForm(false);
     setEditPurchaseOrderID(null);
@@ -70,6 +67,21 @@ const PurchaseOrderList = () => {
   const handlePurchaseOrderUpdated = () => {
     loadPurchaseOrders();
     setShowEditForm(false);
+  };
+
+  // Function to handle cancellation of purchase orders
+  const handleCancel = async (poID) => {
+    try {
+      await cancelPurchaseOrder(poID); // API call to update status to "Canceled"
+      // Update the status in the local state after cancellation
+      setPurchaseOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.poID === poID ? { ...order, status: "Canceled" } : order
+        )
+      );
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   const renderBody = (item, index) => (
@@ -109,9 +121,6 @@ const PurchaseOrderList = () => {
             <Button
               variant="contained"
               color="success"
-              // onClick={() =>
-              //   handleApproval(item.inventoryID, item.adjustmentID)
-              // }
               style={{
                 borderRadius: "50%",
                 minWidth: "50px",
@@ -127,7 +136,7 @@ const PurchaseOrderList = () => {
             <Button
               variant="contained"
               color="error"
-              // onClick={() => handleDecline(item.adjustmentID)}
+              onClick={() => handleCancel(item.poID)} // Cancel button with onClick
               style={{
                 borderRadius: "50%",
                 minWidth: "50px",
@@ -143,7 +152,10 @@ const PurchaseOrderList = () => {
             <Button
               variant="contained"
               color="primary"
-              // onClick={() => handleEdit(item)}
+              onClick={() => {
+                setEditPurchaseOrderID(item.poID);
+                setShowEditForm(true);
+              }}
               style={{
                 borderRadius: "50%",
                 minWidth: "50px",
@@ -158,12 +170,7 @@ const PurchaseOrderList = () => {
             </Button>
           </div>
         ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            // onClick={() => handleEdit(item)}
-            startIcon={<EditIcon />}
-          >
+          <Button variant="contained" color="primary" startIcon={<EditIcon />}>
             Edit
           </Button>
         )}

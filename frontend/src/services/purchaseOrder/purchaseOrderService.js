@@ -52,3 +52,12 @@ export const fetchLocations = async () => {
     throw error;
   }
 };
+
+export const cancelPurchaseOrder = async (poID) => {
+  try {
+    const response = await axios.put(`/api/v2/purchaseOrders/${poID}/cancel`);
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to cancel purchase order");
+  }
+};

@@ -30,6 +30,7 @@ import poReceivingItemRoutes from "./routes/po_poReceivingItem.routes";
 import poReceivingRoutes from "./routes/po_poReceiving.routes";
 import poSupplierRoutes from "./routes/po_supplier.routes";
 import purchaseOrder from "./routes/purchaseOrder.routes";
+import purchaseOrderApprovalRoutes from "./routes/purchaseOrderButton.routes";
 
 // Company Profile Route
 import companyProfleRoutes from "./routes/companyProfile.routes";
@@ -117,6 +118,7 @@ app.use("/api/v2", poReceivingItemRoutes);
 app.use("/api/v2", poReceivingRoutes);
 app.use("/api/v2", poSupplierRoutes);
 app.use("/api/v2/po", purchaseOrder);
+app.use("/api/v2", purchaseOrderApprovalRoutes);
 
 // Customer API
 app.use("/api/v2", customerRoutes);
@@ -127,6 +129,10 @@ app.use("/api/v3/transaction", salesTransactionPaymentTypeRoutes);
 app.use("/api/v3/transaction", salesTransactionType);
 app.use("/api/v3/transaction", salesTransactionRoutes);
 app.use("/api/v3", salesReportRoutes);
+// This could override other route handlers
+app.use("*", (req, res) => {
+  res.status(404).send("Not Found");
+});
 
 // Error Handling Middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
