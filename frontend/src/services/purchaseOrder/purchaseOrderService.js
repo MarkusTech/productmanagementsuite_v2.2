@@ -63,3 +63,15 @@ export const cancelPurchaseOrder = async (poID) => {
     throw new Error("Failed to cancel purchase order");
   }
 };
+
+// New function to approve a purchase order
+export const approvePurchaseOrder = async (poID) => {
+  try {
+    const response = await axios.put(
+      `http://localhost:5000/api/v2/purchase-orders/approve/${poID}`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to approve purchase order");
+  }
+};
