@@ -3,14 +3,15 @@ import Table from "../../components/Table";
 import {
   fetchPurchaseOrders,
   cancelPurchaseOrder,
-} from "../../../services/purchaseOrder/purchaseOrderService"; // Make sure you import the cancel function
+} from "../../../services/purchaseOrder/purchaseOrderService";
 import PurchaseOrderCreateForm from "./PurchaseOrderCreateForm";
 import PurchaseOrderEditForm from "./PurchaseOrderUpdateForm";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { useSelector } from "react-redux";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import Swal from "sweetalert2"; // Import SweetAlert2
+import { useSelector } from "react-redux";
 
 const tableHead = [
   "ID",
@@ -31,6 +32,7 @@ const renderHead = (item, index) => <th key={index}>{item}</th>;
 const PurchaseOrderList = () => {
   const userState = useSelector((state) => state.user.userInfo);
   const roleID = userState?.roleID;
+
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -39,14 +41,14 @@ const PurchaseOrderList = () => {
   const [editPurchaseOrderID, setEditPurchaseOrderID] = useState(null);
 
   const loadPurchaseOrders = async () => {
-    setLoading(true);
     try {
+      setLoading(true); // Optional: Show loading state
       const data = await fetchPurchaseOrders();
       setPurchaseOrders(data);
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false);
+      setLoading(false); // Hide loading state
     }
   };
 
@@ -54,33 +56,83 @@ const PurchaseOrderList = () => {
     loadPurchaseOrders();
   }, []);
 
-  const handlePurchaseOrderCreated = () => {
-    loadPurchaseOrders();
+  const handlePurchaseOrderCreated = (newPO) => {
+    setPurchaseOrders((prev) => [...prev, newPO]); // Append new purchase order
     setShowCreateForm(false);
-  };
-
-  const handleEditFormClose = () => {
-    setShowEditForm(false);
-    setEditPurchaseOrderID(null);
+    Swal.fire({
+      icon: "success",
+      title: "Purchase Order Created!",
+      text: "The new purchase order has been successfully created.",
+      confirmButtonText: "Okay",
+      customClass: {
+        confirmButton: "swal-confirm-button",
+      },
+    });
+    loadPurchaseOrders();
   };
 
   const handlePurchaseOrderUpdated = () => {
     loadPurchaseOrders();
     setShowEditForm(false);
+    Swal.fire({
+      icon: "success",
+      title: "Purchase Order Updated!",
+      text: "The purchase order has been successfully updated.",
+      confirmButtonText: "Okay",
+      customClass: {
+        confirmButton: "swal-confirm-button",
+      },
+    });
   };
 
-  // Function to handle cancellation of purchase orders
   const handleCancel = async (poID) => {
     try {
-      await cancelPurchaseOrder(poID); // API call to update status to "Canceled"
-      // Update the status in the local state after cancellation
-      setPurchaseOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.poID === poID ? { ...order, status: "Canceled" } : order
-        )
-      );
+      const result = await Swal.fire({
+        icon: "warning",
+        title: "Are you sure?",
+        text: `Do you want to cancel Purchase Order ID ${poID}?`,
+        showCancelButton: true,
+        confirmButtonText: "Yes, Cancel it",
+        cancelButtonText: "No, Keep it",
+        customClass: {
+          confirmButton: "swal-confirm-button",
+          cancelButton: "swal-cancel-button",
+        },
+      });
+
+      if (result.isConfirmed) {
+        await cancelPurchaseOrder(poID); // Call API to cancel purchase order
+        Swal.fire({
+          icon: "success",
+          title: "Purchase Order Canceled",
+          text: `Purchase Order ID ${poID} has been canceled.`,
+          confirmButtonText: "Okay",
+          customClass: {
+            confirmButton: "swal-confirm-button",
+          },
+        });
+        loadPurchaseOrders(); // Reload the table after successful cancellation
+      } else {
+        Swal.fire({
+          icon: "info",
+          title: "Cancellation Canceled",
+          text: `Purchase Order ID ${poID} was not canceled.`,
+          confirmButtonText: "Okay",
+          customClass: {
+            confirmButton: "swal-confirm-button",
+          },
+        });
+      }
     } catch (error) {
-      setError(error.message);
+      Swal.fire({
+        icon: "error",
+        title: "Cancellation Failed",
+        text: `Failed to cancel Purchase Order ID ${poID}: ${error.message}`,
+        confirmButtonText: "Okay",
+        customClass: {
+          confirmButton: "swal-confirm-button",
+        },
+      });
     }
   };
 
@@ -202,7 +254,7 @@ const PurchaseOrderList = () => {
       {showEditForm && (
         <PurchaseOrderEditForm
           purchaseOrderID={editPurchaseOrderID}
-          onClose={handleEditFormClose}
+          onClose={() => setShowEditForm(false)}
           onPurchaseOrderUpdated={handlePurchaseOrderUpdated}
         />
       )}
