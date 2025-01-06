@@ -320,4 +320,64 @@ export class SalesReportController {
       });
     }
   }
+
+  // Get total sales from all transactions
+  async getTotalSales(req: Request, res: Response): Promise<void> {
+    try {
+      // Calculate the sum of totalPurchase from all sales transactions
+      const totalSales = await prisma.salesTransaction.aggregate({
+        _sum: {
+          totalPurchase: true,
+        },
+      });
+
+      // If no transactions exist, totalSales will be null
+      if (!totalSales._sum.totalPurchase) {
+        res.status(404).json({
+          success: false,
+          message: "No sales transactions found.",
+        });
+        return;
+      }
+
+      res.status(200).json({
+        success: true,
+        data: {
+          totalSales: totalSales._sum.totalPurchase,
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching total sales:", error);
+      res.status(500).json({
+        success: false,
+        message: "Error fetching total sales.",
+      });
+    }
+  }
+
+  // Get total count of completed sales transactions
+  async getCompletedSalesCount(req: Request, res: Response): Promise<void> {
+    try {
+      const completedCount = await prisma.salesTransaction.count({
+        where: {
+          status: "Completed",
+        },
+      });
+
+      res.status(200).json({
+        success: true,
+        data: {
+          completedSalesCount: completedCount,
+        },
+      });
+    } catch (error) {
+      logger.error(
+        `Error fetching completed sales count: ${(error as Error).message}`
+      );
+      res.status(500).json({
+        success: false,
+        message: "Error fetching completed sales count.",
+      });
+    }
+  }
 }

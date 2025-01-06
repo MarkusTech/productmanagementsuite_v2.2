@@ -10,5 +10,7 @@ router.get(
   "/sales-report/monthly",
   salesReportController.getMonthlySalesReport
 );
+router.get("/total-sales", salesReportController.getTotalSales);
+router.get("/paid-orders", salesReportController.getCompletedSalesCount);
 
 export default router;

@@ -1,8 +1,55 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Customers from "../Customers";
 import { images } from "../../../constants";
+import axios from "axios";
 
 const MainContent = ({ isDarkMode }) => {
+  const [totalSales, setTotalSales] = useState(0);
+  const [completedSalesCount, setCompletedSalesCount] = useState(0); // New state for paid orders count
+
+  // Fetch total sales from API
+  useEffect(() => {
+    const fetchTotalSales = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/v3/total-sales"
+        );
+        if (response.data.success) {
+          setTotalSales(response.data.data.totalSales);
+        } else {
+          console.error("Failed to fetch total sales:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching total sales:", error);
+      }
+    };
+
+    fetchTotalSales();
+  }, []);
+
+  // Fetch paid orders count from API
+  useEffect(() => {
+    const fetchCompletedSalesCount = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/v3/paid-orders"
+        );
+        if (response.data.success) {
+          setCompletedSalesCount(response.data.data.completedSalesCount); // Update with fetched count
+        } else {
+          console.error(
+            "Failed to fetch completed sales count:",
+            response.data.message
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching completed sales count:", error);
+      }
+    };
+
+    fetchCompletedSalesCount();
+  }, []);
+
   return (
     <main>
       <div className="header">
@@ -29,7 +76,8 @@ const MainContent = ({ isDarkMode }) => {
         <li>
           <i className="bx bx-calendar-check"></i>
           <span className="info">
-            <h3>1,074</h3>
+            <h3>{completedSalesCount.toLocaleString()}</h3>{" "}
+            {/* Display completed sales count */}
             <p>Paid Order</p>
           </span>
         </li>
@@ -50,7 +98,7 @@ const MainContent = ({ isDarkMode }) => {
         <li>
           <i className="bx bx-dollar-circle"></i>
           <span className="info">
-            <h3>₱6,742</h3>
+            <h3>₱{totalSales.toLocaleString()}</h3>
             <p>Total Sales</p>
           </span>
         </li>
@@ -112,7 +160,7 @@ const MainContent = ({ isDarkMode }) => {
           <div className="reminders">
             <div className="header">
               <i className="bx bx-note"></i>
-              <h3>Remiders</h3>
+              <h3>Reminders</h3>
               <i className="bx bx-filter"></i>
               <i className="bx bx-plus"></i>
             </div>
@@ -134,14 +182,14 @@ const MainContent = ({ isDarkMode }) => {
               <li className="not-completed">
                 <div className="task-title">
                   <i className="bx bx-x-circle"></i>
-                  <p>Play Footbal</p>
+                  <p>Pending Transactions</p>
                 </div>
                 <i className="bx bx-dots-vertical-rounded"></i>
               </li>
             </ul>
           </div>
         </div>
-        <div className="customers">
+        <div className="customer-dashboard">
           <Customers />
         </div>
       </div>

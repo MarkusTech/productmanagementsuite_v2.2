@@ -41,7 +41,9 @@ const Customers = () => {
 
   return (
     <div className="customers">
-      <h3 className="page-header">Customers</h3>
+      <div className="header">
+        <h3>Customers</h3>
+      </div>
       <div className="row">
         <div className="col-12">
           <div className="card">
