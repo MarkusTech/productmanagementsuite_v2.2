@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SalesTransaction from "./SalesTransaction";
 import axios from "axios";
-// import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 // Table headers for Sales Transaction
 const categoryTableHead = [
@@ -99,13 +99,7 @@ const SalesTransactionList = () => {
       >
         {item.status}
       </td>
-
       <td>
-        <Button variant="contained" color="primary" startIcon={<EditIcon />}>
-          Edit
-        </Button>
-      </td>
-      {/* <td>
         <Button
           variant="contained"
           color="primary"
@@ -113,7 +107,13 @@ const SalesTransactionList = () => {
         >
           View
         </Button>
-      </td> */}
+      </td>
+
+      <td>
+        <Button variant="contained" color="primary" startIcon={<EditIcon />}>
+          Edit
+        </Button>
+      </td>
     </tr>
   );
 

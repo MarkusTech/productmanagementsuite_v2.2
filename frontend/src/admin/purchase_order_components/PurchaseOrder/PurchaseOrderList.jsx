@@ -3,6 +3,7 @@ import Table from "../../components/Table";
 import {
   fetchPurchaseOrders,
   cancelPurchaseOrder,
+  approvePurchaseOrder, // Import approve service
 } from "../../../services/purchaseOrder/purchaseOrderService";
 import PurchaseOrderCreateForm from "./PurchaseOrderCreateForm";
 import PurchaseOrderEditForm from "./PurchaseOrderUpdateForm";
@@ -137,6 +138,58 @@ const PurchaseOrderList = () => {
     }
   };
 
+  // New function to handle approval
+  const handleApprove = async (poID) => {
+    try {
+      const result = await Swal.fire({
+        icon: "warning",
+        title: "Are you sure?",
+        text: `Do you want to approve Purchase Order ID ${poID}?`,
+        showCancelButton: true,
+        confirmButtonText: "Yes, Approve it",
+        cancelButtonText: "No, Keep it",
+        customClass: {
+          confirmButton: "swal-confirm-button",
+          cancelButton: "swal-cancel-button",
+        },
+      });
+
+      if (result.isConfirmed) {
+        await approvePurchaseOrder(poID); // Call API to approve purchase order
+        Swal.fire({
+          icon: "success",
+          title: "Purchase Order Approved",
+          text: `Purchase Order ID ${poID} has been approved.`,
+          confirmButtonText: "Okay",
+          customClass: {
+            confirmButton: "swal-confirm-button",
+          },
+        });
+        loadPurchaseOrders(); // Reload the table after successful approval
+      } else {
+        Swal.fire({
+          icon: "info",
+          title: "Approval Canceled",
+          text: `Purchase Order ID ${poID} was not approved.`,
+          confirmButtonText: "Okay",
+          customClass: {
+            confirmButton: "swal-confirm-button",
+          },
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Approval Failed",
+        text: `Failed to approve Purchase Order ID ${poID}: ${error.message}`,
+        confirmButtonText: "Okay",
+        customClass: {
+          confirmButton: "swal-confirm-button",
+        },
+      });
+    }
+  };
+
   const renderBody = (item, index) => (
     <tr key={index}>
       <td>{item.poID}</td>
@@ -174,6 +227,7 @@ const PurchaseOrderList = () => {
             <Button
               variant="contained"
               color="success"
+              onClick={() => handleApprove(item.poID)} // Approve button with onClick
               style={{
                 borderRadius: "50%",
                 minWidth: "50px",
