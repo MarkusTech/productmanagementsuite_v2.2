@@ -8,6 +8,7 @@ import PurchaseOrderCreateForm from "./PurchaseOrderCreateForm";
 import PurchaseOrderEditForm from "./PurchaseOrderUpdateForm";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Swal from "sweetalert2"; // Import SweetAlert2
@@ -206,7 +207,7 @@ const PurchaseOrderList = () => {
               color="primary"
               onClick={() => {
                 setEditPurchaseOrderID(item.poID);
-                setShowEditForm(true);
+                setShowEditForm(true); // You can change this to a "view" functionality if needed
               }}
               style={{
                 borderRadius: "50%",
@@ -218,7 +219,7 @@ const PurchaseOrderList = () => {
                 padding: "0",
               }}
             >
-              <EditIcon />
+              <VisibilityIcon />
             </Button>
           </div>
         ) : (
