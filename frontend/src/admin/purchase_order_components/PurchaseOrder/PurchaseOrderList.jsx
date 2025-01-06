@@ -28,9 +28,10 @@ const PurchaseOrderList = () => {
   const [error, setError] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
-  const [editPurchaseOrder, setEditPurchaseOrder] = useState(null);
+  const [editPurchaseOrderID, setEditPurchaseOrderID] = useState(null);
 
   const loadPurchaseOrders = async () => {
+    setLoading(true);
     try {
       const data = await fetchPurchaseOrders();
       setPurchaseOrders(data);
@@ -51,13 +52,18 @@ const PurchaseOrderList = () => {
   };
 
   const handleEdit = (purchaseOrder) => {
-    setEditPurchaseOrder(purchaseOrder);
+    setEditPurchaseOrderID(purchaseOrder.poID);
     setShowEditForm(true);
   };
 
   const handleEditFormClose = () => {
     setShowEditForm(false);
-    setEditPurchaseOrder(null);
+    setEditPurchaseOrderID(null);
+  };
+
+  const handlePurchaseOrderUpdated = () => {
+    loadPurchaseOrders();
+    setShowEditForm(false);
   };
 
   const renderBody = (item, index) => (
@@ -70,7 +76,7 @@ const PurchaseOrderList = () => {
       <td>{item.remarks}</td>
       <td>{new Date(item.orderDate).toLocaleDateString()}</td>
       <td>{new Date(item.expectedDeliverDate).toLocaleDateString()}</td>
-      <td>{item.totalCost}</td>
+      <td>₱{item.totalCost.toLocaleString()}</td>
       <td
         style={{
           color:
@@ -122,8 +128,9 @@ const PurchaseOrderList = () => {
 
       {showEditForm && (
         <PurchaseOrderEditForm
-          purchaseOrder={editPurchaseOrder}
+          purchaseOrderID={editPurchaseOrderID}
           onClose={handleEditFormClose}
+          onPurchaseOrderUpdated={handlePurchaseOrderUpdated}
         />
       )}
 
