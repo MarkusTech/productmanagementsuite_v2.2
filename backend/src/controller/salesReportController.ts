@@ -380,4 +380,57 @@ export class SalesReportController {
       });
     }
   }
+
+  // Get transaction summary with customerName (constructed from firstName, middleName, lastName), createdAt, and status
+  async getTransactionSummary(req: Request, res: Response): Promise<void> {
+    try {
+      const transactions = await prisma.salesTransaction.findMany({
+        select: {
+          customer: {
+            select: {
+              firstName: true,
+              middleName: true,
+              lastName: true,
+            },
+          },
+          createdAt: true,
+          status: true,
+        },
+      });
+
+      if (!transactions || transactions.length === 0) {
+        logger.warn("No sales transactions found.");
+        res.status(404).json({
+          success: false,
+          message: "No sales transactions found.",
+        });
+        return;
+      }
+
+      // Construct the customerName by concatenating firstName, middleName, and lastName
+      const transactionSummaries = transactions.map((transaction) => ({
+        customerName: `${transaction.customer.firstName} ${
+          transaction.customer.middleName
+            ? transaction.customer.middleName + " "
+            : ""
+        }${transaction.customer.lastName}`,
+        createdAt: transaction.createdAt,
+        status: transaction.status,
+      }));
+
+      logger.info("Fetched transaction summary");
+      res.status(200).json({
+        success: true,
+        data: transactionSummaries,
+      });
+    } catch (error) {
+      logger.error(
+        `Error fetching transaction summary: ${(error as Error).message}`
+      );
+      res.status(500).json({
+        success: false,
+        message: "Error fetching transaction summary.",
+      });
+    }
+  }
 }

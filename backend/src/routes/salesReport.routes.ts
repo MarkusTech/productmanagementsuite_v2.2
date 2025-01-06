@@ -12,5 +12,6 @@ router.get(
 );
 router.get("/total-sales", salesReportController.getTotalSales);
 router.get("/paid-orders", salesReportController.getCompletedSalesCount);
+router.get("/sales-summary", salesReportController.getTransactionSummary);
 
 export default router;

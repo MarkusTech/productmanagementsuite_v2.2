@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Customers from "../Customers";
-import { images } from "../../../constants";
 import axios from "axios";
 
 const MainContent = ({ isDarkMode }) => {
   const [totalSales, setTotalSales] = useState(0);
-  const [completedSalesCount, setCompletedSalesCount] = useState(0); // New state for paid orders count
+  const [completedSalesCount, setCompletedSalesCount] = useState(0);
+  const [recentOrders, setRecentOrders] = useState([]);
 
   // Fetch total sales from API
   useEffect(() => {
@@ -48,6 +48,29 @@ const MainContent = ({ isDarkMode }) => {
     };
 
     fetchCompletedSalesCount();
+  }, []);
+
+  // Fetch recent orders from the API
+  useEffect(() => {
+    const fetchRecentOrders = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/v3/sales-summary"
+        );
+        if (response.data.success) {
+          setRecentOrders(response.data.data); // Set the fetched recent orders
+        } else {
+          console.error(
+            "Failed to fetch recent orders:",
+            response.data.message
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching recent orders:", error);
+      }
+    };
+
+    fetchRecentOrders();
   }, []);
 
   return (
@@ -116,42 +139,33 @@ const MainContent = ({ isDarkMode }) => {
             <table>
               <thead>
                 <tr>
-                  <th>User</th>
+                  <th>Customer Name</th>
                   <th>Order Date</th>
                   <th>Status</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <img src={images.Cat} alt="user" />
-                    <p>Development Team</p>
-                  </td>
-                  <td>14-08-2024</td>
-                  <td>
-                    <span className="status completed">Completed</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <img src={images.Cat} alt="user" />
-                    <p>Development Team</p>
-                  </td>
-                  <td>14-08-2024</td>
-                  <td>
-                    <span className="status pending">Pending</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <img src={images.Cat} alt="user" />
-                    <p>Development Team</p>
-                  </td>
-                  <td>14-08-2024</td>
-                  <td>
-                    <span className="status process">Processing</span>
-                  </td>
-                </tr>
+                {recentOrders.length > 0 ? (
+                  recentOrders.map((order, index) => (
+                    <tr key={index}>
+                      <td>
+                        <p>{order.customerName}</p>
+                      </td>
+                      <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                      <td>
+                        <span
+                          className={`status ${order.status.toLowerCase()}`}
+                        >
+                          {order.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3">No recent orders available.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
