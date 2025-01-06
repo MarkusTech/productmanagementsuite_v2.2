@@ -140,7 +140,7 @@ const PurchaseOrderList = () => {
             >
               <CancelIcon />
             </Button>
-            {/* <Button
+            <Button
               variant="contained"
               color="primary"
               // onClick={() => handleEdit(item)}
@@ -155,7 +155,7 @@ const PurchaseOrderList = () => {
               }}
             >
               <EditIcon />
-            </Button> */}
+            </Button>
           </div>
         ) : (
           <Button
