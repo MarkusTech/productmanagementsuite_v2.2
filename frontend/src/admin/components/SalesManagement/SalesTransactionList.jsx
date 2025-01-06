@@ -93,7 +93,7 @@ const SalesTransactionList = () => {
               ? "orange"
               : item.status === "Canceled"
               ? "red"
-              : "black", // Default color if none match
+              : "black",
           fontWeight: "bold",
         }}
       >
