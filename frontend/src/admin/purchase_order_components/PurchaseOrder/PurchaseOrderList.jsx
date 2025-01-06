@@ -5,6 +5,9 @@ import PurchaseOrderCreateForm from "./PurchaseOrderCreateForm";
 import PurchaseOrderEditForm from "./PurchaseOrderUpdateForm";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { useSelector } from "react-redux";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const tableHead = [
   "ID",
@@ -17,12 +20,15 @@ const tableHead = [
   "Expected Delivery Date",
   "Total Cost",
   "Status",
-  "Action", // Added action column for edit button
+  "Action",
 ];
 
 const renderHead = (item, index) => <th key={index}>{item}</th>;
 
 const PurchaseOrderList = () => {
+  const userState = useSelector((state) => state.user.userInfo);
+
+  const roleID = userState?.roleID;
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,10 +57,10 @@ const PurchaseOrderList = () => {
     setShowCreateForm(false);
   };
 
-  const handleEdit = (purchaseOrder) => {
-    setEditPurchaseOrderID(purchaseOrder.poID);
-    setShowEditForm(true);
-  };
+  // const handleEdit = (purchaseOrder) => {
+  //   setEditPurchaseOrderID(purchaseOrder.poID);
+  //   setShowEditForm(true);
+  // };
 
   const handleEditFormClose = () => {
     setShowEditForm(false);
@@ -93,14 +99,74 @@ const PurchaseOrderList = () => {
       </td>
 
       <td>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handleEdit(item)}
-          startIcon={<EditIcon />}
-        >
-          Edit
-        </Button>
+        {roleID === 1 ? (
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="success"
+              // onClick={() =>
+              //   handleApproval(item.inventoryID, item.adjustmentID)
+              // }
+              style={{
+                borderRadius: "50%",
+                minWidth: "50px",
+                height: "50px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "0",
+              }}
+            >
+              <CheckCircleIcon />
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              // onClick={() => handleDecline(item.adjustmentID)}
+              style={{
+                borderRadius: "50%",
+                minWidth: "50px",
+                height: "50px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "0",
+              }}
+            >
+              <CancelIcon />
+            </Button>
+            {/* <Button
+              variant="contained"
+              color="primary"
+              // onClick={() => handleEdit(item)}
+              style={{
+                borderRadius: "50%",
+                minWidth: "50px",
+                height: "50px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "0",
+              }}
+            >
+              <EditIcon />
+            </Button> */}
+          </div>
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            // onClick={() => handleEdit(item)}
+            startIcon={<EditIcon />}
+          >
+            Edit
+          </Button>
+        )}
       </td>
     </tr>
   );
