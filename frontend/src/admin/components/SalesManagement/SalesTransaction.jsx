@@ -218,7 +218,7 @@ const SalesTransaction = ({ closeForm }) => {
         if (response.data.inventoryItems) {
           const items = response.data.inventoryItems.map((inventoryItem) => ({
             ...inventoryItem.item,
-            quantity: inventoryItem.quantity, // Include quantity in the item data
+            quantity: inventoryItem.quantity,
           }));
           setItems(items);
         } else {
