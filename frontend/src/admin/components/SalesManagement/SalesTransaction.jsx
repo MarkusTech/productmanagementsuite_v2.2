@@ -50,7 +50,7 @@ const SalesTransaction = ({ closeForm }) => {
     totalItems: 0,
     totalQuantity: 0,
     totalPurchase: 0,
-    purchaseOrderItems: [], // Add purchaseOrderItems to formData
+    purchaseOrderItems: [],
   });
 
   const [customerFormData, setCustomerFormData] = useState({
@@ -126,7 +126,6 @@ const SalesTransaction = ({ closeForm }) => {
 
   useEffect(() => {
     fetchDropdownData();
-    fetchItems();
     fetchTransactionType();
     fetchCustomers();
     fetchCustomerTypes();
@@ -205,22 +204,33 @@ const SalesTransaction = ({ closeForm }) => {
   //   }
   // };
 
-  const fetchItems = async () => {
-    try {
-      const response = await axios.get("/api/v2/inventory-items/sellable/1");
-      if (response.data.inventoryItems) {
-        const items = response.data.inventoryItems.map(
-          (inventoryItem) => inventoryItem.item
-        );
-        setItems(items);
-      } else {
-        setError("Failed to load inventory items data.");
+  useEffect(() => {
+    const fetchItems = async () => {
+      if (!formData.locationID) {
+        setItems([]); // Clear items if locationID is not set
+        return;
       }
-    } catch (err) {
-      console.error("Error fetching inventory items:", err);
-      setError("Failed to fetch inventory items.");
-    }
-  };
+
+      try {
+        const response = await axios.get(
+          `/api/v2/inventory-items/sellable/${formData.locationID}`
+        );
+        if (response.data.inventoryItems) {
+          const items = response.data.inventoryItems.map(
+            (inventoryItem) => inventoryItem.item
+          );
+          setItems(items);
+        } else {
+          setError("Failed to load inventory items data.");
+        }
+      } catch (err) {
+        console.error("Error fetching inventory items:", err);
+        setError("Failed to fetch inventory items.");
+      }
+    };
+
+    fetchItems();
+  }, [formData.locationID]);
 
   const [customerReceipt, setCustomerReceipt] = useState("");
   // Handle customer selection
