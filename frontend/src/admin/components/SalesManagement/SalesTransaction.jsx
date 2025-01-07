@@ -191,17 +191,34 @@ const SalesTransaction = ({ closeForm }) => {
     }
   };
 
+  // const fetchItems = async () => {
+  //   try {
+  //     const response = await axios.get("/api/v1/items");
+  //     if (response.data.success) {
+  //       setItems(response.data.data);
+  //     } else {
+  //       setError("Failed to load item data.");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error fetching items:", err);
+  //     setError("Failed to fetch items.");
+  //   }
+  // };
+
   const fetchItems = async () => {
     try {
-      const response = await axios.get("/api/v1/items");
-      if (response.data.success) {
-        setItems(response.data.data);
+      const response = await axios.get("/api/v2/inventory-items/sellable/1");
+      if (response.data.inventoryItems) {
+        const items = response.data.inventoryItems.map(
+          (inventoryItem) => inventoryItem.item
+        );
+        setItems(items);
       } else {
-        setError("Failed to load item data.");
+        setError("Failed to load inventory items data.");
       }
     } catch (err) {
-      console.error("Error fetching items:", err);
-      setError("Failed to fetch items.");
+      console.error("Error fetching inventory items:", err);
+      setError("Failed to fetch inventory items.");
     }
   };
 
