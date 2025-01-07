@@ -207,7 +207,7 @@ const SalesTransaction = ({ closeForm }) => {
   useEffect(() => {
     const fetchItems = async () => {
       if (!formData.locationID) {
-        setItems([]); // Clear items if locationID is not set
+        setItems([]);
         return;
       }
 
@@ -216,9 +216,10 @@ const SalesTransaction = ({ closeForm }) => {
           `/api/v2/inventory-items/sellable/${formData.locationID}`
         );
         if (response.data.inventoryItems) {
-          const items = response.data.inventoryItems.map(
-            (inventoryItem) => inventoryItem.item
-          );
+          const items = response.data.inventoryItems.map((inventoryItem) => ({
+            ...inventoryItem.item,
+            quantity: inventoryItem.quantity, // Include quantity in the item data
+          }));
           setItems(items);
         } else {
           setError("Failed to load inventory items data.");
@@ -1155,6 +1156,9 @@ const SalesTransaction = ({ closeForm }) => {
                         Description
                       </TableCell>
                       <TableCell style={{ fontWeight: "bold" }}>
+                        Available QTY
+                      </TableCell>
+                      <TableCell style={{ fontWeight: "bold" }}>
                         Price
                       </TableCell>
                       <TableCell style={{ fontWeight: "bold" }}>
@@ -1168,6 +1172,7 @@ const SalesTransaction = ({ closeForm }) => {
                         <TableCell>{item.itemCode}</TableCell>
                         <TableCell>{item.itemName}</TableCell>
                         <TableCell>{item.description}</TableCell>
+                        <TableCell>{item.quantity}</TableCell>
                         <TableCell>{item.price}</TableCell>
                         <TableCell>
                           <Button
