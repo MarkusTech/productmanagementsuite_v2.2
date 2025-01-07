@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Table from "../Table";
 import { Button } from "@mui/material";
-// import EditIcon from "@mui/icons-material/Edit";
 import SalesTransaction from "./SalesTransaction";
+import ViewSalesTransaction from "./ViewSalesTransaction";
 import axios from "axios";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
@@ -27,6 +27,7 @@ const renderHead = (item, index) => <th key={index}>{item}</th>;
 const SalesTransactionList = () => {
   const [salesTransactions, setSalesTransactions] = useState([]);
   const [showSalesTransaction, setShowSalesTransaction] = useState(false);
+  const [viewSalesTransaction, setViewSalesTransaction] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -63,8 +64,13 @@ const SalesTransactionList = () => {
     setShowSalesTransaction(!showSalesTransaction);
   };
 
+  const showSalesTransactionButton = () => {
+    setViewSalesTransaction(!viewSalesTransaction);
+  };
+
   const closeForm = () => {
     setShowSalesTransaction(false); // Close the form
+    setViewSalesTransaction(false);
   };
 
   const renderBody = (item, index) => (
@@ -104,16 +110,11 @@ const SalesTransactionList = () => {
           variant="contained"
           color="primary"
           startIcon={<VisibilityIcon />}
+          onClick={showSalesTransactionButton}
         >
           View
         </Button>
       </td>
-
-      {/* <td>
-        <Button variant="contained" color="primary" startIcon={<EditIcon />}>
-          Edit
-        </Button>
-      </td> */}
     </tr>
   );
 
@@ -156,6 +157,7 @@ const SalesTransactionList = () => {
         )}
 
         {showSalesTransaction && <SalesTransaction closeForm={closeForm} />}
+        {viewSalesTransaction && <ViewSalesTransaction closeForm={closeForm} />}
       </div>
 
       <style>{`
