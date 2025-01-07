@@ -28,6 +28,7 @@ const SalesTransactionList = () => {
   const [salesTransactions, setSalesTransactions] = useState([]);
   const [showSalesTransaction, setShowSalesTransaction] = useState(false);
   const [viewSalesTransaction, setViewSalesTransaction] = useState(false);
+  const [selectedTransactionID, setSelectedTransactionID] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -64,8 +65,9 @@ const SalesTransactionList = () => {
     setShowSalesTransaction(!showSalesTransaction);
   };
 
-  const showSalesTransactionButton = () => {
-    setViewSalesTransaction(!viewSalesTransaction);
+  const showSalesTransactionButton = (salesTransactionID) => {
+    setSelectedTransactionID(salesTransactionID);
+    setViewSalesTransaction(true);
   };
 
   const closeForm = () => {
@@ -110,7 +112,7 @@ const SalesTransactionList = () => {
           variant="contained"
           color="primary"
           startIcon={<VisibilityIcon />}
-          onClick={showSalesTransactionButton}
+          onClick={() => showSalesTransactionButton(item.salesTransactionID)}
         >
           View
         </Button>
@@ -157,7 +159,12 @@ const SalesTransactionList = () => {
         )}
 
         {showSalesTransaction && <SalesTransaction closeForm={closeForm} />}
-        {viewSalesTransaction && <ViewSalesTransaction closeForm={closeForm} />}
+        {viewSalesTransaction && (
+          <ViewSalesTransaction
+            salesTransactionID={selectedTransactionID}
+            closeForm={closeForm}
+          />
+        )}
       </div>
 
       <style>{`

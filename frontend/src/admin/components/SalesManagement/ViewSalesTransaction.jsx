@@ -36,7 +36,7 @@ import {
 } from "../../../services/purchaseOrder/purchaseOrderService";
 import axios from "axios";
 
-const ViewSalesTransaction = ({ closeForm }) => {
+const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
   const userState = useSelector((state) => state.user.userInfo);
   const roleID = userState?.roleID;
 
