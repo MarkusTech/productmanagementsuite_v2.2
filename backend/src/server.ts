@@ -22,6 +22,7 @@ import inventoryTypeRoutes from "./routes/item_inventoryType.routes";
 import inventoryAdjustmentRoutes from "./routes/item_inventoryAdjustment.routes";
 import adjustmentTypeRoutes from "./routes/item_adjustmentType.routes";
 import adjustmentReasonRoutes from "./routes/item_adjustmentReason.routes";
+import itemForInventory from "./routes/itemForInventory.routes";
 
 // Purchase Order Routes
 import purchaseOrderRoutes from "./routes/po_purchaseOrder.routes";
@@ -110,6 +111,7 @@ app.use("/api/v1", inventoryAdjustmentRoutes);
 app.use("/api/v1", adjustmentTypeRoutes);
 app.use("/api/v1", adjustmentReasonRoutes);
 app.use("/api/v2", companyProfleRoutes);
+app.use("/api/v2", itemForInventory);
 
 // purchase order API
 app.use("/api/v2", purchaseOrderRoutes);
