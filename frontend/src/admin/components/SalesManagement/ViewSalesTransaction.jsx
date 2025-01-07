@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -12,22 +12,10 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Select,
-  MenuItem,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  List,
-  ListItem,
-  ListItemButton,
-  Menu,
-  CircularProgress,
   Box,
   Divider,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Swal from "sweetalert2";
 import axios from "axios";
 
@@ -37,7 +25,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
   useEffect(() => {
     const fetchTransactionDetails = async () => {
       try {
-        setLoading(true);
         const response = await fetch(
           `http://localhost:5000/api/v3/transaction/${salesTransactionID}`
         );
@@ -51,14 +38,13 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
       } catch (err) {
         setError("An error occurred while fetching transaction details.");
       } finally {
-        setLoading(false);
       }
     };
 
     fetchTransactionDetails();
   }, [salesTransactionID]);
 
-  const [formData, setFormData] = useState({
+  const [formData] = useState({
     transactionTypeID: "",
     locationID: "",
     customerID: "",
@@ -71,77 +57,12 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
     purchaseOrderItems: [],
   });
 
-  const [customerFormData, setCustomerFormData] = useState({
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    contactNo: "",
-    address: "",
-    customerTypeID: "",
-    email: "",
-  });
-
-  const [salesItems, setSalesItems] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [totalPurchase, setTotalPurchase] = useState(0.0);
   const [paymentAmount, setPaymentAmount] = useState("");
   const [customerReceipt, setCustomerReceipt] = useState("");
-
-  const handlePaymentAmountChange = (e) => {
-    const value = e.target.value;
-
-    // Validate numeric input if needed
-    if (!isNaN(value)) {
-      setPaymentAmount(value);
-    }
-  };
-
-  const calculateTotals = useCallback(() => {
-    const itemsCount = formData.purchaseOrderItems.length;
-
-    // Ensure that orderQty and price are treated as numbers
-    const quantitySum = formData.purchaseOrderItems.reduce((sum, item) => {
-      return sum + (Number(item.orderQty) || 0); // Convert orderQty to number and add to sum
-    }, 0);
-
-    const purchaseSum = formData.purchaseOrderItems.reduce((sum, item) => {
-      return sum + (Number(item.orderQty) || 0) * (Number(item.price) || 0); // Convert orderQty and price to numbers
-    }, 0);
-
-    // Update individual state variables
-    setTotalItems(itemsCount);
-    setTotalQuantity(quantitySum);
-    setTotalPurchase(purchaseSum.toFixed(2)); // Format to two decimal places
-  }, [formData.purchaseOrderItems]); // Add formData.purchaseOrderItems as a dependency
-
-  const generateTransactionNumber = () => {
-    return Math.floor(Math.random() * 1000000)
-      .toString()
-      .padStart(6, "0");
-  };
-
-  const transactionNumbersss = generateTransactionNumber();
-
-  const currentDate = new Date().toLocaleDateString(); // Formats the current date
-
-  useEffect(() => {
-    setSalesItems(formData.purchaseOrderItems);
-    calculateTotals();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formData.purchaseOrderItems]);
-
-  const [locations, setLocations] = useState([]);
-  const [items, setItems] = useState([]);
-  const [transactionType, setTransactionType] = useState([]);
-  const [customerTypes, setCustomerTypes] = useState([]);
-  const [paymentTypes, setPaymentTypes] = useState([]);
   const [error, setError] = useState(null);
-  const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [customers, setCustomers] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   // completed
   const completeTransaction = async () => {
@@ -180,7 +101,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
           customerID: formData.customerID,
           paymentTypeID: formData.paymentTypeID,
           transactionTypeID: formData.transactionTypeID,
-          transactionNumber: Math.floor(transactionNumbersss),
+          transactionNumber: 123,
           status: "Completed",
           totalItems: totalItems,
           totalQuantity: totalQuantity,
@@ -222,7 +143,8 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
             }).then(() => {
               // Generate and Print Receipt
               generateReceipt(
-                Math.floor(transactionNumbersss),
+                // Math.floor(transactionNumbersss),
+                Math.floor(123123),
                 formData.customerName,
                 totalItems,
                 totalQuantity,
@@ -642,7 +564,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                   name="paymentAmount"
                   label="Payment Amount"
                   value={paymentAmount}
-                  onChange={handlePaymentAmountChange}
+                  //   onChange={handlePaymentAmountChange}
                   required
                   fullWidth
                   InputProps={{
