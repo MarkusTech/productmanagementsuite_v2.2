@@ -45,7 +45,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
 
         if (result.success) {
           setTransactionDetails(result.data);
-          setTransactionStatus(result.data.status);
         } else {
           setError("Failed to fetch transaction details.");
         }
@@ -58,8 +57,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
 
     fetchTransactionDetails();
   }, [salesTransactionID]);
-
-  console.log(transactionDetails);
 
   const [formData, setFormData] = useState({
     transactionTypeID: "",
@@ -430,105 +427,54 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                 <p sx={{ fontWeight: "bold" }}>Customers Information</p>
               </Grid>
 
-              {/* button */}
-              <Grid item xs={12}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  onClick={(e) => setAnchorEl(e.currentTarget)}
-                >
-                  Select Customer
-                </Button>
-
-                {/* task */}
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  PaperProps={{
-                    style: { maxHeight: 400, width: 500 }, // Adjusted width to 500px
-                  }}
-                >
-                  {/* Search Input */}
-                  <MenuItem>
-                    <input
-                      type="text"
-                      placeholder="Search Customers"
-                      value={searchTerm}
-                      style={{
-                        width: "100%",
-                        border: "none",
-                        outline: "none",
-                        padding: "5px",
-                      }}
-                    />
-                  </MenuItem>
-
-                  {/* Header */}
-                  <MenuItem
-                    disabled
-                    style={{ fontWeight: "bold", backgroundColor: "#f0f0f0" }}
-                  >
-                    <div style={{ display: "flex", width: "100%" }}>
-                      <span style={{ flex: 1 }}>Name</span>
-                      <span style={{ flex: 1 }}>Contact No</span>
-                      <span style={{ flex: 1 }}>Type</span>
-                    </div>
-                  </MenuItem>
-
-                  {/* Customer List */}
-                  {customers.length > 0 ? (
-                    <List>
-                      {customers.map((customer) => (
-                        <ListItem key={customer.customerID} disablePadding>
-                          <ListItemButton>
-                            <div style={{ display: "flex", width: "500px" }}>
-                              <span style={{ flex: 1 }}>
-                                {`${customer.firstName} ${customer.middleName} ${customer.lastName}`}
-                              </span>
-                              <span style={{ flex: 1 }}>
-                                {customer.contactNo}
-                              </span>
-                              <span style={{ flex: 1 }}>
-                                {customer.customerType.TypeName}
-                              </span>
-                            </div>
-                          </ListItemButton>
-                        </ListItem>
-                      ))}
-                    </List>
-                  ) : (
-                    <MenuItem disabled>No Customers Found</MenuItem>
-                  )}
-                </Menu>
-              </Grid>
-
               {/* Names */}
               <Grid item xs={4}>
                 <TextField
                   label="First Name"
                   name="firstName"
-                  value={customerFormData.firstName}
+                  value={
+                    transactionDetails && transactionDetails.customer
+                      ? transactionDetails.customer.firstName
+                      : ""
+                  }
                   fullWidth
                   required
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
               </Grid>
+
               <Grid item xs={4}>
                 <TextField
                   label="Middle Name"
                   name="middleName"
-                  value={customerFormData.middleName}
+                  value={
+                    transactionDetails && transactionDetails.customer
+                      ? transactionDetails.customer.middleName
+                      : ""
+                  }
                   fullWidth
                   required
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
               </Grid>
               <Grid item xs={4}>
                 <TextField
                   label="Last Name"
                   name="lastName"
-                  value={customerFormData.lastName}
+                  value={
+                    transactionDetails && transactionDetails.customer
+                      ? transactionDetails.customer.lastName
+                      : ""
+                  }
                   fullWidth
                   required
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
               </Grid>
 
@@ -537,42 +483,48 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                 <TextField
                   label="Contact No"
                   name="contactNo"
-                  value={customerFormData.contactNo}
+                  value={
+                    transactionDetails && transactionDetails.customer
+                      ? transactionDetails.customer.contactNo
+                      : ""
+                  }
                   fullWidth
                   required
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
               </Grid>
               <Grid item xs={8}>
                 <TextField
                   label="Address"
                   name="address"
-                  value={customerFormData.address}
+                  value={
+                    transactionDetails && transactionDetails.customer
+                      ? transactionDetails.customer.address
+                      : ""
+                  }
                   fullWidth
                   required
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
               </Grid>
 
               {/* Third Row */}
               <Grid item xs={4}>
-                <Select
-                  name="customerTypeID"
-                  value={customerFormData.customerTypeID}
-                  displayEmpty
+                <TextField
+                  label="Customer Type"
+                  name="customerType"
+                  value="VIP"
                   fullWidth
                   required
-                >
-                  <MenuItem value="" disabled>
-                    Select Customer Type
-                  </MenuItem>
-                  {customerTypes.map((type) => (
-                    <MenuItem
-                      key={type.customerTypeID}
-                      value={type.customerTypeID}
-                    >
-                      {type.TypeName}
-                    </MenuItem>
-                  ))}
-                </Select>
+                  variant="outlined"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
               </Grid>
 
               {/* Email Field */}
@@ -580,9 +532,16 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                 <TextField
                   label="Email"
                   name="email"
-                  value={customerFormData.email}
+                  value={
+                    transactionDetails && transactionDetails.customer
+                      ? transactionDetails.customer.email
+                      : ""
+                  }
                   fullWidth
                   required
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
               </Grid>
 
@@ -598,9 +557,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                     <TableHead>
                       <TableRow>
                         <TableCell style={{ fontWeight: "bold" }}>
-                          ITEM ID
-                        </TableCell>
-                        <TableCell style={{ fontWeight: "bold" }}>
                           ITEM NAME
                         </TableCell>
                         <TableCell style={{ fontWeight: "bold" }}>
@@ -612,56 +568,42 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                         <TableCell style={{ fontWeight: "bold" }}>
                           TOTAL
                         </TableCell>
-                        <TableCell style={{ fontWeight: "bold" }}>
-                          Actions
-                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {formData.purchaseOrderItems.length > 0 ? (
-                        formData.purchaseOrderItems.map((item, index) => {
-                          const total = item.orderQty * item.price;
-                          return (
-                            <TableRow key={index} sx={{ height: "40px" }}>
-                              {" "}
-                              {/* Set height for row */}
-                              <TableCell sx={{ padding: "4px" }}>
-                                {item.itemID}
-                              </TableCell>{" "}
-                              {/* Reduce padding */}
-                              <TableCell sx={{ padding: "4px" }}>
-                                {item.itemName}
-                              </TableCell>{" "}
-                              {/* Reduce padding */}
-                              <TableCell sx={{ padding: "4px" }}>
-                                <TextField
-                                  type="text"
-                                  value={item.orderQty}
-                                  fullWidth
-                                  inputProps={{
-                                    inputMode: "numeric",
-                                    pattern: "[0-9]*",
-                                  }}
-                                  sx={{ width: "80px", padding: "4px" }} // Reduce padding for textfield
-                                />
-                              </TableCell>
-                              <TableCell sx={{ padding: "4px" }}>
-                                {item.price}
-                              </TableCell>
-                              <TableCell sx={{ padding: "4px" }}>
-                                {total.toFixed(2)}
-                              </TableCell>
-                              <TableCell sx={{ padding: "4px" }}>
-                                <IconButton aria-label="delete">
-                                  <DeleteIcon />
-                                </IconButton>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })
+                      {transactionDetails?.salesTransactionItems?.length > 0 ? (
+                        transactionDetails.salesTransactionItems.map(
+                          (item, index) => {
+                            const total = item.qty * item.price;
+                            return (
+                              <TableRow key={index} sx={{ height: "40px" }}>
+                                <TableCell sx={{ padding: "4px" }}>
+                                  {item.item?.itemName}
+                                </TableCell>
+                                <TableCell sx={{ padding: "4px" }}>
+                                  {item.qty}
+                                </TableCell>
+                                <TableCell sx={{ padding: "4px" }}>
+                                  ₱
+                                  {item.price.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                  })}
+                                </TableCell>
+                                <TableCell sx={{ padding: "4px" }}>
+                                  ₱
+                                  {total.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                  })}
+                                </TableCell>
+                              </TableRow>
+                            );
+                          }
+                        )
                       ) : (
                         <TableRow>
-                          <TableCell colSpan={6} align="center">
+                          <TableCell colSpan={4} align="center">
                             No items added
                           </TableCell>
                         </TableRow>
@@ -670,77 +612,10 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                   </Table>
                 </TableContainer>
               </Grid>
-
-              {/* Add Item Button */}
-              <Grid item xs={3}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => setIsItemDialogOpen(true)}
-                  fullWidth
-                >
-                  Add Item
-                </Button>
-              </Grid>
             </Grid>
             <br />
             <br />
           </form>
-
-          {/* Add Item Dialog */}
-          <Dialog
-            open={isItemDialogOpen}
-            onClose={() => setIsItemDialogOpen(false)}
-            fullWidth
-            maxWidth="md"
-          >
-            <DialogTitle>Select Item</DialogTitle>
-            <DialogContent>
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell style={{ fontWeight: "bold" }}>
-                        Item Code
-                      </TableCell>
-                      <TableCell style={{ fontWeight: "bold" }}>Name</TableCell>
-                      <TableCell style={{ fontWeight: "bold" }}>
-                        Description
-                      </TableCell>
-                      <TableCell style={{ fontWeight: "bold" }}>
-                        Available QTY
-                      </TableCell>
-                      <TableCell style={{ fontWeight: "bold" }}>
-                        Price
-                      </TableCell>
-                      <TableCell style={{ fontWeight: "bold" }}>
-                        Action
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {items.map((item) => (
-                      <TableRow key={item.itemID}>
-                        <TableCell>{item.itemCode}</TableCell>
-                        <TableCell>{item.itemName}</TableCell>
-                        <TableCell>{item.description}</TableCell>
-                        <TableCell>{item.quantity}</TableCell>
-                        <TableCell>{item.price}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => setIsItemDialogOpen(false)}
-                color="secondary"
-              >
-                Close
-              </Button>
-            </DialogActions>
-          </Dialog>
         </div>
         {/* ------------------------------------------------------------------------------------- */}
         <div style={styles.divContainer}>
@@ -751,31 +626,14 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
               </Grid>
               {/* Payment Type */}
               <Grid item xs={6}>
-                <Select
+                <TextField
                   name="paymentTypeID"
-                  value={formData.paymentTypeID}
+                  value={transactionDetails?.paymentType?.paymentName || ""}
                   required
                   fullWidth
-                  displayEmpty
-                >
-                  <MenuItem value="" disabled>
-                    Select Payment Type
-                  </MenuItem>
-                  {loading ? (
-                    <MenuItem disabled>
-                      <CircularProgress size={24} />
-                    </MenuItem>
-                  ) : (
-                    paymentTypes.map((paymentType) => (
-                      <MenuItem
-                        key={paymentType.paymentTypeID}
-                        value={paymentType.paymentTypeID}
-                      >
-                        {paymentType.paymentName}
-                      </MenuItem>
-                    ))
-                  )}
-                </Select>
+                  placeholder="Enter Payment Type"
+                  disabled={!transactionDetails?.paymentType}
+                />
               </Grid>
 
               {/* Payment Amount */}
@@ -783,12 +641,12 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                 <TextField
                   name="paymentAmount"
                   label="Payment Amount"
-                  value={paymentAmount} // Bind input to paymentAmount state
-                  onChange={handlePaymentAmountChange} // Handle input change
+                  value={paymentAmount}
+                  onChange={handlePaymentAmountChange}
                   required
                   fullWidth
                   InputProps={{
-                    inputMode: "numeric", // Ensure numeric input
+                    inputMode: "numeric",
                   }}
                 />
               </Grid>
@@ -805,7 +663,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Transaction Number:</Typography>
                   <Typography variant="body1">
-                    {transactionNumbersss}
+                    {transactionDetails?.transactionNumber}
                   </Typography>
                 </Box>
               </Grid>
@@ -814,7 +672,9 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Transaction Date:</Typography>
-                  <Typography variant="body1">{currentDate}</Typography>
+                  <Typography variant="body1">
+                    {transactionDetails?.transactionDate}
+                  </Typography>
                 </Box>
               </Grid>
 
@@ -822,7 +682,9 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Status:</Typography>
-                  <Typography variant="body1">{formData.status}</Typography>
+                  <Typography variant="body1">
+                    {transactionDetails?.status}
+                  </Typography>
                 </Box>
               </Grid>
 
@@ -831,9 +693,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Location:</Typography>
                   <Typography variant="body1">
-                    {locations.find(
-                      (location) => location.locationID === formData.locationID
-                    )?.locationName || "No Location Selected"}
+                    {transactionDetails?.location?.locationName || "N/A"}
                   </Typography>
                 </Box>
               </Grid>
@@ -843,10 +703,8 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Transaction Type:</Typography>
                   <Typography variant="body1">
-                    {transactionType.find(
-                      (type) =>
-                        type.transactionTypeID === formData.transactionTypeID
-                    )?.transactionName || "No Type Selected"}
+                    {transactionDetails?.transactionType?.transactionName ||
+                      "N/A"}
                   </Typography>
                 </Box>
               </Grid>
@@ -856,10 +714,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Payment Type:</Typography>
                   <Typography variant="body1">
-                    {paymentTypes.find(
-                      (payment) =>
-                        payment.paymentTypeID === formData.paymentTypeID
-                    )?.paymentName || "No Payment Type Selected"}
+                    {transactionDetails?.paymentType?.paymentName || "N/A"}
                   </Typography>
                 </Box>
               </Grid>
@@ -868,7 +723,9 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Total Items:</Typography>
-                  <Typography variant="body1">{totalItems}</Typography>
+                  <Typography variant="body1">
+                    {transactionDetails?.totalItems}
+                  </Typography>
                 </Box>
               </Grid>
 
@@ -876,7 +733,9 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Total Quantity:</Typography>
-                  <Typography variant="body1">{totalQuantity}</Typography>
+                  <Typography variant="body1">
+                    {transactionDetails?.totalQuantity}
+                  </Typography>
                 </Box>
               </Grid>
 
@@ -885,7 +744,10 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                 <Box display="flex" justifyContent="space-between">
                   <Typography variant="body1">Total Purchase:</Typography>
                   <Typography variant="body1">
-                    ₱{new Intl.NumberFormat("en-US").format(totalPurchase)}
+                    ₱
+                    {new Intl.NumberFormat("en-US").format(
+                      transactionDetails?.totalPurchase
+                    )}
                   </Typography>
                 </Box>
               </Grid>
