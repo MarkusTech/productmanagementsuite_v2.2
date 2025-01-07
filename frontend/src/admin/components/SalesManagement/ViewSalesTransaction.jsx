@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useSelector } from "react-redux";
 import {
   TextField,
   Button,
@@ -30,15 +29,37 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Swal from "sweetalert2";
-import {
-  createPurchaseOrderAndItems,
-  fetchLocations,
-} from "../../../services/purchaseOrder/purchaseOrderService";
 import axios from "axios";
 
 const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
-  const userState = useSelector((state) => state.user.userInfo);
-  const roleID = userState?.roleID;
+  const [transactionDetails, setTransactionDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchTransactionDetails = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `http://localhost:5000/api/v3/transaction/${salesTransactionID}`
+        );
+        const result = await response.json();
+
+        if (result.success) {
+          setTransactionDetails(result.data);
+          setTransactionStatus(result.data.status);
+        } else {
+          setError("Failed to fetch transaction details.");
+        }
+      } catch (err) {
+        setError("An error occurred while fetching transaction details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactionDetails();
+  }, [salesTransactionID]);
+
+  console.log(transactionDetails);
 
   const [formData, setFormData] = useState({
     transactionTypeID: "",
@@ -68,6 +89,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [totalPurchase, setTotalPurchase] = useState(0.0);
   const [paymentAmount, setPaymentAmount] = useState("");
+  const [customerReceipt, setCustomerReceipt] = useState("");
 
   const handlePaymentAmountChange = (e) => {
     const value = e.target.value;
@@ -123,340 +145,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
   const [customers, setCustomers] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchDropdownData();
-    fetchTransactionType();
-    fetchCustomers();
-    fetchCustomerTypes();
-    fetchPaymentTypes();
-  }, []);
-
-  const fetchDropdownData = async () => {
-    try {
-      const locationData = await fetchLocations();
-      setLocations(locationData);
-    } catch (err) {
-      console.error("Error fetching suppliers or locations:", err);
-      setError("Failed to load supplier or location data.");
-    }
-  };
-
-  const fetchTransactionType = async () => {
-    try {
-      const response = await axios.get("/api/v3/transaction/transaction-types");
-      if (response.data.success) {
-        setTransactionType(response.data.data);
-      }
-    } catch (error) {
-      console.log(error);
-      setError("Failed to Fetch Transaction Type");
-    }
-  };
-
-  const fetchPaymentTypes = async () => {
-    try {
-      const response = await fetch("/api/v3/transaction/payment-types");
-      const data = await response.json();
-      if (data.success) {
-        setPaymentTypes(data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching payment types:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchCustomerTypes = async () => {
-    try {
-      const response = await axios.get("/api/v2/customer-types");
-      if (response.data.success) {
-        setCustomerTypes(response.data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching customer types:", error);
-    }
-  };
-
-  const fetchCustomers = async () => {
-    try {
-      const response = await axios.get("/api/v2/customers");
-      if (response.data.success) {
-        setCustomers(response.data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching customers:", error);
-    }
-  };
-
-  useEffect(() => {
-    const fetchItems = async () => {
-      if (!formData.locationID) {
-        setItems([]);
-        return;
-      }
-
-      try {
-        const response = await axios.get(
-          `/api/v2/inventory-items/sellable/${formData.locationID}`
-        );
-        if (response.data.inventoryItems) {
-          const items = response.data.inventoryItems.map((inventoryItem) => ({
-            ...inventoryItem.item,
-            quantity: inventoryItem.quantity,
-          }));
-          setItems(items);
-        } else {
-          setError("Failed to load inventory items data.");
-        }
-      } catch (err) {
-        console.error("Error fetching inventory items:", err);
-        setError("Failed to fetch inventory items.");
-      }
-    };
-
-    fetchItems();
-  }, [formData.locationID]);
-
-  const [customerReceipt, setCustomerReceipt] = useState("");
-  // Handle customer selection
-  const handleCustomerSelect = (customerID) => {
-    const selectedCustomer = customers.find(
-      (customer) => customer.customerID === customerID
-    );
-
-    if (selectedCustomer) {
-      setCustomerFormData({
-        firstName: selectedCustomer.firstName,
-        middleName: selectedCustomer.middleName,
-        lastName: selectedCustomer.lastName,
-        contactNo: selectedCustomer.contactNo,
-        address: selectedCustomer.address,
-        customerTypeID: selectedCustomer.customerType.customerTypeID,
-        email: selectedCustomer.email,
-      });
-
-      setFormData((prevState) => ({
-        ...prevState,
-        customerID: customerID, // Update customerID in formData
-      }));
-      setCustomerReceipt(
-        selectedCustomer.firstName +
-          " " +
-          selectedCustomer.middleName +
-          " " +
-          selectedCustomer.lastName
-      );
-      setAnchorEl(null); // Close the menu
-    }
-  };
-
-  const handleClearCustomerData = () => {
-    setCustomerFormData({
-      firstName: "",
-      middleName: "",
-      lastName: "",
-      contactNo: "",
-      address: "",
-      customerTypeID: "",
-      email: "",
-    });
-  };
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
-  const handleSearchChange = (event) => {
-    const value = event.target.value.toLowerCase();
-    setSearchTerm(value);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // Handle changes to order quantity
-  const handleOrderQtyChange = (index, event) => {
-    const newQty = event.target.value;
-    const updatedItems = [...salesItems];
-    updatedItems[index].orderQty = newQty;
-    updatedItems[index].total =
-      updatedItems[index].orderQty * updatedItems[index].price; // Recalculate total
-    setSalesItems(updatedItems); // Update salesItems state
-    updateFormData(updatedItems); // Also update formData with the new items
-  };
-
-  const removeItem = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      purchaseOrderItems: prev.purchaseOrderItems.filter((_, i) => i !== index),
-    }));
-  };
-
-  // Helper function to update formData
-  const updateFormData = (updatedItems) => {
-    const totalItems = updatedItems.length;
-    const totalQuantity = updatedItems.reduce(
-      (sum, item) => sum + item.orderQty,
-      0
-    );
-    const totalPurchase = updatedItems.reduce(
-      (sum, item) => sum + item.total,
-      0
-    );
-
-    setFormData({
-      ...formData,
-      purchaseOrderItems: updatedItems, // Update items list in formData
-      totalItems: totalItems,
-      totalQuantity: totalQuantity,
-      totalPurchase: totalPurchase.toFixed(2), // Format totalPurchase to 2 decimal places
-    });
-  };
-
-  const addItemToOrder = (item) => {
-    const newItem = {
-      ...item,
-      orderQty: 1,
-    };
-    setFormData((prev) => ({
-      ...prev,
-      purchaseOrderItems: [...prev.purchaseOrderItems, newItem],
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const formattedOrderDate = new Date(formData.orderDate).toISOString();
-    const formattedExpectedDeliverDate = new Date(
-      formData.expectedDeliverDate
-    ).toISOString();
-
-    const purchaseOrderData = {
-      ...formData,
-      orderDate: formattedOrderDate,
-      expectedDeliverDate: formattedExpectedDeliverDate,
-      createdByID: roleID,
-    };
-
-    try {
-      const response = await createPurchaseOrderAndItems(purchaseOrderData);
-      if (response.success) {
-        Swal.fire({
-          icon: "success",
-          title: "Purchase Order Created!",
-          text: "The new purchase order and its items have been successfully created.",
-          confirmButtonText: "Okay",
-          customClass: {
-            confirmButton: "swal-confirm-button",
-          },
-        });
-      } else {
-        setError(response.message);
-      }
-    } catch (err) {
-      setError(err.message || "An unknown error occurred");
-    }
-  };
-
-  // Canceled
-  const canceledTransaction = async () => {
-    // Show confirmation dialog
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to cancel this transaction?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, cancel it!",
-      cancelButtonText: "No, keep it",
-      background: "#f4f4f9", // Background color of the popup
-      color: "#dc3545", // Title text color (red for warning)
-      confirmButtonColor: "#dc3545", // Red color for "Yes, cancel it!" button
-      cancelButtonColor: "#28a745", // Green color for "No, keep it" button
-      backdrop: "rgba(0, 0, 0, 0.4)", // Backdrop color
-    });
-
-    if (result.isConfirmed) {
-      try {
-        // Prepare the transaction data for the API request
-        const transactionData = {
-          locationID: formData.locationID,
-          customerID: formData.customerID,
-          paymentTypeID: formData.paymentTypeID,
-          transactionTypeID: formData.transactionTypeID,
-          transactionNumber: Math.floor(transactionNumbersss),
-          status: "Canceled",
-          totalItems: totalItems,
-          totalQuantity: totalQuantity,
-          totalPurchase: Math.floor(totalPurchase), // Make sure it's an integer
-        };
-
-        // Sending the transaction data to the API
-        const response = await axios.post(
-          "http://localhost:5000/api/v3/transaction",
-          transactionData
-        );
-
-        if (response.data.success) {
-          // Get the salesTransactionID from the response
-          const salesTransactionID = response.data.data.salesTransactionID;
-
-          // Prepare the sales items data
-          const salesItems = formData.purchaseOrderItems.map((item) => ({
-            salesTransactionID: salesTransactionID,
-            itemID: item.itemID,
-            qty: Math.floor(item.orderQty),
-            price: item.price,
-            total: item.orderQty * item.price, // Total is qty * price
-          }));
-
-          // Send sales items to the API
-          const saveSalesItemsResponse = await axios.post(
-            "http://localhost:5000/api/v3/transaction/saveSalesItems",
-            { items: salesItems }
-          );
-
-          if (saveSalesItemsResponse.data.success) {
-            Swal.fire({
-              title: "Canceled",
-              text: "Transaction Canceled Successfully.",
-              background: "#f4f4f9", // Background color of the popup
-              color: "#28a745", // Title text color (green for success)
-              confirmButtonText: "OK",
-              confirmButtonColor: "#28a745", // Green color for the confirm button
-              backdrop: "rgba(0, 0, 0, 0.4)", // Backdrop color
-            });
-            // Optionally reset the form or perform other actions
-          } else {
-            Swal.fire("Error", "Failed to save sales items.", "error");
-          }
-        } else {
-          Swal.fire("Error", "Failed to save transaction.", "error");
-        }
-      } catch (error) {
-        console.error("Error saving transaction:", error);
-        Swal.fire("Error", "Error saving transaction.", "error");
-      }
-    } else {
-      Swal.fire({
-        title: "Cancelled",
-        text: "Your transaction was not cancelled.",
-        icon: "info",
-        background: "#e7f3ff", // Light blue background
-        color: "#0d6efd", // Blue title text
-        confirmButtonText: "OK",
-        confirmButtonColor: "#0d6efd", // Blue confirm button
-        backdrop: "rgba(0, 0, 0, 0.3)", // Slight dark backdrop to make the alert stand out
-      });
-    }
-  };
 
   // completed
   const completeTransaction = async () => {
@@ -538,7 +226,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
               // Generate and Print Receipt
               generateReceipt(
                 Math.floor(transactionNumbersss),
-                formData.customerName, // Assuming you have the customer name in formData
+                formData.customerName,
                 totalItems,
                 totalQuantity,
                 totalPurchase,
@@ -709,54 +397,33 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
       {error && <div style={{ color: "red" }}>Error: {error}</div>}
       <div style={styles.salesTransactionTable}>
         <div style={styles.divContainer}>
-          <form onSubmit={handleSubmit}>
+          <form>
             <Grid container spacing={2}>
-              {/* Location Dropdown */}
               <Grid item xs={6}>
-                <Select
+                <TextField
                   name="locationID"
-                  value={formData.locationID}
-                  onChange={handleChange}
+                  value={transactionDetails?.location?.locationName || ""}
                   required
                   fullWidth
-                  displayEmpty
-                >
-                  <MenuItem value="" disabled>
-                    Select Location
-                  </MenuItem>
-                  {locations.map((location) => (
-                    <MenuItem
-                      key={location.locationID}
-                      value={location.locationID}
-                    >
-                      {location.locationName}
-                    </MenuItem>
-                  ))}
-                </Select>
+                  placeholder="Enter Location"
+                  disabled={!transactionDetails?.location}
+                />
               </Grid>
 
-              {/* Trasaction Types */}
               <Grid item xs={6}>
-                <Select
-                  name="transactionTypeID" // Name must match the key in formData
-                  value={formData.transactionTypeID} // Value should reflect the state for the selected transaction type
-                  onChange={handleChange} // Ensure that this triggers handleChange to update state
+                <TextField
+                  name="transactionNumber"
+                  value={
+                    transactionDetails?.transactionType?.transactionName || ""
+                  }
                   required
                   fullWidth
-                  displayEmpty
-                >
-                  <MenuItem value="" disabled>
-                    Select Transaction
-                  </MenuItem>
-                  {transactionType.map((type) => (
-                    <MenuItem
-                      key={type.transactionTypeID}
-                      value={type.transactionTypeID}
-                    >
-                      {type.transactionName}
-                    </MenuItem>
-                  ))}
-                </Select>
+                  placeholder="Transaction Type"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  disabled={!transactionDetails?.transactionType}
+                />
               </Grid>
 
               <Grid item xs={12}>
@@ -778,7 +445,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                 <Menu
                   anchorEl={anchorEl}
                   open={Boolean(anchorEl)}
-                  onClose={handleCloseMenu}
                   PaperProps={{
                     style: { maxHeight: 400, width: 500 }, // Adjusted width to 500px
                   }}
@@ -789,7 +455,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                       type="text"
                       placeholder="Search Customers"
                       value={searchTerm}
-                      onChange={handleSearchChange}
                       style={{
                         width: "100%",
                         border: "none",
@@ -816,11 +481,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                     <List>
                       {customers.map((customer) => (
                         <ListItem key={customer.customerID} disablePadding>
-                          <ListItemButton
-                            onClick={() =>
-                              handleCustomerSelect(customer.customerID)
-                            }
-                          >
+                          <ListItemButton>
                             <div style={{ display: "flex", width: "500px" }}>
                               <span style={{ flex: 1 }}>
                                 {`${customer.firstName} ${customer.middleName} ${customer.lastName}`}
@@ -926,12 +587,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
               </Grid>
 
               <Grid item xs={12}>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={handleClearCustomerData} // Add this handler
-                  fullWidth
-                >
+                <Button variant="outlined" color="secondary" fullWidth>
                   Clear Customer Information
                 </Button>
               </Grid>
@@ -981,9 +637,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                                 <TextField
                                   type="text"
                                   value={item.orderQty}
-                                  onChange={(e) =>
-                                    handleOrderQtyChange(index, e)
-                                  }
                                   fullWidth
                                   inputProps={{
                                     inputMode: "numeric",
@@ -999,10 +652,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                                 {total.toFixed(2)}
                               </TableCell>
                               <TableCell sx={{ padding: "4px" }}>
-                                <IconButton
-                                  onClick={() => removeItem(index)}
-                                  aria-label="delete"
-                                >
+                                <IconButton aria-label="delete">
                                   <DeleteIcon />
                                 </IconButton>
                               </TableCell>
@@ -1076,18 +726,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                         <TableCell>{item.description}</TableCell>
                         <TableCell>{item.quantity}</TableCell>
                         <TableCell>{item.price}</TableCell>
-                        <TableCell>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => {
-                              addItemToOrder(item);
-                              setIsItemDialogOpen(false);
-                            }}
-                          >
-                            Add
-                          </Button>
-                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -1106,7 +744,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
         </div>
         {/* ------------------------------------------------------------------------------------- */}
         <div style={styles.divContainer}>
-          <form onSubmit={handleSubmit}>
+          <form>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <p>Payment Information</p>
@@ -1116,7 +754,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                 <Select
                   name="paymentTypeID"
                   value={formData.paymentTypeID}
-                  onChange={handleChange}
                   required
                   fullWidth
                   displayEmpty
@@ -1260,28 +897,24 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
 
               {/* Buttons Container */}
               <Grid item xs={12}>
-                <Box display="flex" justifyContent="space-between">
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={canceledTransaction}
-                  >
-                    Void Transaction
-                  </Button>
-                  {/* <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={saveTransaction}
-                  >
-                    Save
-                  </Button> */}
-                  <Button
-                    variant="contained"
-                    color="success"
-                    onClick={completeTransaction}
-                  >
-                    Complete Transaction
-                  </Button>
+                <Box display="flex" justifyContent="flex-end">
+                  {transactionDetails?.transactionStatus === "Completed" ? (
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      // onClick={canceledTransaction}
+                    >
+                      Void Transaction
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={completeTransaction}
+                    >
+                      Complete Transaction
+                    </Button>
+                  )}
                 </Box>
               </Grid>
             </Grid>

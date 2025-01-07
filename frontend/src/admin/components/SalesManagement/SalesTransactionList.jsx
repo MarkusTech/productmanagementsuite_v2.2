@@ -41,7 +41,6 @@ const SalesTransactionList = () => {
         );
 
         // Check response format
-        console.log(result.data); // Log the full response for debugging
         const transactionSuccess = result.data.success;
         const transactionData = result.data.data;
 
