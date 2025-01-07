@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Table from "../Table";
 import { Button } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
+// import EditIcon from "@mui/icons-material/Edit";
 import SalesTransaction from "./SalesTransaction";
 import axios from "axios";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -109,11 +109,11 @@ const SalesTransactionList = () => {
         </Button>
       </td>
 
-      <td>
+      {/* <td>
         <Button variant="contained" color="primary" startIcon={<EditIcon />}>
           Edit
         </Button>
-      </td>
+      </td> */}
     </tr>
   );
 

@@ -101,7 +101,7 @@ export class SalesTransactionController {
   // Get a single sales transaction by ID
   async getSalesTransactionById(req: Request, res: Response): Promise<void> {
     const { salesTransactionID } = req.params;
-
+  
     try {
       const transaction = await prisma.salesTransaction.findUnique({
         where: { salesTransactionID: parseInt(salesTransactionID) },
@@ -110,9 +110,14 @@ export class SalesTransactionController {
           paymentType: true,
           transactionType: true,
           customer: true,
+          salesTransactionItems: {
+            include: {
+              item: true, // Include associated item details
+            },
+          },
         },
       });
-
+  
       if (!transaction) {
         res.status(404).json({
           success: false,
@@ -120,9 +125,9 @@ export class SalesTransactionController {
         });
         return;
       }
-
+  
       logger.info(`Fetched sales transaction with ID ${salesTransactionID}`);
-
+  
       res.status(200).json({
         success: true,
         data: transaction,
@@ -137,6 +142,7 @@ export class SalesTransactionController {
       });
     }
   }
+  
 
   // Update a sales transaction
   async updateSalesTransaction(req: Request, res: Response): Promise<void> {
