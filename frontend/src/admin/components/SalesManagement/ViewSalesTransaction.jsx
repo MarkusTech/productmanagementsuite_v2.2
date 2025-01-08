@@ -21,6 +21,12 @@ import axios from "axios";
 
 const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
   const [transactionDetails, setTransactionDetails] = useState(null);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+  const [totalPurchase, setTotalPurchase] = useState(0.0);
+  const [paymentAmount, setPaymentAmount] = useState("");
+  const [customerReceipt, setCustomerReceipt] = useState("");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchTransactionDetails = async () => {
@@ -32,6 +38,10 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
 
         if (result.success) {
           setTransactionDetails(result.data);
+          setTotalItems(result.data.totalItems);
+          setTotalQuantity(result.data.totalQuantity);
+          setTotalPurchase(result.data.totalPurchase);
+          setCustomerReceipt(result.data.customer.lastName);
         } else {
           setError("Failed to fetch transaction details.");
         }
@@ -43,6 +53,13 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
 
     fetchTransactionDetails();
   }, [salesTransactionID]);
+
+  const handlePaymentAmountChange = (event) => {
+    const value = event.target.value;
+    if (!isNaN(value) && value >= 0) {
+      setPaymentAmount(value);
+    }
+  };
 
   const [formData] = useState({
     transactionTypeID: "",
@@ -56,13 +73,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
     totalPurchase: 0,
     purchaseOrderItems: [],
   });
-
-  const [totalItems, setTotalItems] = useState(0);
-  const [totalQuantity, setTotalQuantity] = useState(0);
-  const [totalPurchase, setTotalPurchase] = useState(0.0);
-  const [paymentAmount, setPaymentAmount] = useState("");
-  const [customerReceipt, setCustomerReceipt] = useState("");
-  const [error, setError] = useState(null);
 
   // completed
   const completeTransaction = async () => {
@@ -97,15 +107,15 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
     if (result.isConfirmed) {
       try {
         const transactionData = {
-          locationID: formData.locationID,
-          customerID: formData.customerID,
-          paymentTypeID: formData.paymentTypeID,
-          transactionTypeID: formData.transactionTypeID,
-          transactionNumber: 123,
+          locationID: transactionDetails.locationID,
+          customerID: transactionDetails.customerID,
+          paymentTypeID: transactionDetails.paymentTypeID,
+          transactionTypeID: transactionDetails.transactionTypeID,
+          transactionNumber: transactionDetails.transactionNumber,
           status: "Completed",
-          totalItems: totalItems,
-          totalQuantity: totalQuantity,
-          totalPurchase: Math.floor(totalPurchase),
+          totalItems: transactionDetails.totalItems,
+          totalQuantity: transactionDetails.totalQuantity,
+          totalPurchase: transactionDetails.totalPurchase,
         };
 
         const response = await axios.post(
@@ -564,7 +574,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                   name="paymentAmount"
                   label="Payment Amount"
                   value={paymentAmount}
-                  //   onChange={handlePaymentAmountChange}
+                  onChange={handlePaymentAmountChange}
                   required
                   fullWidth
                   InputProps={{
@@ -682,7 +692,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
               {/* Buttons Container */}
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="flex-end">
-                  {transactionDetails?.transactionStatus === "Completed" ? (
+                  {transactionDetails?.status === "Completed" ? (
                     <Button
                       variant="outlined"
                       color="secondary"
