@@ -419,27 +419,53 @@ const SalesTransaction = ({ closeForm }) => {
 
           if (saveSalesItemsResponse.data.success) {
             Swal.fire({
+              title: "Success",
+              text: "Transaction has been saved successfully.",
               icon: "success",
-              text: "Transaction and sales items saved successfully.",
+              background: "#f4f4f9",
+              color: "#28a745",
               confirmButtonText: "Okay",
-              customClass: {
-                confirmButton: "swal-confirm-button",
-              },
+              confirmButtonColor: "#28a745",
+              backdrop: "rgba(0, 0, 0, 0.4)",
+            }).then(() => {
+              // Reload the page after success
+              window.location.reload();
             });
           } else {
-            Swal.fire("Error", "Failed to save sales items.", "error");
+            Swal.fire({
+              title: "Error",
+              text: "Failed to save sales items.",
+              icon: "error",
+              background: "#fff5f5",
+              color: "#dc3545",
+              confirmButtonColor: "#dc3545",
+            });
           }
         } else {
-          Swal.fire("Error", "Failed to save transaction.", "error");
+          Swal.fire({
+            title: "Error",
+            text: "Failed to save transaction.",
+            icon: "error",
+            background: "#fff5f5",
+            color: "#dc3545",
+            confirmButtonColor: "#dc3545",
+          });
         }
       } catch (error) {
         console.error("Error saving transaction:", error);
-        Swal.fire("Error", "Error saving transaction.", "error");
+        Swal.fire({
+          title: "Error",
+          text: "An error occurred while saving the transaction.",
+          icon: "error",
+          background: "#fff5f5",
+          color: "#dc3545",
+          confirmButtonColor: "#dc3545",
+        });
       }
     } else {
       Swal.fire({
         title: "Cancelled",
-        text: "Your transaction was not saved.",
+        text: "Transaction was not saved.",
         icon: "info",
         background: "#f0f8ff",
         color: "#007bff",
@@ -452,7 +478,6 @@ const SalesTransaction = ({ closeForm }) => {
 
   // Canceled
   const canceledTransaction = async () => {
-    // Show confirmation dialog
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "Do you want to cancel this transaction?",
@@ -460,16 +485,15 @@ const SalesTransaction = ({ closeForm }) => {
       showCancelButton: true,
       confirmButtonText: "Yes, cancel it!",
       cancelButtonText: "No, keep it",
-      background: "#f4f4f9", // Background color of the popup
-      color: "#dc3545", // Title text color (red for warning)
-      confirmButtonColor: "#dc3545", // Red color for "Yes, cancel it!" button
-      cancelButtonColor: "#28a745", // Green color for "No, keep it" button
-      backdrop: "rgba(0, 0, 0, 0.4)", // Backdrop color
+      background: "#f4f4f9",
+      color: "#dc3545",
+      confirmButtonColor: "#dc3545",
+      cancelButtonColor: "#28a745",
+      backdrop: "rgba(0, 0, 0, 0.4)",
     });
 
     if (result.isConfirmed) {
       try {
-        // Prepare the transaction data for the API request
         const transactionData = {
           locationID: formData.locationID,
           customerID: formData.customerID,
@@ -479,29 +503,25 @@ const SalesTransaction = ({ closeForm }) => {
           status: "Canceled",
           totalItems: totalItems,
           totalQuantity: totalQuantity,
-          totalPurchase: Math.floor(totalPurchase), // Make sure it's an integer
+          totalPurchase: Math.floor(totalPurchase),
         };
 
-        // Sending the transaction data to the API
         const response = await axios.post(
           "http://localhost:5000/api/v3/transaction",
           transactionData
         );
 
         if (response.data.success) {
-          // Get the salesTransactionID from the response
           const salesTransactionID = response.data.data.salesTransactionID;
 
-          // Prepare the sales items data
           const salesItems = formData.purchaseOrderItems.map((item) => ({
             salesTransactionID: salesTransactionID,
             itemID: item.itemID,
             qty: Math.floor(item.orderQty),
             price: item.price,
-            total: item.orderQty * item.price, // Total is qty * price
+            total: item.orderQty * item.price,
           }));
 
-          // Send sales items to the API
           const saveSalesItemsResponse = await axios.post(
             "http://localhost:5000/api/v3/transaction/saveSalesItems",
             { items: salesItems }
@@ -511,13 +531,14 @@ const SalesTransaction = ({ closeForm }) => {
             Swal.fire({
               title: "Canceled",
               text: "Transaction Canceled Successfully.",
-              background: "#f4f4f9", // Background color of the popup
-              color: "#28a745", // Title text color (green for success)
+              background: "#f4f4f9",
+              color: "#28a745",
               confirmButtonText: "OK",
-              confirmButtonColor: "#28a745", // Green color for the confirm button
-              backdrop: "rgba(0, 0, 0, 0.4)", // Backdrop color
+              confirmButtonColor: "#28a745",
+              backdrop: "rgba(0, 0, 0, 0.4)",
+            }).then(() => {
+              window.location.reload();
             });
-            // Optionally reset the form or perform other actions
           } else {
             Swal.fire("Error", "Failed to save sales items.", "error");
           }
@@ -525,7 +546,6 @@ const SalesTransaction = ({ closeForm }) => {
           Swal.fire("Error", "Failed to save transaction.", "error");
         }
       } catch (error) {
-        console.error("Error saving transaction:", error);
         Swal.fire("Error", "Error saving transaction.", "error");
       }
     } else {
@@ -533,11 +553,11 @@ const SalesTransaction = ({ closeForm }) => {
         title: "Cancelled",
         text: "Your transaction was not cancelled.",
         icon: "info",
-        background: "#e7f3ff", // Light blue background
-        color: "#0d6efd", // Blue title text
+        background: "#e7f3ff",
+        color: "#0d6efd",
         confirmButtonText: "OK",
-        confirmButtonColor: "#0d6efd", // Blue confirm button
-        backdrop: "rgba(0, 0, 0, 0.3)", // Slight dark backdrop to make the alert stand out
+        confirmButtonColor: "#0d6efd",
+        backdrop: "rgba(0, 0, 0, 0.3)",
       });
     }
   };
