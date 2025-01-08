@@ -20,25 +20,23 @@ export class ItemInventoryForSales {
         throw new CustomError("Invalid Location ID", 400);
       }
 
-      // Fetch inventory items where InventoryType.typeName is "Sellable" and quantity > 0
       const inventoryItems = await prisma.inventory.findMany({
         where: {
           locationID: parsedLocationID,
           inventoryType: {
-            typeName: "Sellable", // Check for "Sellable" in InventoryType.typeName
+            typeName: "Sellable",
           },
           quantity: {
-            gt: 0, // Quantity greater than 0
+            gt: 0,
           },
         },
         include: {
-          item: true, // Include related item details
-          inventoryType: true, // Include inventory type details
-          location: true, // Include location details
+          item: true,
+          inventoryType: true,
+          location: true,
         },
       });
 
-      // Handle case where no items match the criteria
       if (inventoryItems.length === 0) {
         res
           .status(404)
