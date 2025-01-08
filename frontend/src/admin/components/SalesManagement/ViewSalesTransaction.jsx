@@ -21,8 +21,6 @@ import axios from "axios";
 
 const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
   const [transactionDetails, setTransactionDetails] = useState(null);
-  const [totalItems, setTotalItems] = useState(0);
-  const [totalQuantity, setTotalQuantity] = useState(0);
   const [totalPurchase, setTotalPurchase] = useState(0.0);
   const [paymentAmount, setPaymentAmount] = useState("");
   const [customerReceipt, setCustomerReceipt] = useState("");
@@ -38,8 +36,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
 
         if (result.success) {
           setTransactionDetails(result.data);
-          setTotalItems(result.data.totalItems);
-          setTotalQuantity(result.data.totalQuantity);
           setTotalPurchase(result.data.totalPurchase);
           setCustomerReceipt(result.data.customer.lastName);
         } else {
@@ -61,22 +57,9 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
     }
   };
 
-  const [formData] = useState({
-    transactionTypeID: "",
-    locationID: "",
-    customerID: "",
-    paymentTypeID: "",
-    transactionNumber: "",
-    status: "Pending",
-    totalItems: 0,
-    totalQuantity: 0,
-    totalPurchase: 0,
-    purchaseOrderItems: [],
-  });
-
   // completed
   const completeTransaction = async () => {
-    // Check if paymentAmount is valid
+    // Validate Payment Amount
     if (!paymentAmount || Number(paymentAmount) !== Math.floor(totalPurchase)) {
       return Swal.fire({
         title: "Payment Mismatch",
@@ -104,98 +87,8 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
       backdrop: "rgba(0, 0, 0, 0.4)",
     });
 
-    if (result.isConfirmed) {
-      try {
-        const transactionData = {
-          locationID: transactionDetails.locationID,
-          customerID: transactionDetails.customerID,
-          paymentTypeID: transactionDetails.paymentTypeID,
-          transactionTypeID: transactionDetails.transactionTypeID,
-          transactionNumber: transactionDetails.transactionNumber,
-          status: "Completed",
-          totalItems: transactionDetails.totalItems,
-          totalQuantity: transactionDetails.totalQuantity,
-          totalPurchase: transactionDetails.totalPurchase,
-        };
-
-        const response = await axios.post(
-          "http://localhost:5000/api/v3/transaction",
-          transactionData
-        );
-
-        if (response.data.success) {
-          const salesTransactionID = response.data.data.salesTransactionID;
-
-          const salesItems = formData.purchaseOrderItems.map((item) => ({
-            salesTransactionID: salesTransactionID,
-            itemID: item.itemID,
-            qty: Math.floor(item.orderQty),
-            price: item.price,
-            total: item.orderQty * item.price,
-          }));
-
-          const saveSalesItemsResponse = await axios.post(
-            "http://localhost:5000/api/v3/transaction/saveSalesItems",
-            { items: salesItems }
-          );
-
-          if (saveSalesItemsResponse.data.success) {
-            // Display Success Message
-            Swal.fire({
-              title: "Success",
-              text: "Transaction has been completed successfully.",
-              icon: "success",
-              background: "#f4f4f9",
-              color: "#28a745",
-              confirmButtonText: "Okay",
-              confirmButtonColor: "#28a745",
-              backdrop: "rgba(0, 0, 0, 0.4)",
-            }).then(() => {
-              // Generate and Print Receipt
-              generateReceipt(
-                // Math.floor(transactionNumbersss),
-                Math.floor(123123),
-                formData.customerName,
-                totalItems,
-                totalQuantity,
-                totalPurchase,
-                paymentAmount
-              );
-              window.location.href = "/sales";
-            });
-          } else {
-            Swal.fire({
-              title: "Error",
-              text: "Failed to save sales items.",
-              icon: "error",
-              background: "#fff5f5",
-              color: "#dc3545",
-              confirmButtonColor: "#dc3545",
-            });
-          }
-        } else {
-          Swal.fire({
-            title: "Error",
-            text: "Failed to complete transaction.",
-            icon: "error",
-            background: "#fff5f5",
-            color: "#dc3545",
-            confirmButtonColor: "#dc3545",
-          });
-        }
-      } catch (error) {
-        console.error("Error completing transaction:", error);
-        Swal.fire({
-          title: "Error",
-          text: "An error occurred while completing the transaction.",
-          icon: "error",
-          background: "#fff5f5",
-          color: "#dc3545",
-          confirmButtonColor: "#dc3545",
-        });
-      }
-    } else {
-      Swal.fire({
+    if (!result.isConfirmed) {
+      return Swal.fire({
         title: "Cancelled",
         text: "Transaction was not completed.",
         icon: "info",
@@ -204,6 +97,84 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
         confirmButtonText: "OK",
         confirmButtonColor: "#007bff",
         backdrop: "rgba(0, 0, 0, 0.4)",
+      });
+    }
+
+    try {
+      // Prepare Transaction Data
+      const transactionData = {
+        locationID: transactionDetails.locationID,
+        customerID: transactionDetails.customerID,
+        paymentTypeID: transactionDetails.paymentTypeID,
+        transactionTypeID: transactionDetails.transactionTypeID,
+        transactionNumber: transactionDetails.transactionNumber,
+        status: "Completed",
+        totalItems: transactionDetails.totalItems,
+        totalQuantity: transactionDetails.totalQuantity,
+        totalPurchase: transactionDetails.totalPurchase,
+      };
+
+      const response = await axios.post(
+        "http://localhost:5000/api/v3/transaction",
+        transactionData
+      );
+
+      if (!response.data.success) {
+        throw new Error("Failed to complete transaction.");
+      }
+
+      const salesTransactionID = response.data.data.salesTransactionID;
+
+      // Map and Save Sales Items
+      const salesItems = transactionDetails.salesTransactionItems.map(
+        (item) => ({
+          salesTransactionID,
+          itemID: item.item.itemID,
+          qty: item.qty,
+          price: item.price,
+          total: item.qty * item.price,
+        })
+      );
+
+      const saveSalesItemsResponse = await axios.post(
+        "http://localhost:5000/api/v3/transaction/saveSalesItems",
+        { items: salesItems }
+      );
+
+      if (!saveSalesItemsResponse.data.success) {
+        throw new Error("Failed to save sales items.");
+      }
+
+      // Success
+      Swal.fire({
+        title: "Success",
+        text: "Transaction has been completed successfully.",
+        icon: "success",
+        background: "#f4f4f9",
+        color: "#28a745",
+        confirmButtonText: "Okay",
+        confirmButtonColor: "#28a745",
+        backdrop: "rgba(0, 0, 0, 0.4)",
+      }).then(() => {
+        generateReceipt(
+          Math.floor(transactionDetails.transactionNumber),
+          transactionDetails.customer.lastName,
+          transactionDetails.totalItems,
+          transactionDetails.totalQuantity,
+          transactionDetails.totalPurchase,
+          paymentAmount
+        );
+        window.location.href = "/sales";
+      });
+    } catch (error) {
+      console.error("Error completing transaction:", error.message);
+      Swal.fire({
+        title: "Error",
+        text: error.message,
+        icon: "error",
+        background: "#fff5f5",
+        color: "#dc3545",
+        confirmButtonColor: "#dc3545",
       });
     }
   };
