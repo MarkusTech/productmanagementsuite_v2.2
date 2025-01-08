@@ -204,7 +204,7 @@ export class SalesTransactionController {
     req: Request,
     res: Response
   ): Promise<void> {
-    const { items } = req.body; // Expecting an array of items
+    const { items } = req.body;
 
     if (!Array.isArray(items) || items.length === 0) {
       res.status(400).json({
