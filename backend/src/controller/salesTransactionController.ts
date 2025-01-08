@@ -436,58 +436,41 @@ export class SalesTransactionController {
   }
 
   async voidSalesTransaction(req: Request, res: Response): Promise<void> {
-    const { salesTransactionItemID } = req.body;
+    const { salesTransactionID } = req.params; // Extract salesTransactionID from URL
 
-    if (!salesTransactionItemID) {
+    if (!salesTransactionID) {
       res.status(400).json({
         success: false,
-        message: "Invalid input. Provide a salesTransactionItemID.",
+        message: "Invalid input. Provide a valid salesTransactionID.",
       });
       return;
     }
 
     try {
-      const salesTransactionItem =
-        await prisma.salesTransactionItems.findUnique({
-          where: { salesTransactionItemID },
-          include: {
-            salesTransaction: true,
-          },
-        });
-
-      if (!salesTransactionItem) {
-        res.status(404).json({
-          success: false,
-          message: "Sales transaction item not found.",
-        });
-        return;
-      }
-
-      if (salesTransactionItem.salesTransaction.status === "Voided") {
-        res.status(400).json({
-          success: false,
-          message: "This sales transaction has already been voided.",
-        });
-        return;
-      }
-
+      // Update the status of the sales transaction to 'Voided'
       const updatedTransaction = await prisma.salesTransaction.update({
         where: {
-          salesTransactionID:
-            salesTransactionItem.salesTransaction.salesTransactionID,
+          salesTransactionID: Number(salesTransactionID), // Ensure ID is a number
         },
-        data: { status: "Voided" },
+        data: {
+          status: "Voided", // Set the transaction status to 'Voided'
+        },
       });
+
+      if (!updatedTransaction) {
+        res.status(404).json({
+          success: false,
+          message: "Sales transaction not found or invalid salesTransactionID.",
+        });
+        return;
+      }
 
       res.status(200).json({
         success: true,
         message: "Sales transaction voided successfully.",
-        data: updatedTransaction,
       });
     } catch (error) {
-      logger.error(
-        `Error voiding sales transaction: ${(error as Error).message}`
-      );
+      console.error("Error voiding sales transaction:", error);
       res.status(500).json({
         success: false,
         message: "Error voiding sales transaction.",

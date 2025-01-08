@@ -27,6 +27,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
   const [error, setError] = useState(null);
 
   const removeTransactionID = salesTransactionID;
+  const voidTransactionID = salesTransactionID;
 
   useEffect(() => {
     const fetchTransactionDetails = async () => {
@@ -58,6 +59,71 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
     const value = event.target.value;
     if (!isNaN(value) && value >= 0) {
       setPaymentAmount(value);
+    }
+  };
+
+  // Void Transaction
+  const voidTransaction = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to void this transaction?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, void it!",
+      cancelButtonText: "No, cancel",
+      background: "#f4f4f9",
+      color: "#dc3545",
+      confirmButtonColor: "#dc3545",
+      cancelButtonColor: "#28a745",
+      backdrop: "rgba(0, 0, 0, 0.4)",
+    });
+
+    if (!result.isConfirmed) {
+      return Swal.fire({
+        title: "Cancelled",
+        text: "Transaction was not voided.",
+        icon: "info",
+        background: "#e7f3ff",
+        color: "#0d6efd",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#0d6efd",
+        backdrop: "rgba(0, 0, 0, 0.3)",
+      });
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/v3/transaction/void-transaction/${voidTransactionID}`
+      );
+
+      if (!response.data.success) {
+        throw new Error("Failed to void transaction.");
+      }
+
+      // Success
+      Swal.fire({
+        title: "Success",
+        text: "Transaction has been voided successfully.",
+        icon: "success",
+        background: "#f4f4f9",
+        color: "#28a745", // Green color for success
+        confirmButtonText: "Okay",
+        confirmButtonColor: "#28a745", // Green for confirm button
+        backdrop: "rgba(0, 0, 0, 0.4)",
+      }).then(() => {
+        // Optionally, redirect or perform any other actions after voiding the transaction
+        window.location.href = "/sales"; // Example redirect
+      });
+    } catch (error) {
+      console.error("Error voiding transaction:", error.message);
+      Swal.fire({
+        title: "Error",
+        text: error.message,
+        icon: "error",
+        background: "#fff5f5",
+        color: "#dc3545", // Red color for error
+        confirmButtonColor: "#dc3545",
+      });
     }
   };
 
@@ -680,7 +746,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
                     <Button
                       variant="outlined"
                       color="secondary"
-                      // onClick={canceledTransaction}
+                      onClick={voidTransaction}
                     >
                       Void Transaction
                     </Button>

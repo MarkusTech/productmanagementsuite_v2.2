@@ -43,4 +43,10 @@ router.delete(
   salesTransactionController.deleteSalesTransaction
 );
 
+// Route to void a sales transaction
+router.post(
+  "/void-transaction/:salesTransactionID",
+  salesTransactionController.voidSalesTransaction
+);
+
 export default router;
