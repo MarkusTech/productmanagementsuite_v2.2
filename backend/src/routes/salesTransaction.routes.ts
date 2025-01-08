@@ -38,4 +38,9 @@ router.put(
   salesTransactionController.updateSalesTransactionCustomer
 );
 
+router.delete(
+  "/delete-transaction/:salesTransactionID",
+  salesTransactionController.deleteSalesTransaction
+);
+
 export default router;

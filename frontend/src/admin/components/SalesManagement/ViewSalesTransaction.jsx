@@ -26,6 +26,8 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
   const [customerReceipt, setCustomerReceipt] = useState("");
   const [error, setError] = useState(null);
 
+  const removeTransactionID = salesTransactionID;
+
   useEffect(() => {
     const fetchTransactionDetails = async () => {
       try {
@@ -49,6 +51,8 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
 
     fetchTransactionDetails();
   }, [salesTransactionID]);
+
+  console.log(`wmr: ${salesTransactionID}`);
 
   const handlePaymentAmountChange = (event) => {
     const value = event.target.value;
@@ -143,6 +147,15 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
 
       if (!saveSalesItemsResponse.data.success) {
         throw new Error("Failed to save sales items.");
+      }
+
+      // After successfully saving sales items, delete the old sales transaction
+      const deleteTransactionResponse = await axios.delete(
+        `http://localhost:5000/api/v3/transaction/delete-transaction/${removeTransactionID}`
+      );
+
+      if (!deleteTransactionResponse.data.success) {
+        throw new Error("Failed to delete old sales transaction.");
       }
 
       // Success

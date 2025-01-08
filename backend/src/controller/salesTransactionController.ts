@@ -389,4 +389,47 @@ export class SalesTransactionController {
       });
     }
   }
+
+  async deleteSalesTransaction(req: Request, res: Response): Promise<void> {
+    const { salesTransactionID } = req.params;
+
+    try {
+      // Check if the transaction exists
+      const transaction = await prisma.salesTransaction.findUnique({
+        where: { salesTransactionID: parseInt(salesTransactionID) },
+      });
+
+      if (!transaction) {
+        logger.warn(`Transaction not found: ID ${salesTransactionID}`);
+        res.status(404).json({
+          success: false,
+          message: "Sales transaction not found.",
+        });
+        return;
+      }
+
+      // Use a transaction to delete salesTransactionItems and salesTransaction
+      await prisma.$transaction([
+        prisma.salesTransactionItems.deleteMany({
+          where: { salesTransactionID: parseInt(salesTransactionID) },
+        }),
+        prisma.salesTransaction.delete({
+          where: { salesTransactionID: parseInt(salesTransactionID) },
+        }),
+      ]);
+
+      logger.info(`Deleted sales transaction and related items: ID ${salesTransactionID}`);
+
+      res.status(200).json({
+        success: true,
+        message: "Sales transaction and related items deleted successfully.",
+      });
+    } catch (error) {
+      logger.error(`Error deleting sales transaction: ${(error as Error).message}`);
+      res.status(500).json({
+        success: false,
+        message: "Error deleting sales transaction.",
+      });
+    }
+  }
 }
