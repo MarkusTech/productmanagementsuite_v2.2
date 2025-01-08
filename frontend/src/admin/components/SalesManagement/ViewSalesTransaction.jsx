@@ -106,13 +106,12 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
         text: "Transaction has been voided successfully.",
         icon: "success",
         background: "#f4f4f9",
-        color: "#28a745", // Green color for success
+        color: "#28a745",
         confirmButtonText: "Okay",
-        confirmButtonColor: "#28a745", // Green for confirm button
+        confirmButtonColor: "#28a745",
         backdrop: "rgba(0, 0, 0, 0.4)",
       }).then(() => {
-        // Optionally, redirect or perform any other actions after voiding the transaction
-        window.location.href = "/sales"; // Example redirect
+        window.location.href = "/sales";
       });
     } catch (error) {
       console.error("Error voiding transaction:", error.message);
@@ -121,7 +120,7 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
         text: error.message,
         icon: "error",
         background: "#fff5f5",
-        color: "#dc3545", // Red color for error
+        color: "#dc3545",
         confirmButtonColor: "#dc3545",
       });
     }
@@ -129,7 +128,6 @@ const ViewSalesTransaction = ({ salesTransactionID, closeForm }) => {
 
   // completed
   const completeTransaction = async () => {
-    // Validate Payment Amount
     if (!paymentAmount || Number(paymentAmount) !== Math.floor(totalPurchase)) {
       return Swal.fire({
         title: "Payment Mismatch",
