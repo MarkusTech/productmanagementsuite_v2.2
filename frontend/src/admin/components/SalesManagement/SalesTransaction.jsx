@@ -190,20 +190,6 @@ const SalesTransaction = ({ closeForm }) => {
     }
   };
 
-  // const fetchItems = async () => {
-  //   try {
-  //     const response = await axios.get("/api/v1/items");
-  //     if (response.data.success) {
-  //       setItems(response.data.data);
-  //     } else {
-  //       setError("Failed to load item data.");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error fetching items:", err);
-  //     setError("Failed to fetch items.");
-  //   }
-  // };
-
   useEffect(() => {
     const fetchItems = async () => {
       if (!formData.locationID) {
