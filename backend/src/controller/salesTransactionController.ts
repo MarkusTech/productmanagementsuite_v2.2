@@ -76,12 +76,12 @@ export class SalesTransactionController {
           },
         },
         orderBy: {
-          salesTransactionID: 'desc', // Order by salesTransactionID in descending order
+          salesTransactionID: "desc", // Order by salesTransactionID in descending order
         },
       });
-  
+
       logger.info("Fetched all sales transactions with items");
-  
+
       res.status(200).json({
         success: true,
         data: transactions,
@@ -96,12 +96,11 @@ export class SalesTransactionController {
       });
     }
   }
-  
 
   // Get a single sales transaction by ID
   async getSalesTransactionById(req: Request, res: Response): Promise<void> {
     const { salesTransactionID } = req.params;
-  
+
     try {
       const transaction = await prisma.salesTransaction.findUnique({
         where: { salesTransactionID: parseInt(salesTransactionID) },
@@ -117,7 +116,7 @@ export class SalesTransactionController {
           },
         },
       });
-  
+
       if (!transaction) {
         res.status(404).json({
           success: false,
@@ -125,9 +124,9 @@ export class SalesTransactionController {
         });
         return;
       }
-  
+
       logger.info(`Fetched sales transaction with ID ${salesTransactionID}`);
-  
+
       res.status(200).json({
         success: true,
         data: transaction,
@@ -142,7 +141,6 @@ export class SalesTransactionController {
       });
     }
   }
-  
 
   // Update a sales transaction
   async updateSalesTransaction(req: Request, res: Response): Promise<void> {
@@ -225,7 +223,7 @@ export class SalesTransactionController {
               itemID: item.itemID,
               qty: item.qty,
               price: item.price,
-              total: item.total || item.qty * item.price, // Calculate total if not provided
+              total: item.total || item.qty * item.price,
             },
             include: {
               salesTransaction: true,
@@ -418,14 +416,18 @@ export class SalesTransactionController {
         }),
       ]);
 
-      logger.info(`Deleted sales transaction and related items: ID ${salesTransactionID}`);
+      logger.info(
+        `Deleted sales transaction and related items: ID ${salesTransactionID}`
+      );
 
       res.status(200).json({
         success: true,
         message: "Sales transaction and related items deleted successfully.",
       });
     } catch (error) {
-      logger.error(`Error deleting sales transaction: ${(error as Error).message}`);
+      logger.error(
+        `Error deleting sales transaction: ${(error as Error).message}`
+      );
       res.status(500).json({
         success: false,
         message: "Error deleting sales transaction.",
