@@ -434,4 +434,64 @@ export class SalesTransactionController {
       });
     }
   }
+
+  async voidSalesTransaction(req: Request, res: Response): Promise<void> {
+    const { salesTransactionItemID } = req.body;
+
+    if (!salesTransactionItemID) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid input. Provide a salesTransactionItemID.",
+      });
+      return;
+    }
+
+    try {
+      const salesTransactionItem =
+        await prisma.salesTransactionItems.findUnique({
+          where: { salesTransactionItemID },
+          include: {
+            salesTransaction: true,
+          },
+        });
+
+      if (!salesTransactionItem) {
+        res.status(404).json({
+          success: false,
+          message: "Sales transaction item not found.",
+        });
+        return;
+      }
+
+      if (salesTransactionItem.salesTransaction.status === "Voided") {
+        res.status(400).json({
+          success: false,
+          message: "This sales transaction has already been voided.",
+        });
+        return;
+      }
+
+      const updatedTransaction = await prisma.salesTransaction.update({
+        where: {
+          salesTransactionID:
+            salesTransactionItem.salesTransaction.salesTransactionID,
+        },
+        data: { status: "Voided" },
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Sales transaction voided successfully.",
+        data: updatedTransaction,
+      });
+    } catch (error) {
+      logger.error(
+        `Error voiding sales transaction: ${(error as Error).message}`
+      );
+      res.status(500).json({
+        success: false,
+        message: "Error voiding sales transaction.",
+      });
+    }
+  }
 }
