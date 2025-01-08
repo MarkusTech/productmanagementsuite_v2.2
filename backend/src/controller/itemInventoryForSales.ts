@@ -14,7 +14,6 @@ export class ItemInventoryForSales {
         throw new CustomError("Location ID is required", 400);
       }
 
-      // Convert locationID to an integer
       const parsedLocationID = parseInt(locationID, 10);
       if (isNaN(parsedLocationID)) {
         throw new CustomError("Invalid Location ID", 400);
