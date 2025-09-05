@@ -130,30 +130,37 @@ export class UserController {
     const { userID } = req.params;
 
     try {
+      const parsedId = parseInt(userID, 10);
+
+      if (isNaN(parsedId)) {
+        throw new CustomError("Invalid user ID", 400);
+      }
+
       const user = await prisma.users.findUnique({
-        where: { userID: parseInt(userID) },
+        where: { userID: parsedId },
       });
 
       if (!user) {
-        logger.warn(`User with ID ${userID} not found`);
+        logger.warn(`User with ID ${parsedId} not found`);
         throw new CustomError("User not found", 404);
-      } else {
-        logger.info(`Fetched user with ID ${userID}`);
-        res.status(200).json({
-          success: true,
-          data: user,
-        });
       }
+
+      logger.info(`Fetched user with ID ${parsedId}`);
+      res.status(200).json({
+        success: true,
+        data: user,
+      });
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof CustomError) {
         logger.error(`Error fetching user: ${error.message}`);
-        throw new CustomError("Error fetching user", 500);
+        res.status(error.statusCode).json({ success: false, message: error.message });
       } else {
-        logger.error("Unknown error occurred while fetching user");
-        throw new CustomError("Unknown error", 500);
+        logger.error(`Unexpected error fetching user: ${error}`);
+        res.status(500).json({ success: false, message: "Internal server error" });
       }
     }
   }
+
 
   // Update user
   async updateUser(req: Request, res: Response): Promise<void> {

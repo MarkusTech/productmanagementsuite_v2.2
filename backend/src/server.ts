@@ -9,7 +9,9 @@ import rateLimit from "express-rate-limit";
 import "colors";
 import passport from "passport";
 import path from "path";
+import dotenv from "dotenv";
 
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 // Inventory Item Routes
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
