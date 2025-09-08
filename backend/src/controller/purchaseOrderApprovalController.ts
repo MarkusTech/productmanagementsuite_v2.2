@@ -9,7 +9,6 @@ export class PurchaseOrderApprovalController {
     const { poID } = req.params;
 
     try {
-      // Fetch the current status of the purchase order
       const purchaseOrder = await prisma.purchaseOrder.findUnique({
         where: { poID: parseInt(poID) },
         select: { status: true },
@@ -23,7 +22,6 @@ export class PurchaseOrderApprovalController {
         return;
       }
 
-      // Check if the status is not "Pending"
       if (purchaseOrder.status !== "Pending") {
         res.status(400).json({
           success: false,
@@ -57,7 +55,6 @@ export class PurchaseOrderApprovalController {
     const { poID } = req.params;
 
     try {
-      // Fetch the current status of the purchase order
       const purchaseOrder = await prisma.purchaseOrder.findUnique({
         where: { poID: parseInt(poID) },
         select: { status: true },
@@ -71,7 +68,6 @@ export class PurchaseOrderApprovalController {
         return;
       }
 
-      // Check if the status is not "Pending"
       if (purchaseOrder.status !== "Pending") {
         res.status(400).json({
           success: false,
@@ -80,7 +76,6 @@ export class PurchaseOrderApprovalController {
         return;
       }
 
-      // Update the status of the purchase order to 'Approved'
       const updatedPurchaseOrder = await prisma.purchaseOrder.update({
         where: { poID: parseInt(poID) },
         data: { status: "Approved" },

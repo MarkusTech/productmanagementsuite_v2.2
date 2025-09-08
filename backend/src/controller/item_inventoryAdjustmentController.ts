@@ -50,7 +50,6 @@ export class InventoryAdjustmentController {
         });
       }
 
-      // Create the new inventory adjustment
       const newInventoryAdjustment = await prisma.inventoryAdjustment.create({
         data: {
           inventoryID,
@@ -195,12 +194,10 @@ export class InventoryAdjustmentController {
     }
   }
 
-  // Approve
   async inventoryApproved(req: Request, res: Response): Promise<void> {
     const { inventoryID, adjustmentID } = req.params;
 
     try {
-      // Fetch the inventory adjustment record
       const adjustment = await prisma.inventoryAdjustment.findUnique({
         where: { adjustmentID: Number(adjustmentID) },
       });
@@ -209,7 +206,6 @@ export class InventoryAdjustmentController {
         throw new CustomError("Inventory adjustment not found", 404);
       }
 
-      // Ensure the adjustment belongs to the specified inventory
       if (adjustment.inventoryID !== Number(inventoryID)) {
         throw new CustomError(
           "Inventory adjustment does not match inventory",
@@ -217,7 +213,6 @@ export class InventoryAdjustmentController {
         );
       }
 
-      // Check if the adjustment is already completed
       if (adjustment.status === "Completed") {
         throw new CustomError("Inventory adjustment is already completed", 400);
       }

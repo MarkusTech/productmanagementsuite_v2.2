@@ -98,7 +98,6 @@ export class CategoryController {
         return;
       }
 
-      // Prepare data for update, only update fields that are present in the request body
       const updatedData: any = {};
       if (categoryCode !== undefined) updatedData.categoryCode = categoryCode;
       if (categoryName !== undefined) updatedData.categoryName = categoryName;

@@ -43,7 +43,6 @@ export class ItemInventoryForSales {
         return;
       }
 
-      // Return the inventory items
       res.status(200).json({ inventoryItems });
     } catch (error) {
       logger.error("Error fetching inventory items:", error);

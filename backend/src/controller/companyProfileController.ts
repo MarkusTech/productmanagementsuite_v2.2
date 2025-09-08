@@ -5,7 +5,6 @@ import logger from "../utils/logger";
 const prisma = new PrismaClient();
 
 export class CompanyProfileController {
-  // Create or Save Company Profile (Allow only one profile)
   async saveCompanyProfile(req: Request, res: Response): Promise<void> {
     const {
       companyName,

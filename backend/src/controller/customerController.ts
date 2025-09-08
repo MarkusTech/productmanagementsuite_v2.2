@@ -28,12 +28,12 @@ export class CustomerController {
           contactNo,
           address,
           email,
-          customerTypeID, // Nullable field
+          customerTypeID,
           createdByID,
           modifiedByID,
         },
         include: {
-          customerType: true, // Include related customerType information
+          customerType: true,
         },
       });
 
@@ -58,7 +58,7 @@ export class CustomerController {
     try {
       const customers = await prisma.customers.findMany({
         include: {
-          customerType: true, // Include related customerType information
+          customerType: true,
         },
       });
 
@@ -85,7 +85,7 @@ export class CustomerController {
       const customer = await prisma.customers.findUnique({
         where: { customerID: parseInt(customerID) },
         include: {
-          customerType: true, // Include related customerType information
+          customerType: true,
         },
       });
 
@@ -136,11 +136,11 @@ export class CustomerController {
           contactNo,
           address,
           email,
-          customerTypeID, // Nullable field
+          customerTypeID,
           modifiedByID,
         },
         include: {
-          customerType: true, // Include related customerType information
+          customerType: true,
         },
       });
 

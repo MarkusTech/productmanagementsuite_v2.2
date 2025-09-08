@@ -26,7 +26,6 @@ export class ItemController {
     let image_url: string | null = req.file ? req.file.path : null;
 
     try {
-      // Create new item
       const newItem = await prisma.items.create({
         data: {
           itemCode,
@@ -194,7 +193,6 @@ export class ItemController {
     }
   }
 
-  // Save Item with Up to 5 images and also save to item to inventory
   async createItemAndSaveToInventory(
     req: Request,
     res: Response
@@ -213,7 +211,6 @@ export class ItemController {
       modifiedByID,
     } = req.body;
 
-    // Handle image files (up to 5)
     const imageUrls: string[] = [];
     let firstImageUrl: string | null = null;
 
@@ -227,7 +224,6 @@ export class ItemController {
     }
 
     try {
-      // Step 1: Create the item
       const newItem = await prisma.items.create({
         data: {
           itemCode,
@@ -259,7 +255,6 @@ export class ItemController {
         });
       }
 
-      // Step 3: Create inventory records
       const locations = await prisma.locations.findMany({
         where: { status: true },
       });

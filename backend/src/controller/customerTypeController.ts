@@ -42,7 +42,7 @@ export class CustomerTypeController {
     try {
       const customerTypes = await prisma.customerType.findMany({
         include: {
-          customers: true, // Include associated customers
+          customers: true,
         },
       });
 
@@ -71,7 +71,7 @@ export class CustomerTypeController {
       const customerType = await prisma.customerType.findUnique({
         where: { customerTypeID: parseInt(customerTypeID) },
         include: {
-          customers: true, // Include associated customers
+          customers: true,
         },
       });
 
