@@ -13,7 +13,7 @@ export class PaymentTypeController {
       const newPaymentType = await prisma.paymentType.create({
         data: {
           paymentName,
-          description, // Include the description field
+          description,
           createdByID,
           modifiedByID,
         },
@@ -40,7 +40,7 @@ export class PaymentTypeController {
     try {
       const paymentTypes = await prisma.paymentType.findMany({
         include: {
-          salesTransactions: true, // Include associated sales transactions
+          salesTransactions: true,
         },
       });
 
@@ -67,7 +67,7 @@ export class PaymentTypeController {
       const paymentType = await prisma.paymentType.findUnique({
         where: { paymentTypeID: parseInt(paymentTypeID) },
         include: {
-          salesTransactions: true, // Include associated sales transactions
+          salesTransactions: true,
         },
       });
 
@@ -104,7 +104,7 @@ export class PaymentTypeController {
         where: { paymentTypeID: parseInt(paymentTypeID) },
         data: {
           paymentName,
-          description, // Include description in the update
+          description,
           modifiedByID,
         },
       });
