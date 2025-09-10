@@ -30,7 +30,7 @@ export class SalesTransactionController {
           status,
           totalItems,
           totalQuantity,
-          totalPurchase: totalPurchase || 0.0, // Defaults to 0.0 if not provided
+          totalPurchase: totalPurchase || 0.0,
         },
         include: {
           location: true,
@@ -71,12 +71,12 @@ export class SalesTransactionController {
           customer: true,
           salesTransactionItems: {
             include: {
-              item: true, // Optionally, include the associated item details (if needed)
+              item: true,
             },
           },
         },
         orderBy: {
-          salesTransactionID: "desc", // Order by salesTransactionID in descending order
+          salesTransactionID: "desc",
         },
       });
 
@@ -111,7 +111,7 @@ export class SalesTransactionController {
           customer: true,
           salesTransactionItems: {
             include: {
-              item: true, // Include associated item details
+              item: true,
             },
           },
         },
@@ -264,7 +264,7 @@ export class SalesTransactionController {
           itemID,
           qty,
           price,
-          total: total || qty * price, // Update total if not provided
+          total: total || qty * price,
         },
         include: {
           salesTransaction: true,
@@ -436,7 +436,7 @@ export class SalesTransactionController {
   }
 
   async voidSalesTransaction(req: Request, res: Response): Promise<void> {
-    const { salesTransactionID } = req.params; // Extract salesTransactionID from URL
+    const { salesTransactionID } = req.params;
 
     if (!salesTransactionID) {
       res.status(400).json({
@@ -447,13 +447,12 @@ export class SalesTransactionController {
     }
 
     try {
-      // Update the status of the sales transaction to 'Voided'
       const updatedTransaction = await prisma.salesTransaction.update({
         where: {
-          salesTransactionID: Number(salesTransactionID), // Ensure ID is a number
+          salesTransactionID: Number(salesTransactionID),
         },
         data: {
-          status: "Voided", // Set the transaction status to 'Voided'
+          status: "Voided",
         },
       });
 
