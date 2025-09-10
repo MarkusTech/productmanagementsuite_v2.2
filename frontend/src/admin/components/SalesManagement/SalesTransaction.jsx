@@ -81,20 +81,18 @@ const SalesTransaction = ({ closeForm }) => {
   const calculateTotals = useCallback(() => {
     const itemsCount = formData.purchaseOrderItems.length;
 
-    // Ensure that orderQty and price are treated as numbers
     const quantitySum = formData.purchaseOrderItems.reduce((sum, item) => {
-      return sum + (Number(item.orderQty) || 0); // Convert orderQty to number and add to sum
+      return sum + (Number(item.orderQty) || 0);
     }, 0);
 
     const purchaseSum = formData.purchaseOrderItems.reduce((sum, item) => {
-      return sum + (Number(item.orderQty) || 0) * (Number(item.price) || 0); // Convert orderQty and price to numbers
+      return sum + (Number(item.orderQty) || 0) * (Number(item.price) || 0);
     }, 0);
 
-    // Update individual state variables
     setTotalItems(itemsCount);
     setTotalQuantity(quantitySum);
-    setTotalPurchase(purchaseSum.toFixed(2)); // Format to two decimal places
-  }, [formData.purchaseOrderItems]); // Add formData.purchaseOrderItems as a dependency
+    setTotalPurchase(purchaseSum.toFixed(2));
+  }, [formData.purchaseOrderItems]);
 
   const generateTransactionNumber = () => {
     return Math.floor(Math.random() * 1000000)
@@ -104,12 +102,11 @@ const SalesTransaction = ({ closeForm }) => {
 
   const transactionNumbersss = generateTransactionNumber();
 
-  const currentDate = new Date().toLocaleDateString(); // Formats the current date
+  const currentDate = new Date().toLocaleDateString();
 
   useEffect(() => {
     setSalesItems(formData.purchaseOrderItems);
     calculateTotals();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.purchaseOrderItems]);
 
   const [locations, setLocations] = useState([]);
@@ -239,7 +236,7 @@ const SalesTransaction = ({ closeForm }) => {
 
       setFormData((prevState) => ({
         ...prevState,
-        customerID: customerID, // Update customerID in formData
+        customerID: customerID,
       }));
       setCustomerReceipt(
         selectedCustomer.firstName +
@@ -248,7 +245,7 @@ const SalesTransaction = ({ closeForm }) => {
           " " +
           selectedCustomer.lastName
       );
-      setAnchorEl(null); // Close the menu
+      setAnchorEl(null);
     }
   };
 
@@ -287,9 +284,9 @@ const SalesTransaction = ({ closeForm }) => {
     const updatedItems = [...salesItems];
     updatedItems[index].orderQty = newQty;
     updatedItems[index].total =
-      updatedItems[index].orderQty * updatedItems[index].price; // Recalculate total
-    setSalesItems(updatedItems); // Update salesItems state
-    updateFormData(updatedItems); // Also update formData with the new items
+      updatedItems[index].orderQty * updatedItems[index].price;
+    setSalesItems(updatedItems);
+    updateFormData(updatedItems);
   };
 
   const removeItem = (index) => {
@@ -313,10 +310,10 @@ const SalesTransaction = ({ closeForm }) => {
 
     setFormData({
       ...formData,
-      purchaseOrderItems: updatedItems, // Update items list in formData
+      purchaseOrderItems: updatedItems,
       totalItems: totalItems,
       totalQuantity: totalQuantity,
-      totalPurchase: totalPurchase.toFixed(2), // Format totalPurchase to 2 decimal places
+      totalPurchase: totalPurchase.toFixed(2),
     });
   };
 
