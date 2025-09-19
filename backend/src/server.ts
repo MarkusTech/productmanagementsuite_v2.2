@@ -8,7 +8,9 @@ import compression from "compression";
 import rateLimit from "express-rate-limit";
 import "colors";
 import passport from "passport";
-import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // Inventory Item Routes
 import authRoutes from "./routes/auth.routes";
